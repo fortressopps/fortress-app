@@ -1,0 +1,42 @@
+/* === FORTRESS DESIGN SYSTEM === */
+:root {
+  --emerald-500: #108981;
+  --emerald-600: #0A6B65;
+  --emerald-400: #16A394;
+  --charcoal: #1A1F2C;
+  --slate: #2D3748;
+  --light: #F8FAFC;
+  --white: #FFFFFF;
+  --cream-amber: #F5E6D3;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--light);
+  color: var(--charcoal);
+}
+
+.btn {
+  padding: 12px 24px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: var(--emerald-500);
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background: var(--emerald-600);
+  transform: translateY(-2px);
+}
