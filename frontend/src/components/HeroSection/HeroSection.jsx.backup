@@ -1,0 +1,45 @@
+import React from 'react';
+import { useNavigate } from "react-router-dom";
+
+const HeroSection = () => {
+  const navigate = useNavigate();
+
+  return (
+    <section className="modern-hero">
+      <div className="hero-content">
+        <h1 className="hero-title">
+          Controle que inspira confiança
+        </h1>
+        
+        <p className="hero-subtitle">
+          Tecnologia sofisticada para cada etapa da sua jornada financeira.
+        </p>
+
+        <div className="stats-grid">
+          <div className="stat">
+            <div className="stat-number">+95%</div>
+            <div className="stat-label">Eficiência</div>
+          </div>
+          <div className="stat">
+            <div className="stat-number">100%</div>
+            <div className="stat-label">Controle</div>
+          </div>
+        </div>
+
+        <div className="hero-actions">
+          <button className="btn-modern" onClick={() => navigate('/analisador')}>
+            Começar Agora
+          </button>
+        </div>
+
+        <div className="features">
+          <div className="feature">✓ Teste grátis</div>
+          <div className="feature">✓ Setup rápido</div>
+          <div className="feature">✓ Sem cartão</div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default HeroSection;

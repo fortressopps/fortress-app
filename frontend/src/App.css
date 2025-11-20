@@ -1,50 +1,157 @@
-/* Reset e configurações globais */
+/* BRANDING FORTRESS - VERDES ESMERALDA */
+:root {
+  --emerald-dark: #065F46;
+  --emerald-medium: #047857;
+  --emerald-light: #10B981;
+  --emerald-bright: #34D399;
+  --fortress-black: #0A2019;
+  --fortress-gray: #2F4F45;
+  --fortress-white: #F5F9F7;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body, #root {
-  height: 100%;
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.6;
+  color: var(--fortress-black);
+  background: var(--fortress-white);
+}
+/* HEADER */
+.header {
+  background: var(--fortress-black);
+  color: var(--fortress-white);
+  padding: 1rem 0;
+  position: fixed;
+  top: 0;
   width: 100%;
+  z-index: 1000;
+  border-bottom: 2px solid var(--emerald-medium);
 }
 
-.App {
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Container principal */
-.container {
-  width: 100%;
+.header-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
-}
-
-/* Garantir que todas as sections ocupem 100% */
-section {
-  width: 100%;
-}
-
-/* Header fixo */
-header {
-  width: 100%;
-}
-
-/* Hero Section ocupando tela completa */
-.hero {
-  min-height: 100vh;
-  width: 100%;
+  padding: 0 2rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
-/* Simulator ocupando tela completa */
-.simulator {
-  min-height: 100vh;
-  width: 100%;
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--emerald-light);
+}
+
+.nav {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-link {
+  color: var(--fortress-white);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: var(--emerald-bright);
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+}
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--fortress-white);
+  border: 2px solid var(--emerald-medium);
+}
+
+.btn-outline:hover {
+  background: var(--emerald-medium);
+  color: var(--fortress-white);
+}
+
+.btn-primary {
+  background: var(--emerald-medium);
+  color: var(--fortress-white);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: var(--emerald-dark);
+  transform: translateY(-2px);
+}
+/* HERO SECTION */
+.hero {
+  background: linear-gradient(135deg, var(--emerald-dark) 0%, var(--fortress-black) 100%);
+  color: var(--fortress-white);
+  padding: 120px 0 80px;
+  text-align: center;
+  margin-top: 80px;
+}
+
+.hero-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  opacity: 0.9;
+  margin-bottom: 3rem;
+  line-height: 1.6;
+}
+
+.highlights {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin: 2rem 0;
+}
+
+.highlight-item {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--emerald-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hero-actions {
+  margin: 2rem 0;
+}
+
+.features {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  opacity: 0.9;
 }

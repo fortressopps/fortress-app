@@ -152,7 +152,7 @@
 .empty__icon {
   font-size: 3rem;
   margin-bottom: 1rem;
-  opacity: 0.5;
+  opacity: 1 !important;
 }
 
 .transactions__list {
@@ -233,7 +233,7 @@
 
 .cta__content p {
   margin-bottom: 1.5rem;
-  opacity: 0.9;
+  opacity: 1 !important;
 }
 
 .cta__content ul {

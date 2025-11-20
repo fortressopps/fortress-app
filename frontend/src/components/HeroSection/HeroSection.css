@@ -179,3 +179,33 @@
     gap: 1.5rem;
   }
 }
+
+.highlights {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.highlight-item {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #10b981;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 768px) {
+  .highlights {
+    gap: 1.5rem;
+  }
+  
+  .highlight-item {
+    font-size: 1rem;
+  }
+}
+.hero-title { margin-top: 3rem !important; }
+.highlights { display: flex; justify-content: center; gap: 3rem; margin: 2rem 0; }
+.highlight-item { font-size: 1.25rem; font-weight: 600; color: #10b981; }
+.modern-hero { margin-top: 80px !important; }
