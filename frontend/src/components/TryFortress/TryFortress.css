@@ -1,0 +1,186 @@
+/* TryFortress.css - Estilo Fortress Excellence */
+.try-fortress-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--white-pure) 0%, #f0fdf9 100%);
+  padding: 2rem;
+}
+
+.try-fortress-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--emerald-fortress);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--emerald-fortress);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: var(--emerald-fortress);
+  color: var(--white-pure);
+}
+
+.try-fortress-header h1 {
+  font-size: 2.5rem;
+  color: var(--emerald-fortress);
+  margin-bottom: 1rem;
+  font-weight: 800;
+}
+
+.try-fortress-header p {
+  font-size: 1.2rem;
+  color: var(--gray-strategic);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto 3rem;
+}
+
+.tool-card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  text-align: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.tool-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(6, 95, 70, 0.15);
+  border-color: var(--green-evolution);
+}
+
+.tool-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.tool-card h3 {
+  font-size: 1.5rem;
+  color: var(--steel-tech);
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.tool-card p {
+  color: var(--gray-strategic);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.tool-button {
+  background: linear-gradient(135deg, var(--emerald-fortress), var(--green-deep));
+  color: var(--white-pure);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.tool-button:hover {
+  background: linear-gradient(135deg, var(--green-deep), var(--green-ocean));
+  transform: translateY(-2px);
+}
+
+.save-section {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+  border: 2px solid rgba(16, 185, 129, 0.2);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.save-section p {
+  color: var(--emerald-fortress);
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.save-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--emerald-fortress), var(--green-deep));
+  color: var(--white-pure);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--green-deep), var(--green-ocean));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(6, 95, 70, 0.3);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--emerald-fortress);
+  border: 2px solid var(--emerald-fortress);
+}
+
+.btn-secondary:hover {
+  background: var(--emerald-fortress);
+  color: var(--white-pure);
+  transform: translateY(-2px);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .try-fortress-container {
+    padding: 1rem;
+  }
+  
+  .try-fortress-header h1 {
+    font-size: 2rem;
+  }
+  
+  .tools-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .save-buttons {
+    flex-direction: column;
+  }
+  
+  .back-button {
+    position: relative;
+    margin-bottom: 1rem;
+    display: inline-block;
+  }
+}

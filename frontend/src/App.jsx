@@ -5,7 +5,7 @@ import HeroSection from './components/HeroSection/HeroSection';
 import Benefits from './components/Benefits/Benefits';
 import Pricing from './components/Pricing/Pricing';
 import Footer from './components/Footer/Footer';
-import Simulator from './components/Simulator/Simulator';
+import TryFortress from './components/TryFortress/TryFortress';
 import './App.css';
 
 function HomePage() {
@@ -28,7 +28,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/simulator" element={<Simulator />} />
+          <Route path="/try" element={<TryFortress />} />
         </Routes>
       </div>
     </Router>
