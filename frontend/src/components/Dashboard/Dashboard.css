@@ -1,0 +1,275 @@
+/* 🏰 DASHBOARD FORTRESS - TORRE DE CONTROLE */
+.fortress-dashboard {
+  min-height: 100vh;
+  background: var(--white-pure);
+  padding: 2rem;
+}
+
+/* 🎯 CABEÇALHO DO DASHBOARD */
+.dashboard-header {
+  max-width: 1200px;
+  margin: 0 auto 3rem;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--steel-tech);
+  margin: 0;
+}
+
+/* 🛡️ BADGE DO ARQUÉTIPO */
+.user-archetype {
+  display: flex;
+  gap: 1rem;
+}
+
+.archetype-badge {
+  padding: 0.5rem 1.5rem;
+  border-radius: 25px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.archetype-badge.strategist {
+  background: var(--gradient-sentinel);
+  color: var(--white-pure);
+  box-shadow: 0 4px 15px rgba(6, 95, 70, 0.3);
+}
+
+.archetype-badge.guardian {
+  background: var(--gradient-vanguard);
+  color: var(--white-pure);
+  box-shadow: 0 4px 15px rgba(15, 118, 110, 0.3);
+}
+
+.archetype-badge.architect {
+  background: var(--gradient-legacy);
+  color: var(--white-pure);
+  box-shadow: 0 4px 15px rgba(30, 41, 59, 0.3);
+}
+
+/* 📊 GRID DO DASHBOARD */
+.dashboard-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  padding: 0 1rem;
+}
+
+/* 🎴 CARDS DO DASHBOARD */
+.dashboard-card {
+  background: var(--white-pure);
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 8px 30px rgba(6, 95, 70, 0.1);
+  border: 1px solid rgba(6, 95, 70, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-fortress);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(6, 95, 70, 0.15);
+}
+
+.dashboard-card h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--steel-tech);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 🗺️ CARD DO MAPA PATRIMONIAL */
+.map-card {
+  grid-column: span 2;
+}
+
+.map-visualization {
+  background: linear-gradient(135deg, var(--white-pure) 0%, #f8fafc 100%);
+  border: 2px dashed rgba(6, 95, 70, 0.2);
+  border-radius: 10px;
+  padding: 3rem;
+  text-align: center;
+  color: var(--gray-strategic);
+}
+
+.map-visualization::before {
+  content: '🗺️';
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.map-visualization p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* 🔔 CARD DE ALERTAS DO GUARDIÃO */
+.alerts-card {
+  background: linear-gradient(135deg, #fef7ed, #fffbeb);
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.alerts-card::before {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.alert-item {
+  background: var(--white-pure);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #f59e0b;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.1);
+}
+
+.alert-item.warning {
+  border-left-color: #f59e0b;
+  background: linear-gradient(135deg, #fffbeb, #fef7ed);
+}
+
+.alert-item.info {
+  border-left-color: var(--green-ocean);
+  background: linear-gradient(135deg, #f0fdfa, #ecfdf5);
+}
+
+.alert-item h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--steel-tech);
+  margin-bottom: 0.5rem;
+}
+
+.alert-item p {
+  font-size: 0.9rem;
+  color: var(--gray-strategic);
+  margin: 0;
+}
+
+/* 🏆 CARD DA TRILHA DE EVOLUÇÃO */
+.progress-card {
+  background: linear-gradient(135deg, #f8fafc, var(--white-pure));
+}
+
+.evolution-track {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.phase {
+  background: var(--white-pure);
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 2px solid rgba(6, 95, 70, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.phase.active {
+  border-color: var(--emerald-fortress);
+  background: linear-gradient(135deg, var(--white-pure), #f0fdfa);
+  box-shadow: 0 5px 20px rgba(6, 95, 70, 0.1);
+}
+
+.phase.active::before {
+  content: '✅';
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.phase span {
+  font-weight: 600;
+  color: var(--steel-tech);
+  font-size: 1.1rem;
+}
+
+.phase.active span {
+  color: var(--emerald-fortress);
+}
+
+.phase.sentinel.active {
+  border-color: var(--sentinel-color);
+}
+
+.phase.vanguard {
+  opacity: 0.6;
+}
+
+.phase.legacy {
+  opacity: 0.4;
+}
+
+/* 📱 RESPONSIVIDADE */
+@media (max-width: 768px) {
+  .fortress-dashboard {
+    padding: 1rem;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 2rem;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .map-card {
+    grid-column: span 1;
+  }
+  
+  .dashboard-card {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .archetype-badge {
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+  }
+}
