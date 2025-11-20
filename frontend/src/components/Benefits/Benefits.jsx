@@ -4,55 +4,57 @@ import './Benefits.css';
 const Benefits = () => {
   const benefits = [
     {
-      icon: '🏰',
-      title: 'Solidez Comprovada',
-      description: 'Infraestrutura robusta com segurança bancária para proteger seu patrimônio.'
+      icon: '📊',
+      title: 'Insights em Tempo Real',
+      description: 'Visualize seus gastos e receitas com gráficos interativos e relatórios detalhados.'
     },
     {
-      icon: '📊',
-      title: 'Análise Inteligente',
-      description: 'Controle total com ferramentas de análise preditiva para tomada de decisão.'
+      icon: '🎯',
+      title: 'Metas Personalizadas',
+      description: 'Defina objetivos financeiros e acompanhe seu progresso automaticamente.'
     },
     {
       icon: '🛒',
       title: 'Modo Supermercado',
-      description: 'Economia real no dia a dia com planejamento e controle de compras.'
-    },
-    {
-      icon: '🚀',
-      title: 'Implementação Rápida',
-      description: 'Comece em minutos sem complicação. Foco no que realmente importa.'
+      description: 'Economia inteligente com comparação de preços e alertas de promoções.'
     },
     {
       icon: '🔒',
-      title: 'Privacidade Total',
-      description: 'Seus dados são criptografados e nunca compartilhados com terceiros.'
+      title: 'Segurança Máxima',
+      description: 'Seus dados protegidos com criptografia de nível bancário.'
     },
     {
-      icon: '📈',
-      title: 'Crescimento Garantido',
-      description: 'Escalável do uso pessoal ao empresarial sem mudar de plataforma.'
+      icon: '📱',
+      title: 'Multiplataforma',
+      description: 'Acesse de qualquer dispositivo, sempre com seus dados sincronizados.'
+    },
+    {
+      icon: '💎',
+      title: 'Suporte Premium',
+      description: 'Time especializado para ajudar você a alcançar sua liberdade financeira.'
     }
   ];
 
   return (
-    <section className="benefits section-py" id="benefits">
+    <section className="benefits" id="benefits">
       <div className="container">
-        <div className="benefits__header">
-          <h2 className="benefits__title">Vantagens Exclusivas</h2>
-          <p className="benefits__subtitle">
-            Recursos pensados para oferecer o melhor em gestão financeira
+        <div className="benefits__content">
+          <h2 className="benefits__title">
+            Por que escolher o <span className="text-emerald">Fortress</span>?
+          </h2>
+          <p className="benefits__description">
+            Ferramentas poderosas que transformam sua relação com o dinheiro
           </p>
-        </div>
 
-        <div className="benefits__grid">
-          {benefits.map((benefit, index) => (
-            <div key={index} className="benefit__card">
-              <div className="benefit__icon">{benefit.icon}</div>
-              <h3 className="benefit__title">{benefit.title}</h3>
-              <p className="benefit__description">{benefit.description}</p>
-            </div>
-          ))}
+          <div className="benefits__grid">
+            {benefits.map((benefit, index) => (
+              <div key={index} className="benefit__card">
+                <div className="benefit__icon">{benefit.icon}</div>
+                <h3 className="benefit__title">{benefit.title}</h3>
+                <p className="benefit__description">{benefit.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

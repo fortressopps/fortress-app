@@ -1,9 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './HeroSection.css';
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+
   const startSimulator = () => {
-    window.location.href = '/simulator';
+    navigate('/simulator');
   };
 
   return (
