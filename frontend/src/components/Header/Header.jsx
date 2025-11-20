@@ -1,62 +1,65 @@
-import React from 'react';
-import '../../../src/styles/design-system.css';
+import React, { useState, useEffect } from 'react';
+import './Header.css';
 
 const Header = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (sectionId) => {
+    document.getElementById(sectionId)?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
+  };
+
   return (
-    <header style={{
-      background: 'linear-gradient(135deg, var(--emerald-600) 0%, var(--emerald-500) 100%)',
-      color: 'var(--white)',
-      padding: '100px 0 80px',
-      textAlign: 'center',
-      position: 'relative'
-    }}>
-      <div className="container" style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '0 20px'
-      }}>
-        <span style={{ fontSize: '4rem', marginBottom: '20px', display: 'block' }}>🏰</span>
-        <h1 style={{
-          fontSize: '3rem',
-          marginBottom: '25px',
-          fontWeight: '600',
-          maxWidth: '800px',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          lineHeight: '1.2'
-        }}>
-          Controle Financeiro com Autoridade
-        </h1>
-        <p style={{
-          fontSize: '1.3rem',
-          maxWidth: '700px',
-          margin: '0 auto 40px',
-          opacity: '0.9',
-          fontWeight: '300',
-          lineHeight: '1.6'
-        }}>
-          Do controle básico no Sentinel à gestão completa no Legacy. Fortaleza solidez em cada decisão financeira.
-        </p>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '20px',
-          flexWrap: 'wrap'
-        }}>
-          <button className="btn btn-primary" onClick={() => alert('Começar Trial!')}>
-            Começar Gratuitamente
-          </button>
-          <button style={{
-            background: 'transparent',
-            color: 'var(--white)',
-            border: '2px solid var(--white)',
-            padding: '14px 35px',
-            borderRadius: '8px',
-            fontWeight: '600',
-            cursor: 'pointer'
-          }} onClick={() => alert('Conhecer Planos!')}>
-            Conhecer Planos
-          </button>
+    <header className={`header ${isScrolled ? 'header--scrolled' : ''}`}>
+      <div className="container">
+        <div className="header__content">
+          {/* Logo Sóbrio */}
+          <div className="header__logo">
+            <div className="logo__mark">🏰</div>
+            <span className="logo__text">Fortress</span>
+          </div>
+
+          {/* Navegação Minimalista */}
+          <nav className="header__nav">
+            <button 
+              className="nav__link" 
+              onClick={() => scrollToSection('hero')}
+            >
+              Início
+            </button>
+            <button 
+              className="nav__link" 
+              onClick={() => scrollToSection('benefits')}
+            >
+              Vantagens
+            </button>
+            <button 
+              className="nav__link" 
+              onClick={() => scrollToSection('pricing')}
+            >
+              Planos
+            </button>
+          </nav>
+
+          {/* CTA Discreto */}
+          <div className="header__actions">
+            <button 
+              className="btn btn--primary"
+              onClick={() => scrollToSection('pricing')}
+            >
+              Começar Agora
+            </button>
+          </div>
         </div>
       </div>
     </header>

@@ -1,19 +1,35 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/Header/Header';
+import HeroSection from './components/HeroSection/HeroSection';
+import Benefits from './components/Benefits/Benefits';
+import Pricing from './components/Pricing/Pricing';
+import Footer from './components/Footer/Footer';
+import Simulator from './components/Simulator/Simulator';
 import './App.css';
-import Header from './components/Header/Header.jsx';
-import './styles/design-system.css';
+
+function HomePage() {
+  return (
+    <>
+      <Header />
+      <HeroSection />
+      <Benefits />
+      <Pricing />
+      <Footer />
+    </>
+  );
+}
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <main>
-        <div style={{ padding: '60px 20px', textAlign: 'center' }}>
-          <h2>Fortress - Em Desenvolvimento</h2>
-          <p>Modo Supermercado e Dashboard em breve!</p>
-        </div>
-      </main>
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/simulator" element={<Simulator />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

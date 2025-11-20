@@ -1,0 +1,287 @@
+.simulator {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fafaf9 0%, #f5f5f4 100%);
+  padding-top: 80px;
+}
+
+.simulator__header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.simulator__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  gap: 2rem;
+}
+
+.simulator__nav h1 {
+  color: #065f46;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.simulator__content {
+  padding: 3rem 0;
+  display: grid;
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Insights */
+.simulator__insights {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.insights__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.insight__card {
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background: #fafaf9;
+  border: 1px solid #e7e5e4;
+}
+
+.insight__card h3 {
+  font-size: 0.9rem;
+  color: #57534e;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.insight__value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #065f46;
+  margin-bottom: 0.25rem;
+}
+
+.insight__subtitle {
+  font-size: 0.8rem;
+  color: #78716c;
+}
+/* Progress Bar */
+.budget__progress {
+  background: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+}
+
+.progress__header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.progress__bar {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #065f46);
+  transition: width 0.3s ease;
+}
+
+/* Add Transaction */
+.simulator__add {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.add__form {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.form__input, .form__select {
+  padding: 0.75rem;
+  border: 1px solid #d6d3d1;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  background: white;
+}
+
+.form__input:focus, .form__select:focus {
+  outline: none;
+  border-color: #065f46;
+  box-shadow: 0 0 0 3px rgba(6, 95, 70, 0.1);
+}
+/* Transactions */
+.simulator__transactions {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.empty__state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #57534e;
+}
+
+.empty__icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.transactions__list {
+  space-y: 0.75rem;
+}
+
+.transaction__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #f5f5f4;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.transaction__item:hover {
+  border-color: #065f46;
+  background: #f8fafc;
+}
+
+.transaction__info {
+  flex: 1;
+}
+
+.transaction__description {
+  font-weight: 600;
+  color: #1c1917;
+  margin-bottom: 0.25rem;
+}
+
+.transaction__category {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.transaction__date {
+  font-size: 0.75rem;
+  color: #78716c;
+}
+
+.transaction__amount {
+  font-weight: 700;
+  color: #065f46;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.transaction__remove {
+  background: none;
+  border: none;
+  color: #dc2626;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.transaction__remove:hover {
+  background: #fef2f2;
+}
+
+/* CTA Final */
+.simulator__cta {
+  background: linear-gradient(135deg, #065f46, #047857);
+  color: white;
+  padding: 3rem 2rem;
+  border-radius: 1rem;
+  text-align: center;
+}
+
+.cta__content h2 {
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+}
+
+.cta__content p {
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.cta__content ul {
+  text-align: left;
+  max-width: 400px;
+  margin: 0 auto 2rem;
+  space-y: 0.5rem;
+}
+
+.cta__content li {
+  padding: 0.5rem 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .simulator__content {
+    padding: 2rem 0;
+    gap: 1.5rem;
+  }
+  
+  .add__form {
+    grid-template-columns: 1fr;
+  }
+  
+  .insights__grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .simulator__nav {
+    flex-direction: column;
+    height: auto;
+    padding: 1rem 0;
+    gap: 1rem;
+  }
+  
+  .simulator__nav h1 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .simulator {
+    padding-top: 120px;
+  }
+  
+  .simulator__insights,
+  .simulator__add,
+  .simulator__transactions {
+    padding: 1.5rem;
+  }
+}
