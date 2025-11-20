@@ -12,9 +12,11 @@ function HomePage() {
   return (
     <>
       <Header />
-      <HeroSection />
-      <Benefits />
-      <Pricing />
+      <main>
+        <HeroSection />
+        <Benefits />
+        <Pricing />
+      </main>
       <Footer />
     </>
   );
