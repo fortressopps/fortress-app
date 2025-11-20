@@ -207,4 +207,49 @@
     min-width: 160px;
     padding: 1.5rem 1rem;
   }
+/* 🎨 MELHORIAS VISUAIS - HERO SECTION */
+
+/* Melhor contraste no título */
+.hero-title {
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Destaque nos cards de planos */
+.plan-card {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.plan-card.sentinel:hover {
+  border-top: 4px solid var(--green-evolution);
+  transform: translateY(-8px) scale(1.05);
+}
+
+.plan-card.vanguard:hover {
+  border-top: 4px solid var(--green-ocean);
+  transform: translateY(-8px) scale(1.05);
+}
+
+.plan-card.legacy:hover {
+  border-top: 4px solid var(--steel-tech);
+  transform: translateY(-8px) scale(1.05);
+}
+
+/* Melhorar os botões */
+.btn-primary {
+  background: linear-gradient(135deg, var(--white-pure), #f0fdf4);
+  color: var(--emerald-fortress);
+  font-weight: 700;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid var(--white-pure);
+}
 }
