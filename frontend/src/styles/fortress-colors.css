@@ -1,0 +1,26 @@
+/* 🏰 FORTRESS BETA 1.5 - SISTEMA OFICIAL DE CORES */
+/* NÃO ALTERAR - SISTEMA PROPRIETÁRIO */
+
+:root {
+  /* 💎 CORES PRIMÁRIAS - IDENTIDADE FORTRESS */
+  --emerald-fortress: #065F46;
+  --green-evolution: #10B981;
+  --green-deep: #059669;
+  
+  /* 🚀 CORES FUNCIONAIS - SISTEMA FORTRESS */
+  --green-ocean: #0F766E;
+  --white-pure: #ECFDF5;
+  --steel-tech: #1E293B;
+  --gray-strategic: #475569;
+  
+  /* 🛡️ CORES DOS PLANOS */
+  --sentinel-color: #065F46;
+  --vanguard-color: #0F766E;
+  --legacy-color: #1E293B;
+  
+  /* 🌈 GRADIENTES OFICIAIS */
+  --gradient-fortress: linear-gradient(135deg, #065F46, #10B981);
+  --gradient-sentinel: linear-gradient(135deg, #065F46, #059669);
+  --gradient-vanguard: linear-gradient(135deg, #0F766E, #10B981);
+  --gradient-legacy: linear-gradient(135deg, #1E293B, #475569);
+}
