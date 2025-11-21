@@ -1,31 +1,42 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import connectDB from './config/database.js';
 
 dotenv.config();
-const app = express();
-app.use(express.json());
-app.use(cors());
 
-// Health Check - OBRIGATÓRIO
+// Conectar ao MongoDB
+connectDB();
+
+const app = express();
+
+// Middlewares
+app.use(cors());
+app.use(express.json());
+
+// Health Check
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: '✅ Fortress Online', 
+  res.json({
+    status: '✅ Fortress Online',
     timestamp: new Date(),
+    database: 'MongoDB configurado',
     message: 'Sistema funcionando perfeitamente!'
   });
 });
 
 // Rota principal
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     message: '🚀 Fortress API está no ar!',
-    next_steps: 'Configure o MongoDB Atlas'
+    version: '1.0.0',
+    endpoints: {
+      health: '/health'
+    }
   });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`🎯 Fortress rodando na porta ${PORT}`);
+  console.log(`🎯 Fortress Backend rodando na porta ${PORT}`);
+  console.log(`🌐 Health check: http://localhost:${PORT}/health`);
 });
