@@ -1,175 +1,269 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './Benefits.css';
 
-// Componente de Card Otimizado
-const BenefitCard = React.memo(({ benefit, index, onHover }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, index * 150);
-    
-    return () => clearTimeout(timer);
-  }, [index]);
-
-  const handleMouseEnter = useCallback(() => {
-    onHover?.(benefit.type);
-  }, [onHover, benefit.type]);
-
-  const handleClick = useCallback(() => {
-    console.log(`🎯 Benefit selecionado: ${benefit.type}`);
-  }, [benefit.type]);
-
-  return (
-    <div 
-      className={`benefit-card ${benefit.type} ${isVisible ? 'card-visible' : ''}`}
-      onMouseEnter={handleMouseEnter}
-      onClick={handleClick}
-    >
-      <div className="benefit-glow-effect"></div>
-      <div className="benefit-content">
-        <div className="benefit-icon-wrapper">
-          <div className="benefit-icon">{benefit.icon}</div>
-          <div className="icon-aura"></div>
-        </div>
-        
-        <h3 className="benefit-title">{benefit.title}</h3>
-        <p className="benefit-description">{benefit.description}</p>
-        
-        <ul className="benefit-features">
-          {benefit.features.map((feature, idx) => (
-            <FeatureItem key={idx} feature={feature} index={idx} />
-          ))}
-        </ul>
-        
-        <div className="benefit-hover-overlay"></div>
-      </div>
-    </div>
-  );
-});
-
-// Componente de Feature Otimizado
-const FeatureItem = React.memo(({ feature, index }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 300 + (index * 50));
-    
-    return () => clearTimeout(timer);
-  }, [index]);
-
-  return (
-    <li className={`feature-item ${isVisible ? 'feature-visible' : ''}`}>
-      <span className="feature-check">✓</span>
-      <span className="feature-text">{feature}</span>
-    </li>
-  );
-});
-
-// Componente Principal
 const Benefits = () => {
-  const [activeBenefit, setActiveBenefit] = useState(null);
+  const [expandedBenefit, setExpandedBenefit] = useState(null);
 
-  // Dados otimizados com useMemo
-  const benefitsData = useMemo(() => [
+  const toggleBenefit = (benefitId) => {
+    setExpandedBenefit(expandedBenefit === benefitId ? null : benefitId);
+  };
+
+  const benefitsData = [
     {
-      icon: '🛡️',
-      title: 'SENTINEL - Estrategistas Iniciantes',
-      description: 'Fundamentos sólidos para construir sua base financeira com segurança e controle absoluto',
+      id: 'supermarket',
+      icon: '🛒',
+      name: 'MODO SUPERMERCADO',
+      description: 'Controle total das compras do mês',
+      shortDescription: 'Economize até 30% nas compras',
       features: [
-        'Controle absoluto de gastos e receitas',
-        'Metas financeiras claras e alcançáveis',
-        'Relatórios mensais detalhados e intuitivos',
-        'Alertas inteligentes de orçamento',
-        'Suporte prioritário especializado',
-        'Educação financeira passo a passo'
+        'Lista de compras inteligente',
+        'Comparação de preços automática',
+        'Alertas de promoções',
+        'Controle de validade dos produtos',
+        'Histórico de gastos detalhado',
+        'Planos de compra semanais/mensais'
       ],
-      type: 'sentinel'
+      stats: 'Economia média: R$ 287/mês',
+      featured: true,
+      type: 'supermarket'
     },
     {
-      icon: '⚔️',
-      title: 'VANGUARD - Construtores',
-      description: 'Otimização avançada para crescimento acelerado e construção de patrimônio',
+      id: 'financial-goals',
+      icon: '🎯',
+      name: 'METAS FINANCEIRAS',
+      description: 'Alcance seus objetivos com planejamento',
+      shortDescription: 'Visualize seu progresso em tempo real',
       features: [
-        'Análise profunda de investimentos',
-        'Projeções futuras com IA precisa',
-        'Estratégias personalizadas por perfil',
-        'Integração com múltiplas plataformas',
-        'Consultoria especializada mensal',
-        'Otimização de custos automatizada'
+        'Definição de metas personalizadas',
+        'Acompanhamento de progresso',
+        'Alertas de milestones',
+        'Projeções automáticas',
+        'Dicas personalizadas',
+        'Comemoração de conquistas'
       ],
-      type: 'vanguard'
+      stats: '87% mais chances de sucesso',
+      featured: false,
+      type: 'goals'
     },
     {
-      icon: '👑',
-      title: 'LEGACY - Arquitetos',
-      description: 'Legado financeiro para gerações futuras com gestão patrimonial completa',
+      id: 'investment',
+      icon: '📈',
+      name: 'ANÁLISE DE INVESTIMENTOS',
+      description: 'Tome decisões inteligentes',
+      shortDescription: 'Otimize seus retornos',
       features: [
-        'Gestão patrimonial integrada',
-        'Planejamento sucessório avançado',
-        'Otimização fiscal estratégica',
-        'Relatórios executivos corporativos',
-        'Concierge financeiro 24/7',
-        'Acesso a investimentos exclusivos'
+        'Análise de perfil de risco',
+        'Recomendações personalizadas',
+        'Simulação de cenários',
+        'Diversificação automática',
+        'Alertas de oportunidades',
+        'Relatórios de performance'
       ],
-      type: 'legacy'
+      stats: 'Retorno médio: +18% ao ano',
+      featured: false,
+      type: 'investment'
+    },
+    {
+      id: 'family',
+      icon: '👨‍👩‍👧‍👦',
+      name: 'CONTROLE FAMILIAR',
+      description: 'Organize as finanças da família',
+      shortDescription: 'Transparência e colaboração',
+      features: [
+        'Perfis individuais',
+        'Metas familiares compartilhadas',
+        'Controle de mesada',
+        'Educação financeira infantil',
+        'Relatórios familiares',
+        'Orçamento colaborativo'
+      ],
+      stats: 'Famílias organizadas: 92%',
+      featured: true,
+      type: 'family'
+    },
+    {
+      id: 'reports',
+      icon: '📊',
+      name: 'RELATÓRIOS DETALHADOS',
+      description: 'Insights profundos sobre seus gastos',
+      shortDescription: 'Tome decisões baseadas em dados',
+      features: [
+        'Dashboard personalizável',
+        'Análise por categorias',
+        'Comparativo mensal/anual',
+        'Projeções futuras',
+        'Exportação de dados',
+        'Alertas inteligentes'
+      ],
+      stats: '15+ tipos de relatórios',
+      featured: false,
+      type: 'reports'
+    },
+    {
+      id: 'security',
+      icon: '🔒',
+      name: 'SEGURANÇA AVANÇADA',
+      description: 'Suas finanças protegidas',
+      shortDescription: 'Tranquilidade garantida',
+      features: [
+        'Criptografia de ponta a ponta',
+        'Autenticação biométrica',
+        'Backup automático',
+        'Monitoramento 24/7',
+        'Seguro contra fraudes',
+        'Conformidade LGPD'
+      ],
+      stats: 'Proteção 100% garantida',
+      featured: false,
+      type: 'security'
     }
-  ], []);
+  ];
 
-  const handleBenefitHover = useCallback((benefitType) => {
-    setActiveBenefit(benefitType);
-    console.log(`💎 Benefit em foco: ${benefitType}`);
-  }, []);
-
-  // Renderização otimizada dos cards
-  const benefitCards = useMemo(() => 
-    benefitsData.map((benefit, index) => (
-      <BenefitCard
-        key={benefit.type}
-        benefit={benefit}
-        index={index}
-        onHover={handleBenefitHover}
-      />
-    )), [benefitsData, handleBenefitHover]
-  );
+  const handleLearnMore = (benefitType) => {
+    // Lógica similar ao Pricing para ações específicas
+    switch (benefitType) {
+      case 'supermarket':
+        alert('🛒 Modo Supermercado ativado! Comece a economizar até 30% nas suas compras.');
+        break;
+      case 'family':
+        alert('👨‍👩‍👧‍👦 Controle Familiar: Organize as finanças de toda sua família em um só lugar!');
+        break;
+      default:
+        // Scroll para a seção de pricing
+        document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+        break;
+    }
+  };
 
   return (
     <section className="benefits-container" id="benefits">
-      <div className="benefits-background-effects">
-        <div className="benefits-particles"></div>
-      </div>
-      
       <div className="benefits-content">
-        <div className="benefits-header">
-          <h2 className="benefits-title">
-            Construa Sua <span className="title-accent">Fortaleza Financeira</span>
-          </h2>
-          <p className="benefits-subtitle">
-            Do controle básico à gestão patrimonial avançada, oferecemos soluções completas
-            para cada etapa da sua jornada rumo à independência financeira
-          </p>
-        </div>
+        <h2 className="benefits-title">
+          Ferramentas Para Sua Independência Financeira
+        </h2>
+        <p className="benefits-subtitle">
+          Cada funcionalidade foi cuidadosamente desenvolvida para empoderar suas decisões financeiras e acelerar sua jornada rumo à liberdade.
+        </p>
 
         <div className="benefits-grid">
-          {benefitCards}
+          {benefitsData.map((benefit, index) => (
+            <div
+              key={index}
+              className={`benefits-card ${benefit.featured ? 'featured' : ''} ${benefit.type}`}
+            >
+              {benefit.featured && (
+                <div className="featured-badge">
+                  ⭐ Popular
+                </div>
+              )}
+
+              <div className="benefits-header">
+                <div className="benefit-icon">
+                  {benefit.icon}
+                </div>
+                <h3 className="benefit-name">{benefit.name}</h3>
+                <p className="benefit-description">{benefit.description}</p>
+                <p className="benefit-short-description">{benefit.shortDescription}</p>
+              </div>
+
+              <div className="benefits-stats">
+                <div className="stats-badge">
+                  {benefit.stats}
+                </div>
+              </div>
+
+              {/* Botão Ler Mais */}
+              <button
+                className="read-more-btn"
+                onClick={() => toggleBenefit(benefit.id)}
+              >
+                {expandedBenefit === benefit.id ? 'Ver Menos' : 'Ver Detalhes'}
+                <span className="read-more-arrow">
+                  {expandedBenefit === benefit.id ? '↑' : '↓'}
+                </span>
+              </button>
+
+              {/* Conteúdo Expandido */}
+              {expandedBenefit === benefit.id && (
+                <div className="expanded-content">
+                  <div className="features-section">
+                    <h4 className="features-title">O que você ganha:</h4>
+                    <ul className="benefits-features">
+                      {benefit.features.map((feature, idx) => (
+                        <li key={idx}>{feature}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <button
+                    className={`benefits-button ${benefit.featured ? 'btn-primary' : 'btn-secondary'}`}
+                    onClick={() => handleLearnMore(benefit.type)}
+                  >
+                    {benefit.type === 'supermarket' ? 'Ativar Modo' : 
+                     benefit.type === 'family' ? 'Começar Agora' : 'Experimentar'}
+                  </button>
+
+                  {/* Micro-copy contextual */}
+                  <div className="micro-copy">
+                    <span>
+                      {benefit.type === 'supermarket' && '✅ Disponível em todos os planos'}
+                      {benefit.type === 'family' && '👨‍👩‍👧‍👦 Perfeito para famílias'}
+                      {benefit.type === 'investment' && '📈 A partir do plano Vanguard'}
+                      {benefit.type === 'reports' && '📊 Relatórios em tempo real'}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Botão CTA quando não expandido */}
+              {expandedBenefit !== benefit.id && (
+                <button
+                  className={`benefits-button ${benefit.featured ? 'btn-primary' : 'btn-secondary'}`}
+                  onClick={() => handleLearnMore(benefit.type)}
+                >
+                  {benefit.type === 'supermarket' ? 'Ativar Modo' : 
+                   benefit.type === 'family' ? 'Começar Agora' : 'Saiba Mais'}
+                </button>
+              )}
+            </div>
+          ))}
         </div>
 
-        {activeBenefit && (
-          <div className="active-benefit-indicator">
-            <span>Foco em: {activeBenefit.toUpperCase()}</span>
+        {/* Prova Social - Similar ao Pricing */}
+        <div className="benefits-social-proof">
+          <div className="benefits-proof-stats">
+            <strong>15.328+</strong> benefícios ativos •
+            <strong> 94%</strong> de adoção •
+            <strong> 4.8/5</strong> satisfação
           </div>
-        )}
+
+          <div className="benefits-testimonials">
+            <div className="benefit-testimonial">
+              <div className="testimonial-content">
+                "O modo supermercado mudou completamente minha relação com as compras. 
+                Economizo em média R$ 300 por mês só com a lista inteligente!"
+              </div>
+              <div className="testimonial-author">
+                <span className="author-name">Maria S.</span>
+                <span className="author-benefit">→ Modo Supermercado</span>
+              </div>
+            </div>
+
+            <div className="benefit-testimonial">
+              <div className="testimonial-content">
+                "As metas financeiras me ajudaram a juntar R$ 15.000 para minha viagem dos sonhos. 
+                O acompanhamento visual foi fundamental para manter a motivação."
+              </div>
+              <div className="testimonial-author">
+                <span className="author-name">Pedro L.</span>
+                <span className="author-benefit">Metas Financeiras</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
 };
-
-// Display names para debugging
-BenefitCard.displayName = 'BenefitCard';
-FeatureItem.displayName = 'FeatureItem';
-Benefits.displayName = 'Benefits';
 
 export default Benefits;
