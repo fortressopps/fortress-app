@@ -242,6 +242,120 @@
   font-size: 1rem;
 }
 
+/* === BOTÃO LER MAIS - NOVO === */
+.read-more-btn {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: transparent;
+  border: 2px solid var(--emerald-fortress);
+  color: var(--emerald-fortress);
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.read-more-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(6, 95, 70, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.read-more-btn:hover::before {
+  left: 100%;
+}
+
+.read-more-btn:hover {
+  background: var(--emerald-fortress);
+  color: var(--white-pure);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(6, 95, 70, 0.3);
+}
+
+.read-more-arrow {
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+}
+
+.read-more-btn:hover .read-more-arrow {
+  transform: translateY(2px);
+}
+
+/* CONTEÚDO EXPANDIDO - NOVO */
+.expanded-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+.pricing-card:has(.expanded-content:not(:empty)) {
+  padding-bottom: 1.5rem;
+}
+
+.expanded-content:not(:empty) {
+  max-height: 1000px;
+  padding: 1.5rem 1rem;
+  margin-top: 1rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 253, 249, 0.8));
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.features-section {
+  margin-bottom: 1.5rem;
+}
+
+.features-title {
+  color: var(--emerald-fortress);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Ajuste para a lista de features no conteúdo expandido */
+.expanded-content .pricing-features {
+  margin: 1rem 0;
+}
+
+.expanded-content .pricing-features li {
+  padding: 0.8rem 0;
+  border-bottom: 1px solid rgba(241, 245, 249, 0.8);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.expanded-content .pricing-features li:last-child {
+  border-bottom: none;
+}
+
+/* Botão CTA dentro do conteúdo expandido */
+.expanded-content .pricing-button {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* === FIM DAS ADIÇÕES - CONTINUA O CSS ORIGINAL === */
+
 .pricing-button {
   width: 100%;
   padding: 1.2rem 2rem;
@@ -438,6 +552,22 @@
 .pricing-card:nth-child(2) { animation-delay: 0.2s; }
 .pricing-card:nth-child(3) { animation-delay: 0.3s; }
 
+/* Animações suaves para a expansão - NOVO */
+@keyframes expandContent {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.expanded-content:not(:empty) > * {
+  animation: expandContent 0.4s ease-out;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
   .pricing-container {
@@ -495,6 +625,17 @@
   .testimonial-card {
     padding: 1.2rem 1rem;
   }
+  
+  /* Responsividade para o botão Ler Mais - NOVO */
+  .read-more-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .expanded-content:not(:empty) {
+    padding: 1rem 0.8rem;
+    margin: 0.5rem -0.8rem 0;
+  }
 }
 
 @media (max-width: 480px) {
@@ -516,5 +657,11 @@
   
   .free-price {
     font-size: 2.5rem;
+  }
+  
+  /* Responsividade para o botão Ler Mais - NOVO */
+  .read-more-btn {
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
   }
 }

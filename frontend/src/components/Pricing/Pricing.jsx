@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Pricing.css';
 
 const Pricing = () => {
+  const [expandedPlan, setExpandedPlan] = useState(null);
+
+  const togglePlan = (planId) => {
+    setExpandedPlan(expandedPlan === planId ? null : planId);
+  };
+
   const pricingPlans = [
     {
+      id: 'sentinel',
       icon: '🛡️',
       name: 'SENTINEL',
       description: 'Comece sua jornada sem riscos',
@@ -23,6 +30,7 @@ const Pricing = () => {
       ctaType: 'free'
     },
     {
+      id: 'vanguard',
       icon: '⚔️',
       name: 'VANGUARD',
       description: 'A escolha inteligente para crescimento',
@@ -43,6 +51,7 @@ const Pricing = () => {
       ctaType: 'trial'
     },
     {
+      id: 'legacy',
       icon: '👑',
       name: 'LEGACY',
       description: 'Solução personalizada para seu legado',
@@ -69,17 +78,17 @@ const Pricing = () => {
       case 'free':
         alert('🎉 Excelente escolha! Você está entre os 85% que começam pelo Sentinel e evoluem depois.');
         break;
-      
+
       case 'trial':
         alert(`🎉 Excelente escolha! Prepare-se para transformar suas finanças.\n\nVocê terá 7 dias para explorar todas as funcionalidades do Vanguard e ver resultados reais.`);
         break;
-      
+
       case 'expert':
         const phone = '5511999999999';
         const message = encodeURIComponent(`Olá! Vi o plano Legacy no Fortress e gostaria de uma consultoria personalizada para meu legado financeiro. Podemos conversar?`);
         window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
         break;
-      
+
       default:
         break;
     }
@@ -89,17 +98,16 @@ const Pricing = () => {
     <section className="pricing-container" id="pricing">
       <div className="pricing-content">
         <h2 className="pricing-title">
-          Escolha Seu Nível de Controle
+          Construa Sua Fortaleza Financeira
         </h2>
         <p className="pricing-subtitle">
-          Comece gratuito, cresça com inteligência, construa seu legado. 
-          <strong> 92% dos usuários evoluem dentro de 3 meses.</strong>
+          Do controle básico à gestão patrimonial avançada, oferecemos soluções completas para cada etapa da sua jornada rumo à independência financeira.
         </p>
-        
+
         <div className="pricing-grid">
           {pricingPlans.map((plan, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`pricing-card ${plan.featured ? 'featured' : ''} ${plan.type}`}
             >
               {plan.featured && (
@@ -107,13 +115,13 @@ const Pricing = () => {
                   🚀 Mais Escolhido
                 </div>
               )}
-              
+
               {plan.type === 'vanguard' && (
                 <div className="promo-badge">
                   🔥 33% OFF
                 </div>
               )}
-              
+
               <div className="pricing-header">
                 <div className="plan-icon">
                   {plan.icon}
@@ -121,7 +129,7 @@ const Pricing = () => {
                 <h3 className="plan-name">{plan.name}</h3>
                 <p className="plan-description">{plan.description}</p>
               </div>
-              
+
               <div className="pricing-amount">
                 {plan.ctaType === 'expert' ? (
                   <div className="expert-cta">
@@ -149,54 +157,89 @@ const Pricing = () => {
                   </>
                 )}
               </div>
-              
-              <ul className="pricing-features">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx}>{feature}</li>
-                ))}
-              </ul>
-              
-              <button 
-                className={`pricing-button ${plan.featured ? 'btn-primary' : 'btn-secondary'} ${plan.ctaType}`}
-                onClick={() => handleCtaClick(plan.type, plan.ctaType)}
+
+              {/* Botão Ler Mais - Estilizado para combinar com o design */}
+              <button
+                className="read-more-btn"
+                onClick={() => togglePlan(plan.id)}
               >
-                {plan.buttonText}
+                {expandedPlan === plan.id ? 'Ler Menos' : 'Ler Mais'}
+                <span className="read-more-arrow">
+                  {expandedPlan === plan.id ? '↑' : '↓'}
+                </span>
               </button>
 
-              {/* Micro-copy psicológico */}
-              {plan.ctaType === 'free' && (
-                <div className="micro-copy">
-                  <span>✅ Sem cartão de crédito</span>
+              {/* Conteúdo Expandido */}
+              {expandedPlan === plan.id && (
+                <div className="expanded-content">
+                  <div className="features-section">
+                    <h4 className="features-title">Funcionalidades Incluídas:</h4>
+                    <ul className="pricing-features">
+                      {plan.features.map((feature, idx) => (
+                        <li key={idx}>{feature}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <button
+                    className={`pricing-button ${plan.featured ? 'btn-primary' : 'btn-secondary'} ${plan.ctaType}`}
+                    onClick={() => handleCtaClick(plan.type, plan.ctaType)}
+                  >
+                    {plan.buttonText}
+                    {plan.ctaType === 'trial' && (
+                      <span className="trial-badge">7 DIAS GRÁTIS</span>
+                    )}
+                  </button>
+
+                  {/* Micro-copy psicológico */}
+                  {plan.ctaType === 'free' && (
+                    <div className="micro-copy">
+                      <span>✅ Sem cartão de crédito</span>
+                    </div>
+                  )}
+
+                  {plan.ctaType === 'trial' && (
+                    <div className="micro-copy">
+                      <span>✨ 7 dias para explorar tudo</span>
+                    </div>
+                  )}
+
+                  {plan.ctaType === 'expert' && (
+                    <div className="micro-copy">
+                      <span>🎯 Análise personalizada sem custo</span>
+                    </div>
+                  )}
                 </div>
               )}
-              
-              {plan.ctaType === 'trial' && (
-                <div className="micro-copy">
-                  <span>✨ 7 dias para explorar tudo</span>
-                </div>
-              )}
-              
-              {plan.ctaType === 'expert' && (
-                <div className="micro-copy">
-                  <span>🎯 Análise personalizada sem custo</span>
-                </div>
+
+              {/* Botão CTA quando não expandido */}
+              {expandedPlan !== plan.id && (
+                <button
+                  className={`pricing-button ${plan.featured ? 'btn-primary' : 'btn-secondary'} ${plan.ctaType}`}
+                  onClick={() => handleCtaClick(plan.type, plan.ctaType)}
+                >
+                  {plan.buttonText}
+                  {plan.ctaType === 'trial' && (
+                    <span className="trial-badge">7 DIAS GRÁTIS</span>
+                  )}
+                </button>
               )}
             </div>
           ))}
         </div>
 
-        {/* Prova Social - Depoimentos Reais */}
+        {/* Prova Social - Mantido igual */}
         <div className="social-proof">
           <div className="proof-stats">
-            <strong>18.542+</strong> fortalezas construídas • 
-            <strong> 96%</strong> de satisfação • 
+            <strong>18.542+</strong> fortalezas construídas •
+            <strong> 96%</strong> de satisfação •
             <strong> R$ 32Mi+</strong> economizados
           </div>
-          
+
           <div className="testimonials-grid">
             <div className="testimonial-card">
               <div className="testimonial-content">
-                "Comecei pelo Sentinel, e depois que abri meu MEI mudei para o Vanguard. 
+                "Comecei pelo Sentinel, e depois que abri meu MEI mudei para o Vanguard.
                 Já estou nesse plano há 3 meses e foi a melhor escolha que fiz para minhas finanças!"
               </div>
               <div className="testimonial-author">
@@ -207,7 +250,7 @@ const Pricing = () => {
 
             <div className="testimonial-card">
               <div className="testimonial-content">
-                "O modo supermercado do Sentinel já me salvou muito! Consigo controlar 
+                "O modo supermercado do Sentinel já me salvou muito! Consigo controlar
                 cada compra e evito desperdícios. Minha família notou a diferença no orçamento."
               </div>
               <div className="testimonial-author">
@@ -218,7 +261,7 @@ const Pricing = () => {
 
             <div className="testimonial-card">
               <div className="testimonial-content">
-                "Quando ativei o modo supermercado semanal do Vanguard, nossas economias 
+                "Quando ativei o modo supermercado semanal do Vanguard, nossas economias
                 deram um salto! Planejo as compras da família toda e sobra dinheiro no final do mês."
               </div>
               <div className="testimonial-author">
@@ -229,7 +272,7 @@ const Pricing = () => {
 
             <div className="testimonial-card">
               <div className="testimonial-content">
-                "Comecei a usar a plataforma porque é muito fácil organizar os detalhes da herança. 
+                "Comecei a usar a plataforma porque é muito fácil organizar os detalhes da herança.
                 O Legacy me dá tranquilidade para planejar o futuro dos meus filhos."
               </div>
               <div className="testimonial-author">
