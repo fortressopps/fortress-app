@@ -1,18 +1,31 @@
 // backend/src/routes/user.js
 import express from 'express';
+import {
+  getDashboard,
+  getProfile,
+  updateProfile,
+  getMetrics,
+  getBattleReport
+} from '../controllers/userController.js';
 import { protect } from '../controllers/authController.js';
 
 const router = express.Router();
 
+// Todas as rotas protegidas
 router.use(protect);
 
-// 🚧 PLACEHOLDER - IMPLEMENTAR DEPOIS
-router.get('/dashboard', (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    message: 'User dashboard endpoint - Em desenvolvimento',
-    data: null
-  });
-});
+// Dashboard
+router.get('/dashboard', getDashboard);
+
+// Profile management
+router.route('/profile')
+  .get(getProfile)
+  .patch(updateProfile);
+
+// Metrics and analytics
+router.get('/metrics', getMetrics);
+
+// Battle system
+router.get('/battle-report', getBattleReport);
 
 export default router;
