@@ -3,35 +3,149 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// === MODELOS ===
+model Account {
+  id              String          @id @default(cuid())
+  name            String
+  type            AccountType
+  balance         Float           @default(0)
+  currency        String          @default("BRL")
+  institution     String?
+  color           String          @default("#6b7280")
+  isActive        Boolean         @default(true)
+  userId          String
+  user            User            @relation(fields: [userId], references: [id])
+  transactions    Transaction[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  @@map("accounts")
+}
+
+model Transaction {
+  id              String          @id @default(cuid())
+  amount          Float
+  type            TransactionType
+  category        String
+  description     String?
+  date            DateTime
+  tags            String[]
+  recurringPattern String?        // "MONTHLY", "WEEKLY", "YEARLY"
+  notes           String?
+  isRecurring     Boolean         @default(false)
+  
+  // Relações
+  accountId       String
+  account         Account         @relation(fields: [accountId], references: [id])
+  userId          String
+  user            User            @relation(fields: [userId], references: [id])
+  
+  // Modo Supermercado
+  supermarketListId String?
+  supermarketList   SupermarketList? @relation(fields: [supermarketListId], references: [id])
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  @@map("transactions")
+  @@index([userId, date])
+  @@index([accountId, date])
+}
+
+model SupermarketList {
+  id              String          @id @default(cuid())
+  name            String
+  budget          Float
+  spent           Float           @default(0)
+  storeName       String?
+  completed       Boolean         @default(false)
+  completedAt     DateTime?
+  
+  // Relações
+  userId          String
+  user            User            @relation(fields: [userId], references: [id])
+  items           SupermarketItem[]
+  transactions    Transaction[]
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  @@map("supermarket_lists")
+}
+
+model SupermarketItem {
+  id              String          @id @default(cuid())
+  name            String
+  category        SupermarketCategory
+  estimatedPrice  Float
+  actualPrice     Float?
+  quantity        Int             @default(1)
+  unit            String?         // "kg", "un", "l", etc
+  purchased       Boolean         @default(false)
+  notes           String?
+  
+  // Relações
+  listId          String
+  list            SupermarketList @relation(fields: [listId], references: [id])
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  @@map("supermarket_items")
+  @@index([listId, category])
+}
+
+model Budget {
+  id              String          @id @default(cuid())
+  category        String
+  amount          Float
+  period          BudgetPeriod    @default(MONTHLY)
+  spent           Float           @default(0)
+  startDate       DateTime
+  endDate         DateTime
+  alertsEnabled   Boolean         @default(true)
+  alertThreshold  Float           @default(0.8) // 80%
+  
+  userId          String
+  user            User            @relation(fields: [userId], references: [id])
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  @@map("budgets")
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  accounts Account[]
+  id              String        @id @default(cuid())
+  email           String        @unique
+  name            String?
+  planType        PlanType      @default(SENTINEL)
+  subscriptionId  String?
+  trialEndsAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  // Relações COMPLETAS
+  accounts        Account[]
+  transactions    Transaction[]
+  supermarketLists SupermarketList[]
+  budgets         Budget[]
+  
+  // Auditoria
+  lastLoginAt     DateTime?
+  
+  @@map("users")
 }
 
-model Account {
-  id          String   @id @default(cuid())
-  name        String
-  type        AccountType
-  balance     Float    @default(0)
-  currency    String   @default("BRL")
-  institution String?
-  color       String   @default("#6b7280")
-  isActive    Boolean  @default(true)
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("accounts")
+// === ENUMS ===
+enum PlanType {
+  SENTINEL
+  VANGUARD
+  LEGACY
 }
 
 enum AccountType {
@@ -41,4 +155,29 @@ enum AccountType {
   INVESTMENT
   CASH
   OTHER
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+enum SupermarketCategory {
+  PRODUCE
+  BAKERY
+  MEAT
+  DAIRY
+  HOUSEHOLD
+  BEVERAGES
+  PERSONAL_CARE
+  FROZEN
+  PANTRY
+  OTHER
+}
+
+enum BudgetPeriod {
+  WEEKLY
+  MONTHLY
+  YEARLY
 }
