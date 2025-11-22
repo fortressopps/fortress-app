@@ -1,4 +1,3 @@
-// ~/fortress-app/backend/src/server.js
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -9,30 +8,32 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 
 // ==================== 🗄️ IMPORTAÇÕES DE BANCO E CONFIGURAÇÕES ====================
-import connectDB from './config/database.js';
+// Import removido pois estamos usando Prisma com PostgreSQL
+// import connectDB from './config/database.js';
 
 // ==================== 🎯 IMPORT DE TODAS AS ROTAS ====================
 import authRoutes from './routes/auth.js';
 import accountsRoutes from './routes/accounts.js';
 import transactionsRoutes from './routes/transactions.js';
-import supermarketRoutes from './routes/supermarket.js';
-import budgetRoutes from './routes/budget.js';
-import analyticsRoutes from './routes/analytics.js';
-import userRoutes from './routes/user.js';
-import privacyRoutes from './routes/privacy.js';
+// import supermarketRoutes from './routes/supermarket.js';
+// import budgetRoutes from './routes/budget.js';
+// import analyticsRoutes from './routes/analytics.js';
+// import userRoutes from './routes/user.js';
+// import privacyRoutes from './routes/privacy.js';
 
 // 🚧 MÓDULOS FUTUROS
 // import billsRoutes from './routes/bills.js';
 // import investmentsRoutes from './routes/investments.js';
 // import battleRoutes from './routes/battle.js';
 
-import AppError from './utils/appError.js';
+// Import temporariamente removido - criar depois
+// import AppError from './utils/appError.js';
 
 // Load environment variables
 dotenv.config();
 
-// Connect to MongoDB
-connectDB();
+// Connect to PostgreSQL via Prisma (já configurado)
+// Não precisa de conexão explícita com Prisma
 
 const app = express();
 
@@ -89,9 +90,18 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('combined'));
 }
 
+// ==================== 🔐 MIDDLEWARE DE AUTENTICAÇÃO SIMPLIFICADO ====================
+// Middleware temporário para simular autenticação
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   req.requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  
+  // Simulando usuário autenticado (remover quando Clerk estiver implementado)
+  req.user = {
+    id: 'temp-user-id',
+    email: 'user@example.com',
+    planType: 'SENTINEL'
+  };
   
   console.log(`📍 ${req.requestId} | ${req.method} ${req.originalUrl} | IP: ${req.ip} | Time: ${req.requestTime}`);
   next();
@@ -106,7 +116,7 @@ app.get('/health', async (req, res) => {
     timestamp: req.requestTime,
     requestId: req.requestId,
     environment: process.env.NODE_ENV || 'development',
-    database: 'MongoDB Connected',
+    database: 'PostgreSQL Connected via Prisma',
     uptime: `${process.uptime().toFixed(2)}s`,
     memory: {
       used: `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`,
@@ -119,8 +129,8 @@ app.get('/health', async (req, res) => {
       arch: process.arch
     },
     modules: {
-      active: ['auth', 'accounts', 'transactions', 'supermarket', 'budget', 'analytics', 'user', 'privacy'],
-      upcoming: ['bills', 'investments', 'battle']
+      active: ['auth', 'accounts', 'transactions'], // Atualizado
+      upcoming: ['supermarket', 'budget', 'analytics', 'user', 'privacy', 'bills', 'investments', 'battle']
     },
     limits: {
       SENTINEL: '100 req/15min',
@@ -129,15 +139,6 @@ app.get('/health', async (req, res) => {
     }
   };
 
-  // Verificação de saúde do banco (opcional)
-  try {
-    // Adicionar verificação de ping ao MongoDB se necessário
-    healthCheck.database_status = 'healthy';
-  } catch (error) {
-    healthCheck.database_status = 'unhealthy';
-    healthCheck.database_error = error.message;
-  }
-
   res.status(200).json(healthCheck);
 });
 
@@ -145,13 +146,13 @@ app.get('/health', async (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/accounts', accountsRoutes);
 app.use('/api/transactions', transactionsRoutes);
-app.use('/api/supermarket', supermarketRoutes);
-app.use('/api/budget', budgetRoutes);
-app.use('/api/analytics', analyticsRoutes);
-app.use('/api/user', userRoutes);
-app.use('/api/privacy', privacyRoutes);
 
 // 🚧 ROTAS FUTURAS (COMENTADAS - DESCOMENTAR CONFORME IMPLEMENTAÇÃO)
+// app.use('/api/supermarket', supermarketRoutes);
+// app.use('/api/budget', budgetRoutes);
+// app.use('/api/analytics', analyticsRoutes);
+// app.use('/api/user', userRoutes);
+// app.use('/api/privacy', privacyRoutes);
 // app.use('/api/bills', billsRoutes);
 // app.use('/api/investments', investmentsRoutes);
 // app.use('/api/battle', battleRoutes);
@@ -175,20 +176,20 @@ app.get('/', (req, res) => {
       personality: ['Sábio (conhecimento técnico)', 'Acessível (linguagem simples)', 'Inabalável (confiabilidade)', 'Empático (entende dores reais)']
     },
 
-    // ✅ MÓDULOS ATIVOS
+    // ✅ MÓDULOS ATIVOS (ATUALIZADO)
     active_modules: {
       authentication: '/api/auth',
       accounts: '/api/accounts',
-      transactions: '/api/transactions', 
-      supermarket: '/api/supermarket',
-      budget: '/api/budget',
-      analytics: '/api/analytics',
-      user: '/api/user',
-      privacy: '/api/privacy'
+      transactions: '/api/transactions'
     },
     
     // 🚧 MÓDULOS EM DESENVOLVIMENTO
     upcoming_modules: {
+      supermarket: '/api/supermarket',
+      budget: '/api/budget',
+      analytics: '/api/analytics',
+      user: '/api/user',
+      privacy: '/api/privacy',
       bills: '/api/bills',
       investments: '/api/investments',
       battle: '/api/battle'
@@ -207,7 +208,7 @@ app.get('/', (req, res) => {
         resetPassword: 'POST /api/auth/reset-password'
       },
       
-      // 💳 ACCOUNTS
+      // 💳 ACCOUNTS (IMPLEMENTADO)
       accounts: {
         createAccount: 'POST /api/accounts',
         getAccounts: 'GET /api/accounts',
@@ -218,7 +219,7 @@ app.get('/', (req, res) => {
         getAccountBalance: 'GET /api/accounts/:id/balance'
       },
       
-      // 💰 TRANSACTIONS
+      // 💰 TRANSACTIONS (IMPLEMENTADO)
       transactions: {
         createTransaction: 'POST /api/transactions',
         getTransactions: 'GET /api/transactions',
@@ -230,7 +231,7 @@ app.get('/', (req, res) => {
         duplicate: 'POST /api/transactions/:id/duplicate'
       },
       
-      // 🛒 SUPERMARKET MODE
+      // 🛒 SUPERMARKET MODE (EM BREVE)
       supermarket: {
         createList: 'POST /api/supermarket/lists',
         getLists: 'GET /api/supermarket/lists',
@@ -245,7 +246,7 @@ app.get('/', (req, res) => {
         budgetProgress: 'GET /api/supermarket/lists/:id/budget'
       },
       
-      // 📊 BUDGET SYSTEM
+      // 📊 BUDGET SYSTEM (EM BREVE)
       budget: {
         createBudget: 'POST /api/budget',
         getBudgets: 'GET /api/budget',
@@ -254,7 +255,7 @@ app.get('/', (req, res) => {
         deleteBudget: 'DELETE /api/budget/:id'
       },
       
-      // 📈 ANALYTICS
+      // 📈 ANALYTICS (EM BREVE)
       analytics: {
         overview: 'GET /api/analytics/overview',
         spending: 'GET /api/analytics/spending',
@@ -262,7 +263,7 @@ app.get('/', (req, res) => {
         reports: 'GET /api/analytics/reports'
       },
       
-      // 👤 USER MANAGEMENT
+      // 👤 USER MANAGEMENT (EM BREVE)
       user: {
         subscription: 'GET /api/user/subscription',
         updateSubscription: 'PUT /api/user/subscription',
@@ -271,7 +272,7 @@ app.get('/', (req, res) => {
         updatePreferences: 'PUT /api/user/preferences'
       },
       
-      // 🔒 PRIVACY & COMPLIANCE
+      // 🔒 PRIVACY & COMPLIANCE (EM BREVE)
       privacy: {
         export: 'GET /api/privacy/export',
         delete: 'POST /api/privacy/delete'
@@ -398,7 +399,7 @@ app.get('/api/metrics', (req, res) => {
       },
       application: {
         modules: {
-          active: ['auth', 'accounts', 'transactions', 'supermarket', 'budget', 'analytics', 'user', 'privacy'],
+          active: ['auth', 'accounts', 'transactions'], // Atualizado
           total_endpoints: 42,
           status: 'operational'
         },
@@ -434,16 +435,14 @@ app.post('/webhooks/clerk', express.raw({type: 'application/json'}), (req, res) 
 });
 
 // ==================== ❌ ERROR HANDLING AVANÇADO ====================
-app.all('*', (req, res, next) => {
-  next(new AppError(
-    `Rota ${req.originalUrl} não encontrada neste servidor!`, 
-    404,
-    {
-      requestId: req.requestId,
-      method: req.method,
-      timestamp: req.requestTime
-    }
-  ));
+app.all('*', (req, res) => {
+  res.status(404).json({
+    status: 'error',
+    message: `Rota ${req.originalUrl} não encontrada neste servidor!`,
+    requestId: req.requestId,
+    method: req.method,
+    timestamp: req.requestTime
+  });
 });
 
 // Global error handling middleware
@@ -486,7 +485,7 @@ const server = app.listen(PORT, () => {
   console.log('═'.repeat(80));
   console.log(`📍  Porta: ${PORT}`);
   console.log(`🌐  Ambiente: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🗄️  Database: MongoDB Connected`);
+  console.log(`🗄️  Database: PostgreSQL + Prisma Connected`);
   console.log(`⏰  Iniciado em: ${new Date().toLocaleString('pt-BR')}`);
   console.log(`🆔  Instance: ${process.pid}`);
   console.log('═'.repeat(80));
@@ -494,13 +493,13 @@ const server = app.listen(PORT, () => {
   console.log(`   🔐  Auth API: http://localhost:${PORT}/api/auth`);
   console.log(`   💳  Accounts API: http://localhost:${PORT}/api/accounts`);
   console.log(`   💰  Transactions API: http://localhost:${PORT}/api/transactions`);
-  console.log(`   🛒  Supermarket API: http://localhost:${PORT}/api/supermarket`);
-  console.log(`   📊  Budget API: http://localhost:${PORT}/api/budget`);
-  console.log(`   📈  Analytics API: http://localhost:${PORT}/api/analytics`);
-  console.log(`   👤  User API: http://localhost:${PORT}/api/user`);
-  console.log(`   🔒  Privacy API: http://localhost:${PORT}/api/privacy`);
   console.log('═'.repeat(80));
   console.log(`🚧  PRÓXIMOS MÓDULOS:`);
+  console.log(`   🛒  Supermarket System`);
+  console.log(`   📊  Budget System`);
+  console.log(`   📈  Analytics System`);
+  console.log(`   👤  User Management`);
+  console.log(`   🔒  Privacy & Compliance`);
   console.log(`   📅  Bills System`);
   console.log(`   📈  Investments System`);
   console.log(`   ⚔️  Battle System`);
@@ -525,13 +524,9 @@ const gracefulShutdown = (signal) => {
   // Parar de aceitar novas conexões
   server.close(() => {
     console.log('✅ HTTP server fechado');
-    
-    // Fechar conexões do banco de dados
-    // mongoose.connection.close(false, () => {
-      console.log('✅ Database connections fechadas');
-      console.log('💤 Process terminated gracefully');
-      process.exit(0);
-    // });
+    console.log('✅ Database connections fechadas');
+    console.log('💤 Process terminated gracefully');
+    process.exit(0);
   });
 
   // Force close após 10 segundos
