@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs'
 import { prisma } from '@/lib/db'
+import { getPaginationParams, toSkipTake, getPaginationMetaWithOptions } from '../../../utils/pagination'
 
 // GET - Listar todas as contas do usuário
 export async function GET(request: NextRequest) {
@@ -11,20 +12,29 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
-    // Buscar contas do usuário
-    const accounts = await prisma.account.findMany({
-      where: {
-        userId: userId,
-        isActive: true
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    })
+    // Paginação
+    const params = getPaginationParams(new URL(request.url).searchParams)
+    const { skip, take } = toSkipTake(params.page, params.pageSize)
+
+    const [accounts, totalCount] = await Promise.all([
+      prisma.account.findMany({
+        where: {
+          userId: userId,
+          isActive: true
+        },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take
+      }),
+      prisma.account.count({ where: { userId: userId, isActive: true } })
+    ])
+
+    const meta = getPaginationMetaWithOptions(totalCount, params.page, params.pageSize)
 
     return NextResponse.json({
       success: true,
-      data: accounts
+      data: accounts,
+      meta
     })
 
   } catch (error) {

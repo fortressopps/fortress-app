@@ -1,6 +1,7 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
+import { getPaginationParams, toSkipTake, getPaginationMetaWithOptions } from '../../utils/pagination';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -34,18 +35,11 @@ router.get('/', async (req, res) => {
   try {
     const userId = req.user?.id || 'temp-user-id'; // Fallback temporário
 
-    // Validar filtros da query string
-    const filters = transactionFiltersSchema.parse({
-      page: req.query.page ? parseInt(req.query.page) : 1,
-      limit: req.query.limit ? parseInt(req.query.limit) : 10,
-      accountId: req.query.accountId,
-      category: req.query.category,
-      startDate: req.query.startDate,
-      endDate: req.query.endDate,
-      type: req.query.type
-    });
-
-    const skip = (filters.page - 1) * filters.limit;
+    // Paginação e validação de filtros
+    const params = getPaginationParams(new URLSearchParams(req.query));
+    const page = params.page;
+    const limit = params.pageSize;
+    const { skip, take } = toSkipTake(page, limit);
 
     // Construir where clause baseado nos filtros
     const where = {
@@ -62,7 +56,7 @@ router.get('/', async (req, res) => {
     };
 
     // Buscar transações e total
-    const [transactions, total] = await Promise.all([
+    const [transactions, totalCount] = await Promise.all([
       prisma.transaction.findMany({
         where,
         include: {
@@ -76,20 +70,17 @@ router.get('/', async (req, res) => {
         },
         orderBy: { date: 'desc' },
         skip,
-        take: filters.limit
+        take
       }),
       prisma.transaction.count({ where })
     ]);
 
+    const meta = getPaginationMetaWithOptions(totalCount, page, limit);
+
     res.json({
       success: true,
       data: transactions,
-      pagination: {
-        page: filters.page,
-        limit: filters.limit,
-        total,
-        pages: Math.ceil(total / filters.limit)
-      }
+      meta
     });
 
   } catch (error) {

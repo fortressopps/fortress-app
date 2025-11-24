@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
+import { getPaginationParams, toSkipTake, getPaginationMetaWithOptions } from '../../../utils/pagination'
 import { auth } from "@clerk/nextjs";
 import { checkPlanLimit } from "@/lib/plan-limits";
 
@@ -19,11 +20,18 @@ export async function GET() {
       return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
     }
 
-    const budgets = await prisma.budget.findMany({
-      where: { userId },
-    });
+    // Paginação
+    const params = getPaginationParams(new URL((globalThis as any).location?.href || '').searchParams);
+    const { skip, take } = toSkipTake(params.page, params.pageSize);
 
-    return NextResponse.json(budgets);
+    const [budgets, totalCount] = await Promise.all([
+      prisma.budget.findMany({ where: { userId }, skip, take }),
+      prisma.budget.count({ where: { userId } })
+    ])
+
+    const meta = getPaginationMetaWithOptions(totalCount, params.page, params.pageSize)
+
+    return NextResponse.json({ data: budgets, meta });
   } catch (error) {
     console.error("Erro ao listar budgets:", error);
     return NextResponse.json({ error: "Erro interno" }, { status: 500 });
