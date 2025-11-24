@@ -41,6 +41,18 @@ router.get('/', async (req, res) => {
     const limit = params.pageSize;
     const { skip, take } = toSkipTake(page, limit);
 
+    // Validar filtros usando Zod schema (converte query params)
+    const rawFilters = {
+      page,
+      limit,
+      accountId: req.query.accountId,
+      category: req.query.category,
+      startDate: req.query.startDate,
+      endDate: req.query.endDate,
+      type: req.query.type
+    };
+    const filters = transactionFiltersSchema.parse(rawFilters);
+
     // Construir where clause baseado nos filtros
     const where = {
       userId,
