@@ -37,7 +37,7 @@ import express from 'express';
 import Joi from 'joi';
 import pino from 'pino';
 import crypto from 'crypto';
-import { createClient } from '@supabase/supabase-js';
+import supabase from '../../lib/supabase.js';
 import jwt from 'jsonwebtoken';
 import { getPaginationParams, getPaginationMetaWithOptions } from '../../utils/pagination.js';
 
@@ -45,8 +45,6 @@ import { getPaginationParams, getPaginationMetaWithOptions } from '../../utils/p
 // Configuração de ambiente
 // ============================
 const ENV = {
-  SUPABASE_URL: process.env.SUPABASE_URL || 'https://your-project.supabase.co',
-  SUPABASE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || 'anon-key',
   NODE_ENV: process.env.NODE_ENV || 'development',
   LOG_LEVEL: process.env.LOG_LEVEL || 'info',
   ENABLE_RATE_LIMITING: ['1', 'true', 'yes'].includes((process.env.ENABLE_RATE_LIMITING || '').toLowerCase()),
@@ -63,10 +61,7 @@ const ENV = {
   }
 };
 
-// ============================
-// Supabase Client
-// ============================
-export const supabase = createClient(ENV.SUPABASE_URL, ENV.SUPABASE_KEY);
+// Supabase client uses centralized lib at `backend/lib/supabase.js`
 
 // ============================
 // Logger + Tracing (lite)
