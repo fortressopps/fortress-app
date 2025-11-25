@@ -1,6 +1,7 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
+import { getPaginationParams, toSkipTake, getPaginationMetaWithOptions } from '../../utils/pagination';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -21,20 +22,32 @@ router.get('/', async (req, res) => {
   try {
     const userId = req.user?.id || 'temp-user-id'; // Fallback temporário
 
-    const accounts = await prisma.account.findMany({
-      where: { userId },
-      include: {
-        transactions: {
-          orderBy: { date: 'desc' },
-          take: 5 // Últimas 5 transações
-        }
-      },
-      orderBy: { createdAt: 'desc' }
-    });
+    const params = getPaginationParams(new URLSearchParams(req.query));
+    const { skip, take } = toSkipTake(params.page, params.pageSize);
+
+    const [accounts, total] = await Promise.all([
+      prisma.account.findMany({
+        where: { userId },
+        include: {
+          transactions: {
+            orderBy: { date: 'desc' },
+            take: 5
+          }
+        },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take
+      }),
+      prisma.account.count({ where: { userId } })
+    ]);
+
+    const meta = getPaginationMetaWithOptions(total || 0, params.page, params.pageSize);
 
     res.json({
       success: true,
-      data: accounts
+      results: (accounts || []).length,
+      data: accounts,
+      meta
     });
 
   } catch (error) {
@@ -237,19 +250,31 @@ router.get('/:id/transactions', async (req, res) => {
       });
     }
 
-    const transactions = await prisma.transaction.findMany({
-      where: { accountId: id },
-      include: {
-        account: {
-          select: { name: true, color: true }
-        }
-      },
-      orderBy: { date: 'desc' }
-    });
+    const params = getPaginationParams(new URLSearchParams(req.query));
+    const { skip, take } = toSkipTake(params.page, params.pageSize);
+
+    const [transactions, total] = await Promise.all([
+      prisma.transaction.findMany({
+        where: { accountId: id },
+        include: {
+          account: {
+            select: { name: true, color: true }
+          }
+        },
+        orderBy: { date: 'desc' },
+        skip,
+        take
+      }),
+      prisma.transaction.count({ where: { accountId: id } })
+    ]);
+
+    const meta = getPaginationMetaWithOptions(total || 0, params.page, params.pageSize);
 
     res.json({
       success: true,
-      data: transactions
+      results: (transactions || []).length,
+      data: transactions,
+      meta
     });
 
   } catch (error) {
