@@ -13,55 +13,6 @@ import { clerkWebhookHandler } from "./webhooks/clerkWebhook";
 import { stripeWebhookHandler } from "./webhooks/stripeWebhook";
 import { fortressLogger } from "./utils/logger";
 import { fortressUUID } from "./utils/uuid";
-import { gracefulShutdown } from "./utils/gracefulShutdown";
-
-// ======================
-//  TYPE DECLARATIONS
-// ======================
-declare global {
-  namespace Express {
-    interface Request {
-      requestId?: string;
-      requestTime?: string;
-      rawBody?: Buffer;
-      auth?: {
-        userId: string;
-      };
-    }
-  }
-}
-
-// ======================
-//  AUTH MIDDLEWARE
-// ======================
-const requireAuth = (req: Request, res: Response, next: NextFunction) => {
-  const { userId } = getAuth(req);
-  if (!userId) {
-    return res.status(401).json({
-      success: false,
-      message: "Não autorizado — autenticação necessária",
-    });
-  }
-  req.auth = { userId };
-  next();
-};
-
-// ======================
-//  RATE LIMIT (dynamic)
-// ======================
-const getRateLimitValue = () =>
-  process.env.NODE_ENV === "production" ? 200 : 2000;
-
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: getRateLimitValue(),
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: {
-    status: "error",
-    message: "Limite de requisições excedido. Tente novamente em 15 minutos.",
-  },
-});
 
 // ======================
 //  INIT EXPRESS APP
@@ -110,8 +61,8 @@ app.use(
 app.use(
   express.json({
     limit: "20mb",
-    verify: (req, res, buf) => {
-      req.rawBody = buf;
+    verify: (req, _res, buf) => {
+      (req as Request & { rawBody?: Buffer }).rawBody = buf;
     },
   })
 );
@@ -128,7 +79,7 @@ if (process.env.NODE_ENV === "development") {
 // ======================
 // REQUEST METADATA
 // ======================
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req: Request, _res: Response, next: NextFunction) => {
   req.requestId = fortressUUID();
   req.requestTime = new Date().toISOString();
 
@@ -146,6 +97,20 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 // ======================
 // RATE LIMIT (API ONLY)
 // ======================
+const getRateLimitValue = () =>
+  process.env.NODE_ENV === "production" ? 200 : 2000;
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: getRateLimitValue(),
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    status: "error",
+    message: "Limite de requisições excedido. Tente novamente em 15 minutos.",
+  },
+});
+
 app.use("/api", apiLimiter);
 
 // ======================
@@ -244,26 +209,5 @@ app.use(
     });
   }
 );
-
-// ======================
-// SERVER STARTUP
-// ======================
-const PORT = process.env.PORT || 3001;
-
-const server = app.listen(PORT, () => {
-  console.log("\n" + "═".repeat(80));
-  console.log("🏰  FORTRESS BACKEND ENTERPRISE - INICIADO");
-  console.log("═".repeat(80));
-  console.log(`📍 Porta: ${PORT}`);
-  console.log(`🌎 Ambiente: ${process.env.NODE_ENV}`);
-  console.log(`🗄️ Database: Prisma + PostgreSQL`);
-  console.log(`🔐 Auth: Clerk`);
-  console.log("═".repeat(80));
-});
-
-// ======================
-// GRACEFUL SHUTDOWN
-// ======================
-gracefulShutdown(server);
 
 export default app;

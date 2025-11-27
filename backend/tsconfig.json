@@ -1,23 +1,61 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ES2020",
+    /* Node Runtime Modern (18+) */
+    "target": "ES2022",
+    "module": "ES2022",
     "moduleResolution": "node",
-    "lib": ["ES2020"],
+
+    /* Runtime Types */
+    "lib": ["ES2022"],
+    "types": ["node"],
+
+    /* Strict Mode + Enterprise Safety */
     "strict": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+
+    /* Interop + JSON + Compat */
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "outDir": "dist",
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "allowJs": false,
-    "noEmit": false,
-    "baseUrl": ".",
+    "skipLibCheck": true,
+
+    /* Diretório REAL do projeto */
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "baseUrl": "./src",
+
+    /* Aliases Enterprise */
     "paths": {
-      "@utils/*": ["src/utils/*"],
-      "@routes/*": ["src/routes/*"]
-    }
+      "@src/*": ["*"],
+      "@utils/*": ["utils/*"],
+      "@lib/*": ["lib/*"],
+      "@routes/*": ["routes/*"],
+      "@common/*": ["common/*"],
+      "@config/*": ["config/*"],
+      "@controllers/*": ["controllers/*"],
+      "@services/*": ["services/*"],
+      "@middleware/*": ["middleware/*"],
+      "@validators/*": ["validators/*"],
+      "@webhooks/*": ["webhooks/*"],
+      "@modules/*": ["modules/*"],
+      "@types/*": ["types/*"]
+    },
+
+    /* Express namespace augmentation */
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+
+  /* Apenas o que está dentro de src é compilado */
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/backup/**",
+    "**/_legacy_*",
+    "**/__backup_*"
+  ]
 }
