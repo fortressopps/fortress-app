@@ -1,0 +1,19 @@
+/* FORTRESS ENTERPRISE AUTO-CONVERTED: user.legacy.js */
+// backend/src/routes/user.js
+import express from 'express';
+import { getDashboard, getProfile, updateProfile, getMetrics, getBattleReport } from '../controllers/userController';
+import { protect } from '../controllers/authController';
+const router = express.Router();
+// Todas as rotas protegidas
+router.use(protect);
+// Dashboard
+router.get('/dashboard', getDashboard);
+// Profile management
+router.route('/profile')
+    .get(getProfile)
+    .patch(updateProfile);
+// Metrics and analytics
+router.get('/metrics', getMetrics);
+// Battle system
+router.get('/battle-report', getBattleReport);
+export default router;
