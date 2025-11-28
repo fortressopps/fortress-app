@@ -1,0 +1,25 @@
+name: CI - fortress (v7.14 custo-zero)
+on: [push,pull_request]
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: pnpm/action-setup@v2
+        with:
+          node-version: 20
+      - name: Install deps
+        run: |
+          if [ -f backend/package.json ]; then (cd backend && npm install); fi
+          if [ -f frontend/package.json ]; then (cd frontend && npm install); fi
+      - name: Run tests
+        run: echo "Run your tests here (none configured by default)"
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gitleaks
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/zricethezav/gitleaks/master/install.sh | bash -s -- -b /usr/local/bin || true
+          gitleaks detect --source . || true
