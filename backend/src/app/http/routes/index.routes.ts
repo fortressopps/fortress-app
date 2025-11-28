@@ -1,7 +1,14 @@
-import type { Application } from "express";
+/**
+ * FORTRESS v7.21 — index.routes.ts
+ * Router unificado da camada HTTP
+ */
+
+import { Router } from "express";
 import { healthRouter } from "./health.routes.js";
 
-export function registerAppRoutes(app: Application){
-  app.use("/_health", healthRouter);
-  // TODO: register module routers here: /auth, /users, /supermarket
-}
+const router = Router();
+
+// Rotas principais
+router.use("/health", healthRouter);
+
+export default router;

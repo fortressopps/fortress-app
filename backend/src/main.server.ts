@@ -1,17 +1,23 @@
 import express from "express";
-import compression from "compression";
-import helmet from "helmet";
-import cors from "cors";
-import { bootstrapApp } from "./core/bootstrap/app.bootstrap.js";
-import { ENV } from "./config/env/env.loader.js";
+import { bootstrapApplication } from "./core/bootstrap/app.bootstrap.js";
+import { logger } from "./config/logger/logger.config.js";
 
-const app = express();
-app.use(helmet());
-app.use(compression());
-app.use(express.json({ limit: "2mb" }));
-app.use(cors({ origin: true, credentials: true }));
+async function main() {
+  try {
+    const app = express();
 
-await bootstrapApp(app);
+    // Bootstrap (routes, middlewares, infra)
+    await bootstrapApplication(app);
 
-const port = ENV.PORT || 4000;
-app.listen(port, () => console.log(`Fortress v7.21 listening on :${port}`));
+    const PORT = process.env.PORT || 3001;
+
+    app.listen(PORT, () => {
+      logger.info(`🚀 Fortress backend running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("❌ Failed to start Fortress server:", err);
+    process.exit(1);
+  }
+}
+
+main();
