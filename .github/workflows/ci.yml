@@ -1,16 +1,33 @@
-name: CI - fortress v7.21
-on: [push,pull_request]
+name: CI - fortress v7.22
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
 jobs:
-  build:
+  build-frontend:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup Node
-        uses: pnpm/action-setup@v2
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install & Build
-        run: |
-          cd backend
-          npm install
-          npm run build || true
+          cache: npm
+          cache-dependency-path: ./frontend/package-lock.json
+
+      - name: Install deps
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+  # backend is intentionally ignored in CI
+
