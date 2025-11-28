@@ -1,7 +1,24 @@
+
+# Node
 node_modules/
-.env
-*.log
+dist/
+build/
+out/
+coverage/
+
+# OS
 .DS_Store
-*.backup
-*.bak
-backend/prisma/dev.db
+Thumbs.db
+
+# Secrets and config
+.env
+secrets/
+docker-config/
+docker-compose*.yml
+backups/
+backup*/
+_backup_*/
+
+# Editor
+.vscode/
+.idea/

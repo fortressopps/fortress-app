@@ -1,19 +1,13 @@
-# Fortress App - Controle Financeiro
+# Fortress App — v7.23 (consolidated)
+This repository was restructured to Fortress method v7.23 (hexagonal, modular).
+Folders:
+- frontend/
+- backend/
+- infra/
+- scripts/
+- docs/
 
-Quick commands
+Important:
+- Replace secrets in environment variables. Do NOT commit real secrets.
+- See scripts/init-dev.sh to bootstrap local dev.
 
-- Run backend tests (single-run):
-
-```powershell
-cd C:\Users\Robert\fortress-app\backend
-npm install
-npm test
-```
-
-- Install frontend deps and run dev:
-
-```powershell
-cd C:\Users\Robert\fortress-app\frontend
-npm install
-npm run dev
-```

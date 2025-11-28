@@ -1,4 +1,4 @@
-Manifest of removed files for v7.23 (generated: 2025-11-28T20:37:23-03:00)
+Manifest of removed files for v7.23 (generated: 2025-11-28T20:39:15-03:00)
 DO NOT COMMIT SECRETS. This file lists removed paths.
 
 docker-compose.hardened.yml
@@ -69,4 +69,3 @@ backend/tools/fortress/migrate/logs/pipeline.log
 backend/node_modules/.cache
 backend/node_modules/@prisma/engines/node_modules/.cache
 apply-v7.14-prime.sh
-secrets/

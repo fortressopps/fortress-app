@@ -1,0 +1,11 @@
+{
+  "name": "fortress-root",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "bootstrap": "echo bootstrap scripts here"
+  }
+}
