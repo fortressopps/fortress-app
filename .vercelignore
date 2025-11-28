@@ -1,0 +1,4 @@
+backend/
+docker-config/
+tools/
+prisma/
