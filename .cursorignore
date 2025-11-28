@@ -1,1 +1,7 @@
-node_modules/\nfrontend/.vite/\nfrontend/dist/\nbackend/dist/\n.env*\n.prisma/\n*.sqlite\n*.log\n.DS_Store\n.vscode/\n
+node_modules/
+backend/dist/
+frontend/dist/
+.env*
+.prisma/
+*.sqlite
+*.log

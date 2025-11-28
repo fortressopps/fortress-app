@@ -1,61 +1,16 @@
 {
   "compilerOptions": {
-    /* Node Runtime Modern (18+) */
     "target": "ES2022",
-    "module": "ES2022",
-    "moduleResolution": "node",
-
-    /* Runtime Types */
-    "lib": ["ES2022"],
-    "types": ["node"],
-
-    /* Strict Mode + Enterprise Safety */
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "outDir": "dist",
+    "rootDir": "src",
     "strict": true,
-    "noImplicitAny": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-
-    /* Interop + JSON + Compat */
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
     "skipLibCheck": true,
-
-    /* Diretório REAL do projeto */
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "baseUrl": "./src",
-
-    /* Aliases Enterprise */
-    "paths": {
-      "@src/*": ["*"],
-      "@utils/*": ["utils/*"],
-      "@lib/*": ["lib/*"],
-      "@routes/*": ["routes/*"],
-      "@common/*": ["common/*"],
-      "@config/*": ["config/*"],
-      "@controllers/*": ["controllers/*"],
-      "@services/*": ["services/*"],
-      "@middleware/*": ["middleware/*"],
-      "@validators/*": ["validators/*"],
-      "@webhooks/*": ["webhooks/*"],
-      "@modules/*": ["modules/*"],
-      "@types/*": ["types/*"]
-    },
-
-    /* Express namespace augmentation */
-    "typeRoots": ["./src/types", "./node_modules/@types"]
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true
   },
-
-  /* Apenas o que está dentro de src é compilado */
-  "include": ["src/**/*"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.spec.ts",
-    "**/*.test.ts",
-    "**/backup/**",
-    "**/_legacy_*",
-    "**/__backup_*"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

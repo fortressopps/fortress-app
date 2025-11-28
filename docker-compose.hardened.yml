@@ -6,37 +6,18 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_DB: fortress
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./docker-config/postgres/init-user.sh:/docker-entrypoint-initdb.d/01-init.sh:ro
+      - fortress_postgres_data:/var/lib/postgresql/data
     secrets:
       - postgres_password
-      - fortress_app_password
-    ports:
-      - "5432:5432"   # <<< ESSENCIAL PARA O WINDOWS/PRISMA
-                     # expõe o Postgres para outside Docker
-
   redis:
     image: redis:7
     container_name: fortress_redis
     restart: unless-stopped
-    command: >
-      sh -c 'redis-server --requirepass "$$(cat /run/secrets/redis_password)"'
-    volumes:
-      - redis_data:/data
-    secrets:
-      - redis_password
-    ports:
-      - "6379:6379"   # opcional mas útil (mantive por segurança de debug)
-
+    command: ["redis-server","--requirepass","$(cat ./docker-config/postgres/redis_pwd 2>/dev/null || echo '')"]
 volumes:
-  postgres_data:
-  redis_data:
-
+  fortress_postgres_data:
 secrets:
   postgres_password:
     file: ./docker-config/postgres/postgres_pwd
-  fortress_app_password:
-    file: ./docker-config/postgres/fortress_app_pwd
-  redis_password:
-    file: ./docker-config/postgres/redis_pwd

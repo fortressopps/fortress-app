@@ -1,1 +1,8 @@
-# .cursorrules v7.14 (CUSTO ZERO)\nversion: v7.14\nproject: Fortress\nowner: fortressopps\narchitecture:\n  pattern: hexagonal\nrules:\n  - 'no-secrets-in-repo'\n  - 'tests-required'\nai:\n  allowed_tasks: [generate-skeletons, add-tests]\n  forbidden_tasks: [commit-secrets]\n
+version: v7.21
+project: Fortress
+rules:
+  - no-secrets-in-repo
+  - tests-required
+ai:
+  allowed_tasks: [generate-skeletons, implement-module, run-tests]
+  forbidden_tasks: [push-secrets]
