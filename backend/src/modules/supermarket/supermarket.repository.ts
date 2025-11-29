@@ -1,153 +1,156 @@
-// src/modules/supermarket/supermarket.repository.ts
-/**
- * Supermarket Repository v7
- * Centraliza TODAS as operações Prisma.
- * Nenhuma lógica de negócio mora aqui.
- */
+// backend/src/modules/supermarket/supermarket.repository.ts
+import { prisma } from "../../../app/database/prisma.client.js";
+import type {
+  SupermarketList,
+  SupermarketItem,
+} from "@prisma/client";
 
-import { prisma } from "@/lib/db";
-import AppError from "@/utils/appError";
+// ───────────────────────────────────────────
+// LISTA DO SUPERMERCADO
+// ───────────────────────────────────────────
 
-/* -----------------------------------------------------
- * Ownership
- * --------------------------------------------------- */
-export async function assertListOwnership(userId: string, listId: string) {
-  const list = await prisma.supermarketList.findFirst({
-    where: { id: listId, userId },
+export async function getUserSupermarketList(userId: string) {
+  return prisma.supermarketList.findFirst({
+    where: { userId },
+    include: { items: true },
   });
-
-  if (!list) {
-    throw new AppError("Lista não encontrada ou não pertence ao usuário", 404);
-  }
-  return list;
 }
 
-/* -----------------------------------------------------
- * LISTS
- * --------------------------------------------------- */
-export async function createList(userId: string, data: any) {
+export async function createSupermarketList(userId: string, name: string) {
   return prisma.supermarketList.create({
-    data: { ...data, userId },
+    data: {
+      userId,
+      name,
+    },
   });
 }
 
-export async function getLists(userId: string, page: number, pageSize: number) {
-  const [lists, total] = await Promise.all([
+export async function getUserSupermarketLists(userId: string, page = 1, pageSize = 20) {
+  const skip = (page - 1) * pageSize;
+
+  const [items, total] = await prisma.$transaction([
     prisma.supermarketList.findMany({
       where: { userId },
-      skip: (page - 1) * pageSize,
+      skip,
       take: pageSize,
       orderBy: { createdAt: "desc" },
     }),
     prisma.supermarketList.count({ where: { userId } }),
   ]);
-  return { lists, total };
+
+  return {
+    items,
+    meta: {
+      page,
+      pageSize,
+      total,
+      totalPages: Math.ceil(total / pageSize),
+    },
+  };
 }
 
-export async function getList(userId: string, listId: string) {
-  await assertListOwnership(userId, listId);
+export async function getSupermarketListById(id: string) {
   return prisma.supermarketList.findUnique({
-    where: { id: listId },
+    where: { id },
     include: { items: true },
   });
 }
 
-export async function updateList(userId: string, listId: string, data: any) {
-  await assertListOwnership(userId, listId);
+export async function updateSupermarketList(id: string, data: Partial<SupermarketList>) {
   return prisma.supermarketList.update({
-    where: { id: listId },
+    where: { id },
     data,
   });
 }
 
-export async function deleteList(userId: string, listId: string) {
-  await assertListOwnership(userId, listId);
+export async function deleteSupermarketList(id: string) {
   return prisma.supermarketList.delete({
-    where: { id: listId },
+    where: { id },
   });
 }
 
-/* -----------------------------------------------------
- * ITEMS
- * --------------------------------------------------- */
-export async function createItem(listId: string, data: any) {
+// ───────────────────────────────────────────
+// ITENS DO SUPERMERCADO
+// ───────────────────────────────────────────
+
+export async function addSupermarketItem(
+  listId: string,
+  data: Omit<SupermarketItem, "id" | "createdAt" | "updatedAt" | "listId">
+) {
   return prisma.supermarketItem.create({
-    data: { ...data, listId },
+    data: {
+      ...data,
+      listId,
+    },
   });
 }
 
-export async function updateItem(userId: string, listId: string, itemId: string, data: any) {
-  await assertListOwnership(userId, listId);
+export async function updateSupermarketItem(
+  itemId: string,
+  data: Partial<SupermarketItem>
+) {
   return prisma.supermarketItem.update({
     where: { id: itemId },
     data,
   });
 }
 
-export async function deleteItem(userId: string, listId: string, itemId: string) {
-  await assertListOwnership(userId, listId);
+export async function deleteSupermarketItem(itemId: string) {
   return prisma.supermarketItem.delete({
     where: { id: itemId },
   });
 }
 
-export async function clearPurchasedItems(userId: string, listId: string) {
-  await assertListOwnership(userId, listId);
-
-  const result = await prisma.supermarketItem.deleteMany({
-    where: { listId, purchased: true },
+export async function deleteAllItemsFromList(listId: string) {
+  return prisma.supermarketItem.deleteMany({
+    where: { listId },
   });
-
-  const list = await prisma.supermarketList.findUnique({ where: { id: listId } });
-
-  return { count: result.count, list };
 }
 
-/* -----------------------------------------------------
- * BULK OPERATIONS
- * --------------------------------------------------- */
-export async function bulkAdd(listId: string, items: any[]) {
+// ───────────────────────────────────────────
+// TRANSAÇÕES COMPLEXAS
+// ───────────────────────────────────────────
+
+export async function addMultipleItems(listId: string, items: Array<Omit<SupermarketItem, "id" | "createdAt" | "updatedAt" | "listId">>) {
   return prisma.$transaction(async (tx) => {
-    const created = await Promise.all(
-      items.map((item) =>
+    const list = await tx.supermarketList.findUnique({ where: { id: listId } });
+    if (!list) return null;
+
+    const createdItems = await Promise.all(
+      items.map(item =>
         tx.supermarketItem.create({
           data: { ...item, listId },
         })
       )
     );
 
-    const list = await tx.supermarketList.findUnique({ where: { id: listId } });
-    return { items: created, list };
+    return createdItems;
   });
 }
 
-export async function bulkUpdate(userId: string, listId: string, updates: any[]) {
-  await assertListOwnership(userId, listId);
-
+export async function updateMultipleItems(listId: string, items: Array<Partial<SupermarketItem>>) {
   return prisma.$transaction(async (tx) => {
-    const updated = await Promise.all(
-      updates.map((u) =>
+    const list = await tx.supermarketList.findUnique({ where: { id: listId } });
+    if (!list) return null;
+
+    const updatedItems = await Promise.all(
+      items.map(item =>
         tx.supermarketItem.update({
-          where: { id: u.id },
-          data: u.update,
+          where: { id: item.id },
+          data: item,
         })
       )
     );
 
-    const list = await tx.supermarketList.findUnique({ where: { id: listId } });
-    return { items: updated, list };
+    return updatedItems;
   });
 }
 
-export async function bulkDelete(userId: string, listId: string, ids: string[]) {
-  await assertListOwnership(userId, listId);
-
+export async function deleteMultipleItems(ids: string[]) {
   return prisma.$transaction(async (tx) => {
-    const deleted = await tx.supermarketItem.deleteMany({
-      where: { id: { in: ids }, listId },
+    await tx.supermarketItem.deleteMany({
+      where: { id: { in: ids } },
     });
-
-    const list = await tx.supermarketList.findUnique({ where: { id: listId } });
-    return { count: deleted.count, list };
+    return true;
   });
 }

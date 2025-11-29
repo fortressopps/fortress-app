@@ -1,17 +1,17 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { ParsePaginationPipe } from '../../common/pipes/pagination.pipe';
-import { PaginationParams } from '../../../../utils/pagination';
-import { applyPaginationPrisma } from '../../common/utils/pagination.helper';
-// Import your prisma client - adjust path if different in your repo
-import prisma from '../../../../lib/db';
+// backend/src/modules/example/example.controller.ts
+import { prisma } from "../../app/database/prisma.client.js";
+import { applyPaginationPrisma } from "../../common/utils/pagination.helper.js";
 
-@Controller('example')
-export class ExampleController {
-  @Get()
-  async list(@Query(new ParsePaginationPipe()) pagination: PaginationParams) {
-    const { page, pageSize } = pagination;
-    // replace `prisma.item` with your model name
-    const { items, meta } = await applyPaginationPrisma(prisma.item, {}, page, pageSize);
-    return { data: items, meta };
-  }
+export async function exampleList(req, res) {
+  const page = Number(req.query.page) || 1;
+  const pageSize = Number(req.query.pageSize) || 20;
+
+  const { items, meta } = await applyPaginationPrisma(
+    prisma.item,
+    {},
+    page,
+    pageSize
+  );
+
+  return res.json({ items, meta });
 }

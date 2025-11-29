@@ -1,14 +1,16 @@
-import { defineConfig } from "@prisma/config";
+// prisma/prisma.config.ts
+import { defineConfig } from "@prisma/adapter-node";
+import { config } from "dotenv";
+
+config(); // carrega .env
 
 export default defineConfig({
-  schema: "./prisma/schema.prisma",
-
-  datasource: {
-    url: process.env.DATABASE_URL, // Agora a URL vem daqui!
+  database: {
+    url: process.env.DATABASE_URL!, // URL DO BANCO AGORA FICA AQUI
+    provider: "postgresql",
   },
-
-  // habilita migrations via prisma migrate
-  migrate: {
-    enabled: true,
+  schema: "./schema.prisma",
+  migrations: {
+    path: "./migrations",
   },
 });

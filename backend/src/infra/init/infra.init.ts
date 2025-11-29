@@ -1,11 +1,8 @@
-import prisma from "../prisma/prisma.client.js";
-import { logger } from "../../config/logger/logger.config.js";
-export async function initInfra(){
-  try {
-    await prisma.$connect();
-    logger.info("Prisma connected");
-  } catch(e){
-    logger.error({err:e}, "Prisma connect failed");
-    throw e;
-  }
+// backend/src/infra/init/infra.init.ts
+import { prisma } from "../../app/database/prisma.client.js";
+import { logger } from "../../app/config/logger/logger.config.js";
+
+export async function initInfra() {
+  await prisma.$connect();
+  logger.info("Prisma connected");
 }
