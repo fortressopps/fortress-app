@@ -1,14 +1,12 @@
-/**
- * FORTRESS v7.21 — index.routes.ts
- * Router unificado da camada HTTP
- */
+// backend/src/app/http/routes/index.routes.ts
+import { Hono } from "hono";
+import { healthRoutes } from "./health.routes.js";
+import { supermarketRoutes } from "./supermarket.routes.js";
 
-import { Router } from "express";
-import { healthRouter } from "./health.routes.js";
+export const indexRoutes = new Hono();
 
-const router = Router();
+// Health check
+indexRoutes.route("/health", healthRoutes);
 
-// Rotas principais
-router.use("/health", healthRouter);
-
-export default router;
+// Supermarket module
+indexRoutes.route("/supermarket", supermarketRoutes);

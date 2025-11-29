@@ -1,23 +1,24 @@
-import express from "express";
-import { bootstrapApplication } from "./core/bootstrap/app.bootstrap.js";
-import { logger } from "./config/logger/logger.config.js";
+// backend/src/main.server.ts
+import { Hono } from "hono";
+import { serve } from "@hono/node-server";
+import { indexRoutes } from "./app/http/routes/index.routes.js";
+import { initInfra } from "./infra/init/infra.init.js";
 
-async function main() {
-  try {
-    const app = express();
+// Inicializa Hono
+const app = new Hono();
 
-    // Bootstrap (routes, middlewares, infra)
-    await bootstrapApplication(app);
+// Inicializa Prisma + outras integrações
+await initInfra();
 
-    const PORT = process.env.PORT || 3001;
+// Registra rotas principais
+app.route("/", indexRoutes);
 
-    app.listen(PORT, () => {
-      logger.info(`🚀 Fortress backend running on port ${PORT}`);
-    });
-  } catch (err) {
-    console.error("❌ Failed to start Fortress server:", err);
-    process.exit(1);
-  }
-}
+// Servidor
+const port = Number(process.env.PORT) || 3001;
 
-main();
+serve({
+  fetch: app.fetch,
+  port,
+});
+
+console.info(`🚀 Fortress backend running on port ${port}`);
