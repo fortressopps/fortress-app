@@ -1,1 +1,0 @@
-# MASTER CONTEXT v7.14 (CUSTO ZERO)\n- Method: v7 (iterative, zero-cost-first)\n- Stack: Node + TypeScript + Prisma + React + Vite\n- Dev infra: Docker Compose (Postgres, Redis) local\n- CI: GitHub Actions + gitleaks (OSS)\n- Auth: JWT access (in-memory) + refresh cookie + JTI (rotate)\n
