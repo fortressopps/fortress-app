@@ -1,19 +1,14 @@
-// backend/src/main.server.ts
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
-import { indexRoutes } from "./app/http/routes/index.routes.js";
-import { initInfra } from "./infra/init/infra.init.js";
 
-// Inicializa Hono
+import { bootstrap } from "./server/bootstrap";
+import { Logger } from "./libs/logger";
+
 const app = new Hono();
 
-// Inicializa Prisma + outras integrações
-await initInfra();
+// faz o bootstrap completo (infra + rotas + segurança)
+await bootstrap(app);
 
-// Registra rotas principais
-app.route("/", indexRoutes);
-
-// Servidor
 const port = Number(process.env.PORT) || 3001;
 
 serve({
@@ -21,4 +16,4 @@ serve({
   port,
 });
 
-console.info(`🚀 Fortress backend running on port ${port}`);
+Logger.info(`🚀 Fortress backend running on port ${port}`);

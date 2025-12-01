@@ -1,5 +1,5 @@
 // backend/src/modules/supermarket/supermarket.repository.ts
-import { prisma } from "../../../app/database/prisma.client.js";
+import { prisma } from "../../../libs/prisma.js";
 import type {
   SupermarketList,
   SupermarketItem,

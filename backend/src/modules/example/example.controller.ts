@@ -1,5 +1,5 @@
 // backend/src/modules/example/example.controller.ts
-import { prisma } from "../../app/database/prisma.client.js";
+import { prisma } from "../../libs/prisma.js";
 import { applyPaginationPrisma } from "../../common/utils/pagination.helper.js";
 
 export async function exampleList(req, res) {

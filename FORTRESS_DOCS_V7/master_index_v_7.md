@@ -1345,13 +1345,47 @@ Esses arquivos deverão, no futuro, ser movidos para:
 
 
 /legacy
+(placeholder criado em 3.13)
 
+3.12 /tools
 
+Contém scripts, utilitários e ferramentas executáveis que suportam a operação, auditoria e manutenção do ecossistema Fortress.
 
+Arquivos presentes:
 
+auditor_v7_3_ultra.ps1 — Script PowerShell do Auditor v7.3 ULTRA.
 
-(Criarei um placeholder para isso.)
+Propósito da pasta:
 
+- Automatizar validações, verificações e auditorias.
+- Fornecer ferramentas para engenharia, operações e governança.
+- Manter scripts oficiais padronizados e versionados.
+
+Regras:
+
+- Scripts devem ser documentados em seus respectivos documentos (ex: auditor_v7_3_ultra.md em /ops/).
+- Não devem conter lógica de negócio ou comportamentos não autorizados.
+- Devem seguir o padrão de versionamento v7.
+
+3.13 /legacy
+
+Contém documentos e materiais anteriores à versão v7 do ecossistema Fortress, ou rascunhos que não seguem o padrão atual.
+
+Arquivos presentes:
+
+pre_fortress_cursor_w_11.md — Documento prévio sobre o Cursor, mantido para referência histórica.
+
+Propósito da pasta:
+
+- Armazenar conteúdo desatualizado ou não conforme.
+- Servir como referência para evolução do projeto.
+- Isolar materiais que não devem ser usados em produção ou desenvolvimento atual.
+
+Regras:
+
+- Nenhum documento desta pasta é considerado oficial.
+- Não são auditados pelo Auditor v7.3 ULTRA.
+- Podem ser movidos para aqui arquivos que estejam fora do padrão v7.
 
 
 --------------------------
@@ -1819,6 +1853,9 @@ Glossário sempre prevalece em caso de conflito de definição
 5.1 Foundation \& Method
 
 
+Cursor Oficial v7.24 — Enterprise Mode
+
+
 
 Fortress Method Guide v7
 
@@ -1901,6 +1938,9 @@ API Contract Guide v7
 
 
 5.5 Operations (Ops)
+
+
+Auditor v7.3 ULTRA — Enterprise Final
 
 
 
@@ -2012,7 +2052,7 @@ Estes serão criados no futuro caso você deseje completar o ecossistema Enterpr
 
 
 
-/legacy — Conteúdo anterior ao v7
+pre_fortress_cursor_w_11.md (em /legacy/) /legacy — Conteúdo anterior ao v7
 
 
 
@@ -4474,107 +4514,63 @@ A estrutura recomendada e oficial é:
 
 
 
-FORTRESS\_DOCS\_V7/
-
+FORTRESS_DOCS_V7/
 │
-
-├── master\_index\_v\_7.md
-
+├── master_index_v_7.md
 │
-
 ├── method/
-
-│   └── fortress\_v\_7\_method\_guide.md
-
+│   ├── fortress_v_7_method_guide_updated.md
+│   └── cursor_oficial_v_7_24_enterprise.md
 │
-
 ├── architecture/
-
-│   ├── architecture\_blueprint\_v\_7.md
-
-│   ├── data\_model\_specification\_v\_7.md
-
-│   ├── event\_catalog\_v\_7.md
-
-│   ├── db\_spec\_v\_7.md
-
-│   └── observality\_blueprint\_v\_7.md
-
+│   ├── architecture_blueprint_v_7.md
+│   ├── data_model_specification_v_7.md
+│   ├── event_catalog_v_7.md
+│   ├── db_spec_v_7.md
+│   └── observality_blueprint_v_7.md
 │
-
 ├── pfs/
-
-│   ├── pfs\_geral\_v\_7.md
-
-│   ├── pfs\_v\_7\_supermarket\_4\_b.md
-
-│   ├── pfs\_v\_7\_kernel\_comportamental\_4\_c.md
-
-│   ├── pfs\_v\_7\_notificacoes\_4\_d.md
-
-│   ├── pfs\_v\_7\_insights\_4\_e.md
-
-│   ├── pfs\_4f\_completo\_v7.24.md
-
-│   └── pfs\_v\_7\_enterprise.md
-
+│   ├── pfs_geral_v_7.md
+│   ├── pfs_v_7_supermarket_4_b.md
+│   ├── pfs_v_7_kernel_comportamental_4_c.md
+│   ├── pfs_v_7_notificacoes_4_d.md
+│   ├── pfs_v_7_insights_4_e.md
+│   ├── PFS_4F_Completo_v7.24.md
+│   └── pfs_v_7_enterprise.md
 │
-
 ├── api/
-
-│   └── API\_contract\_guide\_v\_7.md
-
+│   └── API_contract_guide_v_7.md
 │
-
 ├── ops/
-
-│   ├── ops\_manual\_v\_7.md
-
-│   ├── errorhandling\_recoveryplaybook\_v\_7.md
-
-│   └── (outros materiais operacionais)
-
+│   ├── ops_manual_v_7.md
+│   ├── errorhandling_recoveryplaybook_v_7.md
+│   └── auditor_v7_3_ultra.md
 │
-
 ├── runbooks/
-
-│   ├── IAM\_runbook\_v\_7.md
-
-│   ├── privacy\_runbook\_v\_7.md
-
-│   ├── security\_incident\_runbook\_v\_7.md
-
-│   ├── db\_runbook\_v\_7.md
-
-│   ├── EDA\_runbook\_v\_7.md
-
-│   ├── cognitive\_runbook\_v\_7.md
-
-│   ├── financial\_runbook\_v\_7.md
-
-│   └── supermarket\_runbook\_v\_7.md
-
+│   ├── IAM_runbook_v_7.md
+│   ├── privacy_runbook_v_7.md
+│   ├── security_incident_runbook_v_7.md
+│   ├── db_runbook_v_7.md
+│   ├── EDA_runbook_v_7.md
+│   ├── cognitive_runbook_v_7.md
+│   ├── financial_runbook_v_7.md
+│   └── supermarket_runbook_v_7.md
 │
-
 ├── security/
-
-│   └── security\_privacyframework\_v\_7.md
-
+│   └── security_privacyframework_v_7.md
 │
-
 ├── product/
-
-│   ├── brand\_marketing\_master\_guide\_v\_2\_2.md
-
-│   └── master\_context\_tecnico\_v\_7\_enterprise.md
-
+│   ├── brand_marketing_master_guide_v_2_2.md
+│   └── master_context_tecnico_v_7_enterprise.md
 │
-
-└── glossary/
-
-&nbsp;   └── glossario\_datadictionary\_v\_7.md
-
-
+├── glossary/
+│   └── glossario_datadictionary_v_7.md
+│
+├── tools/
+│   └── auditor_v7_3_ultra.ps1
+│
+└── legacy/
+    └── pre_fortress_cursor_w_11.md
 
 
 
@@ -8649,9 +8645,38 @@ security\_privacyframework\_v\_7.md
 → Gate para IAM, Privacy Runbook e API Hardening
 
 
+18.2.9 Tools
+
+auditor_v7_3_ultra.ps1
+→ Script oficial do Auditor v7.3 ULTRA
+→ Conecta-se a: ops/auditor_v7_3_ultra.md
+
+18.2.12 Method (atualizado)
+
+fortress_v_7_method_guide_updated.md
+→ Guia do método Fortress v7
+→ Conecta-se a: todos os documentos
+
+cursor_oficial_v_7_24_enterprise.md
+→ Guia oficial de uso do Cursor IDE no ecossistema Fortress
+→ Define regras de geração, navegação e segurança
+→ Conecta-se a: Method Guide, PFS, Architecture
+
+18.2.13 Ops (atualizado)
+
+auditor_v7_3_ultra.md
+→ Especificação do Auditor v7.3 ULTRA
+→ Valida conformidade do repositório
+→ Conecta-se a: Master Index, Consistency Engine
+
+18.2.14 Legacy
+
+pre_fortress_cursor_w_11.md
+→ Documento prévio sobre o Cursor (não oficial)
+→ Mantido para referência histórica
+
 
 18.3 Navegação por Tema — Índice Global Funcional
-
 
 
 Uma visão para encontrar tudo por assunto.
@@ -8806,6 +8831,10 @@ arch.dbspec.v7
 
 arch.obsblueprint.v7
 
+auditor.ultra.v7
+
+cursor.official.v7
+
 glossary.dictionary.v7
 
 ops.manual.v7
@@ -8849,6 +8878,8 @@ runbook.financial.v7
 runbook.supermarket.v7
 
 security.framework.v7
+
+tool.auditor.v7
 
 
 
@@ -8992,65 +9023,40 @@ Essas tabelas e mapas não substituem os documentos principais — elas unificam
 
 19.1 Matriz Global de Documentos Fortress (Documento → Propósito → Domínio → ILID)
 
+
 | Documento                               | Propósito                           | Domínio          | ILID                       |
-
-|-----------------------------------------|---------------------------------------|------------------|----------------------------|
-
-| API\_contract\_guide\_v\_7.md               | Contratos de API                      | API              | api.contract.v7            |
-
-| architecture\_blueprint\_v\_7.md           | Blueprint macro                       | Architecture     | arch.blueprint.v7          |
-
-| data\_model\_specification\_v\_7.md         | Modelo de dados lógico                | Architecture     | arch.datamodel.v7          |
-
-| db\_spec\_v\_7.md                          | Modelo físico de banco                | Architecture     | arch.dbspec.v7             |
-
-| event\_catalog\_v\_7.md                    | Catálogo de eventos                   | Architecture     | arch.events.v7             |
-
-| observality\_blueprint\_v\_7.md            | Observabilidade                       | Architecture     | arch.obsblueprint.v7       |
-
-| glossario\_datadictionary\_v\_7.md         | Vocabulário unificado                 | Glossary         | glossary.dictionary.v7     |
-
-| ops\_manual\_v\_7.md                       | Operações padrão                      | Ops              | ops.manual.v7              |
-
-| errorhandling\_recoveryplaybook\_v\_7.md   | Recuperação e fallback                | Ops              | ops.error\_recovery.v7      |
-
-| pfs\_geral\_v\_7.md                        | PFS Geral (espinha dorsal)            | PFS              | pfs.general.v7             |
-
-| PFS\_4F\_Completo\_v7.24.md                | PFS Consolidado                       | PFS              | pfs.4f.v7                  |
-
-| pfs\_v\_7\_supermarket\_4\_b.md              | Supermarket (4B)                      | PFS              | pfs.4b.v7                  |
-
-| pfs\_v\_7\_kernel\_comportamental\_4\_c.md    | Kernel Comportamental (4C)            | PFS              | pfs.4c.v7                  |
-
-| pfs\_v\_7\_notificacoes\_4\_d.md             | Notificações (4D)                     | PFS              | pfs.4d.v7                  |
-
-| pfs\_v\_7\_insights\_4\_e.md                 | Insights (4E)                          | PFS              | pfs.4e.v7                  |
-
-| pfs\_v\_7\_enterprise.md                   | PFS Enterprise                         | PFS              | pfs.enterprise.v7          |
-
-| fortress\_v\_7\_method\_guide\_updated.md    | Guia do método Fortress                | Product          | product.method.v7          |
-
-| brand\_marketing\_master\_guide\_v\_2\_2.md   | Diretrizes de marca e marketing        | Product          | product.brand.v7           |
-
-| master\_context\_tecnico\_v\_7\_enterprise.md| Contexto técnico unificado             | Product          | product.context\_enterprise.v7 |
-
-| security\_privacyframework\_v\_7.md        | Framework de segurança e privacidade   | Security         | security.framework.v7      |
-
-| IAM\_runbook\_v\_7.md                      | Operações IAM                          | Runbook          | runbook.iam.v7             |
-
-| privacy\_runbook\_v\_7.md                  | Privacidade                            | Runbook          | runbook.privacy.v7         |
-
-| security\_incident\_runbook\_v\_7.md        | Incidentes de segurança                | Runbook          | runbook.security\_incident.v7 |
-
-| EDA\_runbook\_v\_7.md                      | Eventos e arquitetura assíncrona       | Runbook          | runbook.eda.v7             |
-
-| db\_runbook\_v\_7.md                       | Operações de banco de dados            | Runbook          | runbook.db.v7              |
-
-| financial\_runbook\_v\_7.md                | Operações financeiras                  | Runbook          | runbook.financial.v7       |
-
-| cognitive\_runbook\_v\_7.md                | Operações cognitivas e insights        | Runbook          | runbook.cognitive.v7       |
-
-| supermarket\_runbook\_v\_7.md              | Operações do módulo 4B                 | Runbook          | runbook.supermarket.v7     |
+|-----------------------------------------|-------------------------------------|------------------|----------------------------|
+| API_contract_guide_v_7.md               | Contratos de API                    | API              | api.contract.v7            |
+| architecture_blueprint_v_7.md           | Blueprint macro                     | Architecture     | arch.blueprint.v7          |
+| data_model_specification_v_7.md         | Modelo de dados lógico              | Architecture     | arch.datamodel.v7          |
+| db_spec_v_7.md                          | Modelo físico de banco              | Architecture     | arch.dbspec.v7             |
+| event_catalog_v_7.md                    | Catálogo de eventos                 | Architecture     | arch.events.v7             |
+| observality_blueprint_v_7.md            | Observabilidade                     | Architecture     | arch.obsblueprint.v7       |
+| glossario_datadictionary_v_7.md         | Vocabulário unificado               | Glossary         | glossary.dictionary.v7     |
+| ops_manual_v_7.md                       | Operações padrão                    | Ops              | ops.manual.v7              |
+| errorhandling_recoveryplaybook_v_7.md   | Recuperação e fallback              | Ops              | ops.error_recovery.v7      |
+| auditor_v7_3_ultra.md                   | Especificação do Auditor v7.3 ULTRA | Ops              | auditor.ultra.v7           |
+| pfs_geral_v_7.md                        | PFS Geral (espinha dorsal)          | PFS              | pfs.general.v7             |
+| PFS_4F_Completo_v7.24.md                | PFS Consolidado                     | PFS              | pfs.4f.v7                  |
+| pfs_v_7_supermarket_4_b.md              | Supermarket (4B)                    | PFS              | pfs.4b.v7                  |
+| pfs_v_7_kernel_comportamental_4_c.md    | Kernel Comportamental (4C)          | PFS              | pfs.4c.v7                  |
+| pfs_v_7_notificacoes_4_d.md             | Notificações (4D)                   | PFS              | pfs.4d.v7                  |
+| pfs_v_7_insights_4_e.md                 | Insights (4E)                       | PFS              | pfs.4e.v7                  |
+| pfs_v_7_enterprise.md                   | PFS Enterprise                      | PFS              | pfs.enterprise.v7          |
+| fortress_v_7_method_guide_updated.md    | Guia do método Fortress             | Product          | product.method.v7          |
+| brand_marketing_master_guide_v_2_2.md   | Diretrizes de marca e marketing     | Product          | product.brand.v7           |
+| master_context_tecnico_v_7_enterprise.md| Contexto técnico unificado          | Product          | product.context_enterprise.v7 |
+| cursor_oficial_v_7_24_enterprise.md     | Guia oficial de uso do Cursor IDE   | Method           | cursor.official.v7         |
+| security_privacyframework_v_7.md        | Framework de segurança e privacidade| Security         | security.framework.v7      |
+| IAM_runbook_v_7.md                      | Operações IAM                       | Runbook          | runbook.iam.v7             |
+| privacy_runbook_v_7.md                  | Privacidade                         | Runbook          | runbook.privacy.v7         |
+| security_incident_runbook_v_7.md        | Incidentes de segurança             | Runbook          | runbook.security_incident.v7 |
+| EDA_runbook_v_7.md                      | Eventos e arquitetura assíncrona    | Runbook          | runbook.eda.v7             |
+| db_runbook_v_7.md                       | Operações de banco de dados         | Runbook          | runbook.db.v7              |
+| financial_runbook_v_7.md                | Operações financeiras               | Runbook          | runbook.financial.v7       |
+| cognitive_runbook_v_7.md                | Operações cognitivas e insights     | Runbook          | runbook.cognitive.v7       |
+| supermarket_runbook_v_7.md              | Operações do módulo 4B              | Runbook          | runbook.supermarket.v7     |
+| auditor_v7_3_ultra.ps1                  | Script do Auditor v7.3 ULTRA        | Tools            | tool.auditor.v7            |
 
 
 
