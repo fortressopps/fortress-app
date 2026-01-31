@@ -1,5 +1,6 @@
 {
   "buildCommand": "npm run build",
   "ignoreCommand": "echo Ignoring backend — OK",
-  "framework": "nextjs"
+  "framework": null
+  // Usando configuração customizada, pois o projeto não utiliza Next.js
 }

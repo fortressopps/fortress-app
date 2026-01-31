@@ -12,7 +12,24 @@ import type {
 export async function getUserSupermarketList(userId: string) {
   return prisma.supermarketList.findFirst({
     where: { userId },
-    include: { items: true },
+    select: {
+      id: true,
+      name: true,
+      budget: true,
+      createdAt: true,
+      updatedAt: true,
+      items: {
+        select: {
+          id: true,
+          name: true,
+          category: true,
+          estimatedPrice: true,
+          actualPrice: true,
+          quantity: true,
+          purchased: true,
+        }
+      }
+    }
   });
 }
 
@@ -52,7 +69,24 @@ export async function getUserSupermarketLists(userId: string, page = 1, pageSize
 export async function getSupermarketListById(id: string) {
   return prisma.supermarketList.findUnique({
     where: { id },
-    include: { items: true },
+    select: {
+      id: true,
+      name: true,
+      budget: true,
+      createdAt: true,
+      updatedAt: true,
+      items: {
+        select: {
+          id: true,
+          name: true,
+          category: true,
+          estimatedPrice: true,
+          actualPrice: true,
+          quantity: true,
+          purchased: true,
+        }
+      }
+    }
   });
 }
 
