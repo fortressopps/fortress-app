@@ -1,6 +1,6 @@
-﻿/**
+/**
  * Fortress Enterprise – Supermarket Module Entrypoint
- * Re-exports controller + service without duplicating logic.
+ * Re-exports domain types/utils and infra repository.
  */
-export * from "@/controllers/supermarketController";
-export * from "@/services/supermarketService";
+export * from "./domain/supermarket.types";
+export * from "./infra/supermarket.repository";

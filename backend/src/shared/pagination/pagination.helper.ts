@@ -1,4 +1,4 @@
-import { getPaginationMetaWithOptions, toSkipTake } from '../../../../utils/pagination';
+import { getPaginationMetaWithOptions, toSkipTake } from "../../utils/pagination";
 
 /**
  * Apply pagination for a Prisma model.

@@ -12,8 +12,8 @@
  *  - Lança AppError em casos de payload inválido (consistência).
  */
 
-import AppError from "@/utils/appError";
-import { fortressLogger } from "@/utils/logger";
+import AppError from "../../../libs/appError";
+import { Logger } from "../../../libs/logger";
 import type { PaginationMeta } from "./supermarket.types";
 
 type Format = "json" | "csv" | "unknown";
@@ -287,7 +287,7 @@ export const parseImportContent = (content: string): Record<string, any>[] => {
       if (parsed && typeof parsed === "object" && Array.isArray(parsed.items)) return parsed.items;
       throw new AppError("JSON não possui array de items", 400);
     } catch (err: any) {
-      fortressLogger.warn({ event: "IMPORT_PARSE_JSON_FAIL", message: err?.message });
+      Logger.warn({ event: "IMPORT_PARSE_JSON_FAIL", message: err?.message });
       throw new AppError("JSON inválido no arquivo importado", 400);
     }
   }
@@ -297,7 +297,7 @@ export const parseImportContent = (content: string): Record<string, any>[] => {
       const rows = parseCSV(content);
       return rows;
     } catch (err: any) {
-      fortressLogger.warn({ event: "IMPORT_PARSE_CSV_FAIL", message: err?.message });
+      Logger.warn({ event: "IMPORT_PARSE_CSV_FAIL", message: err?.message });
       throw new AppError("CSV inválido no arquivo importado", 400);
     }
   }
@@ -313,10 +313,11 @@ export const buildExportPayload = (items: Record<string, any>[]) => {
   if (items.length === 0) return { items: [], headers: [] };
 
   // compute natural headers (union of keys, deterministic order: alphabetical)
-  const keys = Array.from(items.reduce((acc, it) => {
-    Object.keys(it || {}).forEach((k) => acc.add(k));
-    return acc;
-  }, new Set<string>()));
+  const keySet = new Set<string>();
+  for (const it of items) {
+    if (it && typeof it === "object") Object.keys(it).forEach((k) => keySet.add(k));
+  }
+  const keys = Array.from(keySet);
 
   keys.sort();
   const rows = items.map((it) => {
@@ -366,7 +367,7 @@ export const safeExec = async <T>(fn: () => Promise<T> | T, fallbackMessage = "E
   try {
     return await fn();
   } catch (err: any) {
-    fortressLogger.error({ event: "UTIL_SAFE_EXEC_ERROR", message: err?.message, stack: err?.stack });
+    Logger.error({ event: "UTIL_SAFE_EXEC_ERROR", message: err?.message, stack: err?.stack });
     if (err instanceof AppError) throw err;
     throw new AppError(fallbackMessage, 500);
   }

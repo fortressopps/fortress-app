@@ -22,5 +22,5 @@ if (!parsed.success) {
   process.exit(1);
 }
 
-export const ENV = parsed.data;
+export const ENV = parsed.data as z.infer<typeof Schema>;
 export const isProd = ENV.APP_ENV === "production";

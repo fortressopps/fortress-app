@@ -1,16 +1,17 @@
-import { Server } from "http";
-import { fortressLogger } from "./logger";
+import { Logger } from "./logger";
 
-export const gracefulShutdown = (server?: Server) => {
+type CloseableServer = { close: (callback?: () => void) => void };
+
+export function gracefulShutdown(server?: CloseableServer): void {
   const shutdown = (signal: string) => {
-    fortressLogger.info({ event: "SHUTDOWN", signal });
-    if (server) {
+    Logger.info({ event: "SHUTDOWN", signal });
+    if (server && typeof server.close === "function") {
       server.close(() => {
-        fortressLogger.info({ event: "HTTP_SERVER_CLOSED" });
+        Logger.info({ event: "HTTP_SERVER_CLOSED" });
         process.exit(0);
       });
       setTimeout(() => {
-        fortressLogger.error({ event: "FORCE_EXIT" });
+        Logger.error({ event: "FORCE_EXIT" });
         process.exit(1);
       }, 10000);
     } else {
@@ -20,12 +21,14 @@ export const gracefulShutdown = (server?: Server) => {
 
   process.on("SIGTERM", () => shutdown("SIGTERM"));
   process.on("SIGINT", () => shutdown("SIGINT"));
-  process.on("unhandledRejection", (err: any) => {
-    fortressLogger.error({ event: "UNHANDLED_REJECTION", error: { name: err?.name, message: err?.message } });
+  process.on("unhandledRejection", (err: unknown) => {
+    const e = err as Error;
+    Logger.error({ event: "UNHANDLED_REJECTION", error: { name: e?.name, message: e?.message } });
     shutdown("UNHANDLED_REJECTION");
   });
-  process.on("uncaughtException", (err: any) => {
-    fortressLogger.error({ event: "UNCAUGHT_EXCEPTION", error: { name: err?.name, message: err?.message } });
+  process.on("uncaughtException", (err: unknown) => {
+    const e = err as Error;
+    Logger.error({ event: "UNCAUGHT_EXCEPTION", error: { name: e?.name, message: e?.message } });
     shutdown("UNCAUGHT_EXCEPTION");
   });
-};
+}

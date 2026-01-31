@@ -310,6 +310,14 @@
 
 # 
 
+# 4\. Frontend: API URL (opcional)
+
+# O frontend usa a API em http://localhost:3001 por padrão. Para outro host/porta, crie no frontend um arquivo .env com:
+
+# VITE_API_URL=http://localhost:3001
+
+# 
+
 # 🌐 Deploy / CI
 
 # Frontend

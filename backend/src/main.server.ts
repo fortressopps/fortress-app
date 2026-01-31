@@ -3,17 +3,19 @@ import { serve } from "@hono/node-server";
 
 import { bootstrap } from "./server/bootstrap";
 import { Logger } from "./libs/logger";
+import { ENV } from "./libs/env";
+import { gracefulShutdown } from "./libs/gracefulShutdown";
 
 const app = new Hono();
 
 // faz o bootstrap completo (infra + rotas + segurança)
 await bootstrap(app);
 
-const port = Number(process.env.PORT) || 3001;
-
-serve({
+const server = serve({
   fetch: app.fetch,
-  port,
+  port: ENV.PORT,
 });
 
-Logger.info(`🚀 Fortress backend running on port ${port}`);
+gracefulShutdown(server);
+
+Logger.info(`🚀 Fortress backend running on port ${ENV.PORT}`);

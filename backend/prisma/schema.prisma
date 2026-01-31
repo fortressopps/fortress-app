@@ -9,9 +9,47 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String            @id @default(uuid())
+  email             String            @unique
+  password          String?           // hash (pbkdf2); null = usuário legado
+  name              String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime         @updatedAt
+  supermarketLists  SupermarketList[]
+}
+
+enum SupermarketCategory {
+  PRODUCE
+  DAIRY
+  MEAT
+  BAKERY
+  FROZEN
+  BEVERAGES
+  PANTRY
+  OTHER
+}
+
+model SupermarketList {
+  id        String            @id @default(uuid())
+  userId    String
+  name      String
+  budget    Float?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     SupermarketItem[]
+}
+
+model SupermarketItem {
+  id             String             @id @default(uuid())
+  listId         String
+  name           String
+  category       SupermarketCategory
+  estimatedPrice Float
+  actualPrice    Float?
+  quantity       Int?               @default(1)
+  purchased      Boolean           @default(false)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  list           SupermarketList    @relation(fields: [listId], references: [id], onDelete: Cascade)
 }

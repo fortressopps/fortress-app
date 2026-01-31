@@ -1,4 +1,4 @@
-import { getPaginationParams, getPaginationMetaWithOptions, toSkipTake } from '../utils/pagination';
+import { getPaginationParams, getPaginationMetaWithOptions, toSkipTake } from "../src/utils/pagination";
 
 describe('pagination utils', () => {
   test('getPaginationParams defaults', () => {
