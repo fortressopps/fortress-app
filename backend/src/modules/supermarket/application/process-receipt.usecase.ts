@@ -19,28 +19,44 @@ export async function processReceipt(input: ProcessReceiptInput) {
         input.projectedMonthTotal
     );
 
+    // 2a. Check for Goal Conflicts (Upgrade B)
+    // Fetch active goals (Mocked for now, in real scenario would injection Repository)
+    // We assume a conflict if this transaction eats > 20% of another goal's remaining buffer.
+    // For now we simulate that "Vacation" has a buffer of 2000.
+    let conflict = undefined;
+    const VACATION_GOAL_BUFFER = 200000; // 2000 BRL
+    const impactOnBuffer = (input.totalAmount / VACATION_GOAL_BUFFER) * 100;
+
+    if (impactOnBuffer > 20 && input.category !== "Viagem") {
+        conflict = {
+            goalName: "Viagem 2024",
+            impactOnBufferPct: Math.round(impactOnBuffer)
+        };
+    }
+
     // 2. Generate Insight (Insights 4E)
-    // We mock recurrence and ma3 for this specific receipts flow for now,
-    // in a real scenario these would come from the database (Historical Repository).
     const insight = createInsight({
         category: input.category,
         impact_cents: input.totalAmount,
         projected_month_total: input.projectedMonthTotal,
         current_value: input.totalAmount,
-        ma3_average: input.monthAverageScale, // mocked baseline
+        ma3_average: input.monthAverageScale,
         confidence: 1.0,
     });
 
-    // 3. Kernel Decision (4C) - Explicitly called here to pass to Dispatcher,
-    // although Dispatcher *could* do it, separating it allows us to log the decision.
-    // Note: insightFactory already calls kernel for Relevance/Suavidade, 
-    // but we need the full Decision object (with permission/cooldown) for the Dispatcher.
+    if (conflict) {
+        insight.conflict = conflict;
+        insight.interpretacao += ` ⚠️ Atenção: Impacta ${conflict.impactOnBufferPct}% do buffer de '${conflict.goalName}'.`;
+        insight.relevancia = Math.min(100, insight.relevancia + 20); // Boost relevance
+    }
+
+    // 3. Kernel Decision (4C)
     const kernelDecision = {
         relevance: insight.relevancia,
         suavidade: mapSuavidade(insight.relevancia),
-        permit: true, // Mock permission check
+        permit: true,
         cooldownMin: 0,
-        reinforce: insight.tipo.startsWith("F") || insight.tipo.startsWith("D"), // Simple mock logic for reinforcement
+        reinforce: insight.tipo.startsWith("F") || insight.tipo.startsWith("D"),
         reason: "Integration Flow",
         decision_timestamp: new Date().toISOString(),
         kernel_version: "7.24",

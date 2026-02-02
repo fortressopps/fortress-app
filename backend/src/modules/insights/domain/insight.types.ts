@@ -34,4 +34,8 @@ export interface Insight {
   tendencia: string;
   impacto: number;
   suavidade: Suavidade;
+  conflict?: {
+    goalName: string;
+    impactOnBufferPct: number;
+  };
 }
