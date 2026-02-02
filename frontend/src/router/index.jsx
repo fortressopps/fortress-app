@@ -5,6 +5,9 @@ import { AuthProvider, useAuth } from '../context/AuthContext';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
 import Goals from '../pages/Goals';
+import Register from '../pages/Register';
+import VerifyEmail from '../pages/VerifyEmail';
+import OAuthCallback from '../pages/OAuthCallback';
 import App from '../App';
 
 function Protected({ children }) {
@@ -20,9 +23,9 @@ export default function Router() {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<require('../pages/Register').default />} />
-          <Route path="/verify-email" element={<require('../pages/VerifyEmail').default />} />
-          <Route path="/oauth-callback" element={<require('../pages/OAuthCallback').default />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/oauth-callback" element={<OAuthCallback />} />
           <Route path="/app" element={<Protected><Dashboard /></Protected>} />
           <Route path="/goals" element={<Protected><Goals /></Protected>} />
           <Route path="/try" element={<App />} />

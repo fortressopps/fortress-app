@@ -90,13 +90,13 @@
 
 # │   ├── src/
 
-# │   │   ├── app/        → http, controllers, middleware
+# │   │   ├── server/     → bootstrap, routes (health, auth, goals, supermarket, oauth)
 
-# │   │   ├── domain/     → regras de negócio puras
+# │   │   ├── modules/    → domain + infra por feature (goals, supermarket)
 
-# │   │   ├── core/       → bootstrap / kernel
+# │   │   ├── libs/       → prisma, logger, env, jwt, password, security
 
-# │   │   ├── infra/      → prisma, repositórios, providers
+# │   │   ├── middleware/ → auth (JWT)
 
 # │   │   └── main.server.ts
 
@@ -108,7 +108,7 @@
 
 # │
 
-# ├── frontend/           → Next.js app isolado
+# ├── frontend/           → Vite + React SPA isolado
 
 # │
 

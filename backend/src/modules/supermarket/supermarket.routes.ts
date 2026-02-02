@@ -144,4 +144,27 @@ app.delete("/lists/:listId/items/:itemId", async (c) => {
   return c.json({ ok: true });
 });
 
+// POST /supermarket/receipts/process — Integração Completa (4B -> 4E -> 4C -> 4D)
+app.post("/receipts/process", async (c) => {
+  const user = c.get("user");
+  const body = await c.req.json().catch(() => ({}));
+
+  // Validation (simplified)
+  if (!body.total || !body.category) {
+    return c.json({ error: "total and category required" }, 400);
+  }
+
+  // Orchestration
+  const { processReceipt } = await import("./application/process-receipt.usecase");
+  const result = await processReceipt({
+    userId: user.id,
+    totalAmount: body.total, // in cents
+    category: body.category,
+    projectedMonthTotal: body.projectedTotal || 100000,
+    monthAverageScale: body.average || 5000,
+  });
+
+  return c.json(result);
+});
+
 export const supermarketRoutes = app;

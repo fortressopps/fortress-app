@@ -1,50 +1,71 @@
-// Fortress v7.24 — Rotas Goals
-import { Hono } from 'hono';
-import { z } from 'zod';
+// Fortress v7.24 — Rotas Goals (protegidas por auth)
+import { Hono } from "hono";
+import { z } from "zod";
 
-import { GoalsService } from '../../modules/goals/service/goals.service';
+import { authMiddleware, type AuthVariables } from "../../middleware/auth";
+import { GoalsService } from "../../modules/goals/domain/goals.commitment-projection";
+import type { GoalPeriodicity } from "../../modules/goals/domain/goal.entity";
+
+const app = new Hono<{ Variables: AuthVariables }>();
 const service = new GoalsService();
 
-const router = new Hono();
+app.use("*", authMiddleware);
 
 const goalSchema = z.object({
   name: z.string().min(2),
   value: z.number().positive(),
-  periodicity: z.enum(['MONTHLY', 'WEEKLY']),
+  periodicity: z.enum(["MONTHLY", "WEEKLY"]),
 });
 
-// Criar meta
-router.post('/', async (c) => {
-  const userId = c.req.header('x-user-id');
-  const body = await c.req.json();
+const progressSchema = z.object({
+  progress: z.number().min(0).max(100),
+});
+
+// POST /goals — criar meta
+app.post("/", async (c) => {
+  const user = c.get("user");
+  const body = await c.req.json().catch(() => ({}));
   const parsed = goalSchema.safeParse(body);
-  if (!parsed.success) return c.json({ error: 'Invalid data', details: parsed.error }, 400);
-  const goal = await service.createGoal(userId, parsed.data);
-  return c.json(goal);
+  if (!parsed.success) {
+    return c.json({ error: "Invalid data", details: parsed.error.flatten() }, 400);
+  }
+  const goal = await service.createGoal(user.id, {
+    name: parsed.data.name,
+    value: parsed.data.value,
+    periodicity: parsed.data.periodicity as GoalPeriodicity,
+  });
+  return c.json(goal, 201);
 });
 
-// Listar metas do usuário
-router.get('/', async (c) => {
-  const userId = c.req.header('x-user-id');
-  const goals = await service.listGoals(userId);
+// GET /goals — listar metas do usuário
+app.get("/", async (c) => {
+  const user = c.get("user");
+  const goals = await service.listGoals(user.id);
   return c.json(goals);
 });
 
-// Atualizar progresso da meta
-router.patch('/:id/progress', async (c) => {
-  const userId = c.req.header('x-user-id');
-  const { progress } = await c.req.json();
-  const { id } = c.req.param();
-  const goal = await service.updateProgress(id, userId, progress);
+// PATCH /goals/:id/progress — atualizar progresso
+app.patch("/:id/progress", async (c) => {
+  const user = c.get("user");
+  const id = c.req.param("id");
+  const body = await c.req.json().catch(() => ({}));
+  const parsed = progressSchema.safeParse(body);
+  if (!parsed.success) {
+    return c.json({ error: "progress obrigatório (0-100)" }, 400);
+  }
+  const goal = await service.updateProgress(id, user.id, parsed.data.progress);
+  if (!goal) {
+    return c.json({ error: "Meta não encontrada" }, 404);
+  }
   return c.json(goal);
 });
 
-// Deletar meta
-router.delete('/:id', async (c) => {
-  const userId = c.req.header('x-user-id');
-  const { id } = c.req.param();
-  await service.deleteGoal(id, userId);
+// DELETE /goals/:id — deletar meta
+app.delete("/:id", async (c) => {
+  const user = c.get("user");
+  const id = c.req.param("id");
+  await service.deleteGoal(id, user.id);
   return c.json({ success: true });
 });
 
-export default router;
+export default app;

@@ -29,6 +29,12 @@ enum SupermarketCategory {
   FROZEN
   BEVERAGES
   PANTRY
+  CLEANING
+  HYGIENE
+  HOME
+  PETS
+  PHARMACY
+  FITNESS
   OTHER
 }
 

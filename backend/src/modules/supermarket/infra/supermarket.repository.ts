@@ -71,6 +71,7 @@ export async function getSupermarketListById(id: string) {
     where: { id },
     select: {
       id: true,
+      userId: true,
       name: true,
       budget: true,
       createdAt: true,
