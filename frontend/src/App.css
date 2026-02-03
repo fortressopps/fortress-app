@@ -2,8 +2,8 @@
 
 /* 🌌 App-level Obsidian Overrides */
 .App {
-  background-color: var(--bg-obsidian);
-  color: var(--silver-bright);
+  background-color: var(--bg-surface);
+  color: var(--text-main);
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;

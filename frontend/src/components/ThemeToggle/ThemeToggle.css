@@ -1,0 +1,42 @@
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition-enterprise);
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--elevated-shadow);
+  transform: translateY(-1px);
+}
+
+.theme-toggle__icon {
+  font-size: 1rem;
+}
+
+.theme-toggle--floating {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1200;
+}
+
+@media (max-width: 768px) {
+  .theme-toggle {
+    padding: 8px 12px;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+  }
+}

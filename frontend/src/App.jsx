@@ -30,7 +30,9 @@ import Supermarket from './pages/Supermarket';
 import Intelligence from './pages/Intelligence';
 import OAuthCallback from './pages/OAuthCallback';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import MainLayout from './layouts/MainLayout';
+import ThemeToggle from './components/ThemeToggle/ThemeToggle';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -42,23 +44,26 @@ function ProtectedRoute({ children }) {
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <div className="App light-substrate">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/try" element={<TryFortress />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/auth/callback" element={<OAuthCallback />} />
+      <ThemeProvider>
+        <AuthProvider>
+          <div className="App theme-substrate">
+            <ThemeToggle />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/try" element={<TryFortress />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/auth/callback" element={<OAuthCallback />} />
 
-            {/* Protected Routes - Wrapped in MainLayout via ProtectedRoute */}
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
-            <Route path="/supermarket" element={<ProtectedRoute><Supermarket /></ProtectedRoute>} />
-            <Route path="/intelligence" element={<ProtectedRoute><Intelligence /></ProtectedRoute>} />
-          </Routes>
-        </div>
-      </AuthProvider>
+              {/* Protected Routes - Wrapped in MainLayout via ProtectedRoute */}
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
+              <Route path="/supermarket" element={<ProtectedRoute><Supermarket /></ProtectedRoute>} />
+              <Route path="/intelligence" element={<ProtectedRoute><Intelligence /></ProtectedRoute>} />
+            </Routes>
+          </div>
+        </AuthProvider>
+      </ThemeProvider>
     </Router>
   );
 }
