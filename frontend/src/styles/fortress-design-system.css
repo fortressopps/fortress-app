@@ -40,6 +40,33 @@
   --glass-blur: none;
 }
 
+/* 🌑 DARK FORTRESS SUBSTRATE */
+[data-theme='dark'] {
+  --bg-surface: #0B0D12;
+  --bg-card: #141820;
+  --bg-sidebar: #0E1218;
+
+  --emerald-primary: #52C59B;
+  --emerald-glow: rgba(82, 197, 155, 0.15);
+  --emerald-surface: rgba(82, 197, 155, 0.08);
+  --neon-accent: #7FFFD4;
+
+  --text-main: #E5E7EB;
+  --text-mute: #9CA3AF;
+  --border-light: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.18);
+
+  --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  --elevated-shadow: 0 12px 20px rgba(0, 0, 0, 0.45);
+
+  --silver-bright: var(--text-main);
+  --silver-mute: var(--text-mute);
+  --silver-border: var(--border-light);
+  --glass-bg: rgba(20, 24, 32, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-blur: blur(16px);
+}
+
 /* 🌀 CINEMATIC AMBIENT GLOW */
 @keyframes volcanicEmerald {
 
@@ -131,7 +158,7 @@
   filter: drop-shadow(0 0 15px var(--emerald-glow));
 }
 
-.light-substrate {
+.theme-substrate {
   position: fixed;
   inset: 0;
   background: var(--bg-surface);

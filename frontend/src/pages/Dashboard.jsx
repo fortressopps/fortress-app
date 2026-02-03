@@ -65,22 +65,22 @@ const Dashboard = () => {
                         <div className="h-72 w-full">
                             <ResponsiveContainer>
                                 <BarChart data={chartData}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-light)" />
                                     <XAxis
                                         dataKey="name"
                                         axisLine={false}
                                         tickLine={false}
-                                        tick={{ fill: '#9CA3AF', fontSize: 10 }}
+                                        tick={{ fill: 'var(--text-mute)', fontSize: 10 }}
                                         dy={10}
                                     />
                                     <YAxis hide />
                                     <Tooltip
-                                        cursor={{ fill: '#F3F4F6' }}
-                                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                                        cursor={{ fill: 'var(--emerald-surface)' }}
+                                        contentStyle={{ borderRadius: '12px', border: '1px solid var(--border-light)', background: 'var(--bg-card)', boxShadow: 'var(--card-shadow)' }}
                                     />
                                     <Bar dataKey="val" radius={[6, 6, 0, 0]}>
                                         {chartData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={index === 7 ? '#106048' : '#349673'} />
+                                            <Cell key={`cell-${index}`} fill={index === 7 ? 'var(--emerald-primary)' : 'var(--neon-accent)'} />
                                         ))}
                                     </Bar>
                                 </BarChart>
