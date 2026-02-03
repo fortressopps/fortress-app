@@ -392,6 +392,11 @@ FROM event\_store
 
 WHERE category='financial';
 
+5.5 Auditoria de Inteligência (Kernel RL)
+SELECT user_id, w1, w2, w3, w4, w5, w6 
+FROM "KernelProfile" 
+WHERE w1 > 1.8 OR w1 < 0.1;
+
 
 
 6\. RECUPERAÇÃO (N0–N4)

@@ -1,0 +1,29 @@
+.dashboard-v81 {
+    min-height: 100vh;
+    transition: var(--transition-enterprise);
+}
+
+.card-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--card-shadow);
+    border-radius: 20px;
+    transition: var(--transition-enterprise);
+}
+
+.card-panel:hover {
+    box-shadow: var(--elevated-shadow);
+    border-color: var(--border-strong);
+}
+
+.text-forest-green {
+    color: var(--emerald-primary);
+}
+
+.text-mute {
+    color: var(--text-mute);
+}
+
+.text-charcoal {
+    color: var(--text-main);
+}

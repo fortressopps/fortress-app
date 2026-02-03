@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Pricing.css';
 
 const Pricing = () => {
+  const navigate = useNavigate();
   const [expandedPlan, setExpandedPlan] = useState(null);
 
   const togglePlan = (planId) => {
@@ -76,11 +78,8 @@ const Pricing = () => {
   const handleCtaClick = (planType, ctaType) => {
     switch (ctaType) {
       case 'free':
-        alert('🎉 Excelente escolha! Você está entre os 85% que começam pelo Sentinel e evoluem depois.');
-        break;
-
       case 'trial':
-        alert(`🎉 Excelente escolha! Prepare-se para transformar suas finanças.\n\nVocê terá 7 dias para explorar todas as funcionalidades do Vanguard e ver resultados reais.`);
+        navigate('/register');
         break;
 
       case 'expert':
@@ -97,11 +96,11 @@ const Pricing = () => {
   return (
     <section className="pricing-container" id="pricing">
       <div className="pricing-content">
-        <h2 className="pricing-title">
-          Construa Sua Fortaleza Financeira
+        <h2 className="pricing-title text-charcoal text-6xl font-bold tracking-tighter mb-6">
+          Custódia & Governança
         </h2>
-        <p className="pricing-subtitle">
-          Do controle básico à gestão patrimonial avançada, oferecemos soluções completas para cada etapa da sua jornada rumo à independência financeira.
+        <p className="pricing-subtitle text-mute text-xl font-medium max-w-2xl mx-auto mb-20">
+          Planos táticos para construção de legado e expansão patrimonial.
         </p>
 
         <div className="pricing-grid">
@@ -123,37 +122,37 @@ const Pricing = () => {
               )}
 
               <div className="pricing-header">
-                <div className="plan-icon">
+                <div className="plan-icon neon-glow">
                   {plan.icon}
                 </div>
-                <h3 className="plan-name">{plan.name}</h3>
-                <p className="plan-description">{plan.description}</p>
+                <h3 className="plan-name text-charcoal font-bold">{plan.name}</h3>
+                <p className="plan-description text-mute font-medium">{plan.description}</p>
               </div>
 
               <div className="pricing-amount">
                 {plan.ctaType === 'expert' ? (
                   <div className="expert-cta">
                     <div className="expert-icon">💼</div>
-                    <div className="expert-text">Solução Personalizada</div>
+                    <div className="expert-text text-white">Solução Personalizada</div>
                   </div>
                 ) : (
                   <>
                     {plan.originalPrice && (
-                      <div className="original-price">
-                        De R$ {plan.originalPrice}
+                      <div className="original-price opacity-40 line-through">
+                        R$ {plan.originalPrice}
                       </div>
                     )}
-                    <div className="price">
+                    <div className="price text-charcoal text-4xl font-bold tracking-tighter">
                       {plan.ctaType === 'free' ? (
                         <span className="free-price">{plan.price}</span>
                       ) : (
                         <>
-                          <span className="currency">R$</span>
+                          <span className="currency text-xl font-medium">R$</span>
                           {plan.price}
                         </>
                       )}
                     </div>
-                    <div className="period">{plan.period}</div>
+                    <div className="period text-[10px] text-mute uppercase font-bold tracking-widest">{plan.period}</div>
                   </>
                 )}
               </div>
@@ -180,7 +179,7 @@ const Pricing = () => {
                       ))}
                     </ul>
                   </div>
-                  
+
                   <button
                     className={`pricing-button ${plan.featured ? 'btn-primary' : 'btn-secondary'} ${plan.ctaType}`}
                     onClick={() => handleCtaClick(plan.type, plan.ctaType)}

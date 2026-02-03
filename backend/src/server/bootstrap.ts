@@ -4,12 +4,16 @@ import type { Hono } from "hono";
 import { initInfra } from "../libs/infra.init";
 import { applySecurity } from "../libs/security";
 import { Logger } from "../libs/logger";
+import { requestLogger } from "../middleware/logging";
 
 import { registerHealthRoutes } from "./routes/health.routes";
 import { registerModuleRoutes } from "./routes/index.routes";
 
 export async function bootstrap(app: Hono) {
   Logger.info("🔧 Bootstrapping Fortress backend...");
+
+  // 1) Logging (Order: first)
+  app.use("*", requestLogger);
 
   // 1) Inicializa prisma, logger, redis, seeds, etc
   await initInfra();

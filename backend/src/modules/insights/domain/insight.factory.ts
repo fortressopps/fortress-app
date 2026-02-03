@@ -47,7 +47,7 @@ function detectSubtype(input: InsightInput, impact_pct: number): { subtype: Insi
 /**
  * Cria um objeto Insight completo
  */
-export function createInsight(input: InsightInput): Insight {
+export function createInsight(input: InsightInput, weights?: any): Insight {
     // 1. Calcular variáveis básicas
     const impact_pct = input.projected_month_total > 0
         ? (input.impact_cents / input.projected_month_total) * 100
@@ -70,7 +70,7 @@ export function createInsight(input: InsightInput): Insight {
     };
 
     // 4. Invocar Kernel para Relevância e Suavidade
-    const relevance = computeRelevance(kernelFeatures);
+    const relevance = computeRelevance(kernelFeatures, weights);
     const suavidade = mapSuavidade(relevance);
 
     // 5. Gerar Interpretação (Grammar)

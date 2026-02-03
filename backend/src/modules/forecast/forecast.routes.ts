@@ -70,6 +70,7 @@ app.get("/", async (c) => {
 
     return c.json({
         forecast,
+        history: dailyHistory,
         meta: {
             budget,
             currentSpend: totalSpent,

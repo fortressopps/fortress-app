@@ -47,23 +47,28 @@ export default function Receipts() {
                     Nível {insight.nivel}
                 </span>
             </div>
-            <p className="text-white text-lg font-medium">{insight.texto}</p>
+            <p className="text-white text-lg font-medium">{insight.interpretacao}</p>
             <div className="mt-2 flex gap-2">
-                {insight.tags.map(tag => (
-                    <span key={tag} className="text-xs text-gray-400">#{tag}</span>
-                ))}
+                <span className="text-xs text-purple-400">#{insight.familia}</span>
+                <span className="text-xs text-purple-400">#{insight.tipo}</span>
+                {insight.conflict && <span className="text-xs text-red-400 font-bold">#CONFLITO</span>}
             </div>
         </div>
     );
 
     return (
-        <div className="max-w-2xl mx-auto space-y-8">
-            <header>
-                <h1 className="text-3xl font-bold text-white mb-2">Processar Compra</h1>
-                <p className="text-gray-400">Entrada manual de transações para análise do Kernel.</p>
+        <div className="max-w-4xl mx-auto space-y-12 pb-20">
+            <header className="text-center pt-8">
+                <div className="inline-block px-4 py-1 rounded-full glass-surface-emerald text-xs font-bold tracking-widest text-emerald-primary mb-4">
+                    CENTRAL DE INTELIGÊNCIA V7
+                </div>
+                <h1 className="text-5xl font-extrabold text-white mb-2 tracking-tight">
+                    PROCESSAR COMPRA
+                </h1>
+                <p className="text-silver-mute max-w-md mx-auto">Sincronização manual com o Kernel de decisão.</p>
             </header>
 
-            <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
+            <div className="glass-surface p-8 rounded-2xl">
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block text-sm text-gray-400 mb-1">Total (R$)</label>
@@ -105,8 +110,8 @@ export default function Receipts() {
                         type="submit"
                         disabled={loading}
                         className={`w-full py-3 rounded-lg font-bold transition-all ${loading
-                                ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                                : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-90'
+                            ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                            : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-90'
                             }`}
                     >
                         {loading ? 'Analisando...' : 'Processar Transação'}
@@ -142,7 +147,11 @@ export default function Receipts() {
                     </div>
 
                     {/* Card de Insight */}
-                    {result.data.insight && <InsightCard insight={result.data.insight} />}
+                    {result.data.insight && (
+                        <div className="glass-surface-emerald p-1 rounded-xl">
+                            <InsightCard insight={result.data.insight} />
+                        </div>
+                    )}
 
                     {/* Canais */}
                     <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">

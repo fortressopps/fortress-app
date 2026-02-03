@@ -5,6 +5,7 @@ import goalsRoutes from "./goals.routes";
 import { oauthRoutes } from "./oauth.routes";
 import { supermarketRoutes } from "../../modules/supermarket/supermarket.routes";
 import { forecastRoutes } from "../../modules/forecast/forecast.routes";
+import { kernelRoutes } from "../../modules/kernel/kernel.routes";
 
 export function registerModuleRoutes(app: Hono) {
   app.route("/", authRoutes);
@@ -12,5 +13,6 @@ export function registerModuleRoutes(app: Hono) {
   app.route("/supermarket", supermarketRoutes);
   app.route("/", oauthRoutes);
   app.route("/forecast", forecastRoutes);
+  app.route("/kernel", kernelRoutes);
   app.get("/", (c) => c.json({ message: "Fortress API v7.24" }));
 }

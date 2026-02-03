@@ -65,6 +65,51 @@ export async function createSupermarketList(data) {
     return response.data;
 }
 
+/**
+ * Get supermarket list by ID
+ * GET /supermarket/lists/:id
+ */
+export async function getSupermarketListById(id) {
+    const response = await api.get(`/supermarket/lists/${id}`);
+    return response.data;
+}
+
+/**
+ * Add item to supermarket list
+ * POST /supermarket/lists/:id/items
+ */
+export async function addSupermarketItem(listId, data) {
+    const response = await api.post(`/supermarket/lists/${listId}/items`, data);
+    return response.data;
+}
+
+/**
+ * Update supermarket item
+ * PATCH /supermarket/lists/:listId/items/:itemId
+ */
+export async function updateSupermarketItem(listId, itemId, data) {
+    const response = await api.patch(`/supermarket/lists/${listId}/items/${itemId}`, data);
+    return response.data;
+}
+
+/**
+ * Delete supermarket item
+ * DELETE /supermarket/lists/:listId/items/:itemId
+ */
+export async function deleteSupermarketItem(listId, itemId) {
+    const response = await api.delete(`/supermarket/lists/${listId}/items/${itemId}`);
+    return response.data;
+}
+
+/**
+ * Get Kernel / Neural state
+ * GET /kernel
+ */
+export async function getKernelState() {
+    const response = await api.get('/kernel');
+    return response.data;
+}
+
 export default {
     processReceipt,
     getGoals,
@@ -72,4 +117,9 @@ export default {
     getForecast,
     getSupermarketLists,
     createSupermarketList,
+    getSupermarketListById,
+    addSupermarketItem,
+    updateSupermarketItem,
+    deleteSupermarketItem,
+    getKernelState,
 };

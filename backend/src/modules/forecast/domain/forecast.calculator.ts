@@ -6,18 +6,26 @@ import type { PrevisaoMensal, PrevisaoSemanal, ForecastResult } from "./forecast
 import { FORECAST_VERSION } from "./forecast.types";
 
 /**
- * Calcula projeção mensal usando extrapolação linear
+ * Calcula projeção mensal usando extrapolação (Linear ou Smart)
  * @param actualSpent - Gasto atual em centavos
  * @param daysElapsed - Dias decorridos no mês
  * @param totalDays - Total de dias no mês (default 30)
  * @param initialBudget - Orçamento inicial previsto
+ * @param dayAwareProfile - Média de gastos históricos por dia do mês (Upgrade C)
+ * @param userTier - Tier do usuário (SENTINEL/VANGUARD/LEGACY) - Level 3
  */
 export function calculateMonthlyForecast(
     actualSpent: number,
     daysElapsed: number,
     totalDays: number = 30,
-    initialBudget: number = 0
+    initialBudget: number = 0,
+    dayAwareProfile?: number[],
+    userTier: "SENTINEL" | "VANGUARD" | "LEGACY" = "SENTINEL"
 ): PrevisaoMensal {
+    // Level 3: Simulação de restrição por tier (em produção isso filtraria a query no DB)
+    // Para o cálculo puro, o tier pode influenciar o 'confidence' do modelo
+    const tierBoost = userTier === "LEGACY" ? 0.15 : userTier === "VANGUARD" ? 0.05 : 0;
+
     if (daysElapsed <= 0) {
         return {
             gastoTotalPrevisto: initialBudget,
@@ -27,99 +35,76 @@ export function calculateMonthlyForecast(
         };
     }
 
-    // Projeção linear: (gasto atual / dias decorridos) * total de dias
-    const dailyRate = actualSpent / daysElapsed;
-    const gastoTotalPrevisto = Math.round(dailyRate * totalDays);
+    let gastoTotalPrevisto: number;
 
-    // Delta vs orçamento inicial
-    const deltaVsPrevistoInicial = initialBudget > 0
-        ? gastoTotalPrevisto - initialBudget
-        : 0;
+    if (dayAwareProfile && dayAwareProfile.length >= totalDays) {
+        let expectedRemaining = 0;
+        for (let i = daysElapsed + 1; i <= totalDays; i++) {
+            expectedRemaining += dayAwareProfile[i - 1] || 0;
+        }
+        gastoTotalPrevisto = actualSpent + expectedRemaining;
+    } else {
+        const dailyRate = actualSpent / daysElapsed;
+        gastoTotalPrevisto = Math.round(dailyRate * totalDays);
+    }
 
-    // Estabilidade: quanto mais dias, mais confiável (simplificado)
-    const estabilidadeVsVolatilidade = Math.min(1.0, daysElapsed / 15);
-
-    // Confiança aumenta com dias decorridos
-    const confidence = Math.min(1.0, daysElapsed / 20);
+    const deltaVsPrevistoInicial = initialBudget > 0 ? gastoTotalPrevisto - initialBudget : 0;
+    const boost = (dayAwareProfile ? 0.2 : 0) + tierBoost;
+    const estabilidadeVsVolatilidade = Math.min(1.0, (daysElapsed / 15) + boost);
+    const confidence = Math.min(1.0, (daysElapsed / 20) + boost);
 
     return {
-        gastoTotalPrevisto,
+        gastoTotalPrevisto: Math.round(gastoTotalPrevisto),
         deltaVsPrevistoInicial,
         estabilidadeVsVolatilidade,
         confidence,
     };
 }
 
-/**
- * Calcula projeção semanal (tendência de curto prazo)
- * @param recentDailySpending - Array dos últimos 3-7 dias de gasto
- */
 export function calculateWeeklyForecast(recentDailySpending: number[]): PrevisaoSemanal {
     if (recentDailySpending.length === 0) {
-        return {
-            ritmoProximosDias: 0,
-            tendencia: "estavel",
-            confidence: 0,
-        };
+        return { ritmoProximosDias: 0, tendencia: "estavel", confidence: 0 };
     }
 
-    // Média dos últimos dias
     const avg = recentDailySpending.reduce((a, b) => a + b, 0) / recentDailySpending.length;
     const ritmoProximosDias = Math.round(avg);
 
-    // Detectar tendência comparando primeira e segunda metade
     let tendencia: "subida" | "queda" | "estavel" = "estavel";
     if (recentDailySpending.length >= 4) {
         const mid = Math.floor(recentDailySpending.length / 2);
         const firstHalf = recentDailySpending.slice(0, mid);
         const secondHalf = recentDailySpending.slice(mid);
-
         const avgFirst = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
         const avgSecond = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
-
         const change = ((avgSecond - avgFirst) / avgFirst) * 100;
-
         if (change > 10) tendencia = "subida";
         else if (change < -10) tendencia = "queda";
     }
 
     const confidence = Math.min(1.0, recentDailySpending.length / 7);
-
-    return {
-        ritmoProximosDias,
-        tendencia,
-        confidence,
-    };
+    return { ritmoProximosDias, tendencia, confidence };
 }
 
-/**
- * Consolida todas as previsões em um único resultado
- */
 export function consolidateForecast(
     actualSpent: number,
     daysElapsed: number,
     totalDays: number,
     initialBudget: number,
-    recentDailySpending: number[]
+    recentDailySpending: number[],
+    userTier: "SENTINEL" | "VANGUARD" | "LEGACY" = "SENTINEL"
 ): ForecastResult {
     const previsaoMensal = calculateMonthlyForecast(
         actualSpent,
         daysElapsed,
         totalDays,
-        initialBudget
+        initialBudget,
+        undefined,
+        userTier
     );
 
     const previsaoSemanal = calculateWeeklyForecast(recentDailySpending);
-
-    // Estabilidade geral (média das duas confiâncias)
     const estabilidade = (previsaoMensal.estabilidadeVsVolatilidade + previsaoSemanal.confidence) / 2;
-
-    // Risco leve: se projeção > 110% do orçamento
-    const riscoLeve = initialBudget > 0 && previsaoMensal.gastoTotalPrevisto > initialBudget * 1.1
-        ? 1
-        : 0;
-
-    // Confiança geral do forecast
+    const riscoLeve = initialBudget > 0 && previsaoMensal.gastoTotalPrevisto > initialBudget * 1.1 ? 1 : 0;
     const confidenceForecast = (previsaoMensal.confidence + previsaoSemanal.confidence) / 2;
 
     return {

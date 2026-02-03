@@ -1,32 +1,39 @@
+@import './styles/fortress-design-system.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  background: white;
-  color: black;
-  font-family: system-ui;
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  font-family: 'Outfit', sans-serif;
+  margin: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-header {
-  background: #1a365d;
+/* Smooth selection */
+::selection {
+  background: var(--emerald-primary);
   color: white;
-  padding: 1rem;
 }
 
-.hero-section {
-  background: #1a365d;
-  color: white;
-  padding: 4rem 2rem;
-  text-align: center;
+/* Global scrollbar - Clean & Discreet */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-.btn-primary {
-  background: #10b981;
-  color: white;
-  padding: 1rem 2rem;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
+::-webkit-scrollbar-track {
+  background: var(--bg-surface);
 }
-header { display: block !important; visibility: visible !important; }
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--emerald-primary);
+}

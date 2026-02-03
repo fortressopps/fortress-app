@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Benefits.css';
 
 const Benefits = () => {
+  const navigate = useNavigate();
   const [expandedBenefit, setExpandedBenefit] = useState(null);
 
   const toggleBenefit = (benefitId) => {
@@ -119,30 +121,34 @@ const Benefits = () => {
     }
   ];
 
-  const handleLearnMore = (benefitType) => {
-    // Lógica similar ao Pricing para ações específicas
+  const handleLearnMore = useCallback((benefitType) => {
     switch (benefitType) {
       case 'supermarket':
-        alert('🛒 Modo Supermercado ativado! Comece a economizar até 30% nas suas compras.');
+        navigate('/receipts');
         break;
+      case 'goals':
+        navigate('/goals');
+        break;
+      case 'reports':
       case 'family':
-        alert('👨‍👩‍👧‍👦 Controle Familiar: Organize as finanças de toda sua família em um só lugar!');
+      case 'investment':
+      case 'security':
+        navigate('/register');
         break;
       default:
-        // Scroll para a seção de pricing
         document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
         break;
     }
-  };
+  }, [navigate]);
 
   return (
     <section className="benefits-container" id="benefits">
       <div className="benefits-content">
-        <h2 className="benefits-title">
-          Ferramentas Para Sua Independência Financeira
+        <h2 className="benefits-title text-charcoal text-6xl font-bold tracking-tighter mb-6">
+          System Infrastructure
         </h2>
-        <p className="benefits-subtitle">
-          Cada funcionalidade foi cuidadosamente desenvolvida para empoderar suas decisões financeiras e acelerar sua jornada rumo à liberdade.
+        <p className="benefits-subtitle text-mute text-xl font-medium max-w-2xl mx-auto mb-20">
+          Módulos integrados de custódia patrimonial e inteligência tática.
         </p>
 
         <div className="benefits-grid">
@@ -158,7 +164,7 @@ const Benefits = () => {
               )}
 
               <div className="benefits-header">
-                <div className="benefit-icon">
+                <div className="benefit-icon neon-glow-emerald">
                   {benefit.icon}
                 </div>
                 <h3 className="benefit-name">{benefit.name}</h3>
@@ -199,8 +205,8 @@ const Benefits = () => {
                     className={`benefits-button ${benefit.featured ? 'btn-primary' : 'btn-secondary'}`}
                     onClick={() => handleLearnMore(benefit.type)}
                   >
-                    {benefit.type === 'supermarket' ? 'Ativar Modo' : 
-                     benefit.type === 'family' ? 'Começar Agora' : 'Experimentar'}
+                    {benefit.type === 'supermarket' ? 'Ativar Modo' :
+                      benefit.type === 'family' ? 'Começar Agora' : 'Experimentar'}
                   </button>
 
                   {/* Micro-copy contextual */}
@@ -221,8 +227,8 @@ const Benefits = () => {
                   className={`benefits-button ${benefit.featured ? 'btn-primary' : 'btn-secondary'}`}
                   onClick={() => handleLearnMore(benefit.type)}
                 >
-                  {benefit.type === 'supermarket' ? 'Ativar Modo' : 
-                   benefit.type === 'family' ? 'Começar Agora' : 'Saiba Mais'}
+                  {benefit.type === 'supermarket' ? 'Ativar Modo' :
+                    benefit.type === 'family' ? 'Começar Agora' : 'Saiba Mais'}
                 </button>
               )}
             </div>
@@ -240,7 +246,7 @@ const Benefits = () => {
           <div className="benefits-testimonials">
             <div className="benefit-testimonial">
               <div className="testimonial-content">
-                "O modo supermercado mudou completamente minha relação com as compras. 
+                "O modo supermercado mudou completamente minha relação com as compras.
                 Economizo em média R$ 300 por mês só com a lista inteligente!"
               </div>
               <div className="testimonial-author">
@@ -251,7 +257,7 @@ const Benefits = () => {
 
             <div className="benefit-testimonial">
               <div className="testimonial-content">
-                "As metas financeiras me ajudaram a juntar R$ 15.000 para minha viagem dos sonhos. 
+                "As metas financeiras me ajudaram a juntar R$ 15.000 para minha viagem dos sonhos.
                 O acompanhamento visual foi fundamental para manter a motivação."
               </div>
               <div className="testimonial-author">

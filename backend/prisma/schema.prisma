@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserTier {
+  SENTINEL
+  VANGUARD
+  LEGACY
+}
+
 model User {
   id                String            @id @default(uuid())
   email             String            @unique
@@ -15,10 +21,18 @@ model User {
   emailVerified     Boolean           @default(false)
   emailVerificationToken String?      @unique
   emailVerificationExpires DateTime?  // expiração do token
+  tier              UserTier          @default(SENTINEL)
+
+  // Cognitive Tracking (Upgrade Level 3)
+  lastDashboardVisit DateTime?
+  totalInsightsViewed Int             @default(0)
+  impulseCount        Int             @default(0) // Persona C detection
+
   createdAt         DateTime          @default(now())
   updatedAt         DateTime         @updatedAt
   supermarketLists  SupermarketList[]
   goals             Goal[]
+  kernelProfile     KernelProfile?
 }
 
 enum SupermarketCategory {
@@ -79,4 +93,18 @@ model Goal {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model KernelProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  w1        Float    @default(0.5)
+  w2        Float    @default(0.2)
+  w3        Float    @default(0.1)
+  w4        Float    @default(0.15)
+  w5        Float    @default(0.05)
+  w6        Float    @default(0.1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

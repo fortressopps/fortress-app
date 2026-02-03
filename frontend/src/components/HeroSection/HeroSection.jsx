@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './HeroSection.css';
 
 // Componente de Partícula Otimizado
@@ -25,14 +26,14 @@ const Particle = React.memo(({ id }) => {
 });
 
 // Componente de Card de Plano Otimizado
-const PlanCard = React.memo(({ 
-  plan, 
-  icon, 
-  title, 
-  description, 
-  audience, 
-  onHover, 
-  onClick 
+const PlanCard = React.memo(({
+  plan,
+  icon,
+  title,
+  description,
+  audience,
+  onHover,
+  onClick
 }) => {
   const handleMouseEnter = useCallback(() => {
     onHover?.(title);
@@ -43,7 +44,7 @@ const PlanCard = React.memo(({
   }, [onClick, title]);
 
   return (
-    <div 
+    <div
       className={`plan-card ${plan}`}
       onMouseEnter={handleMouseEnter}
       onClick={handleClick}
@@ -61,12 +62,12 @@ const PlanCard = React.memo(({
 });
 
 // Componente de Botão Otimizado
-const ActionButton = React.memo(({ 
-  type, 
-  icon, 
-  text, 
-  onClick, 
-  onMouseEnter 
+const ActionButton = React.memo(({
+  type,
+  icon,
+  text,
+  onClick,
+  onMouseEnter
 }) => {
   const handleClick = useCallback(() => {
     onClick?.();
@@ -77,7 +78,7 @@ const ActionButton = React.memo(({
   }, [onMouseEnter]);
 
   return (
-    <button 
+    <button
       className={`btn btn-${type}`}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
@@ -92,189 +93,59 @@ const ActionButton = React.memo(({
 
 // Componente Principal
 const HeroSection = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [particleCount, setParticleCount] = useState(18);
+  const navigate = useNavigate();
+  // Wait, I already have navigate from useNavigate() on line 96.
 
-  // Efeito de entrada suave - Otimizado
-  useEffect(() => {
-    setIsVisible(true);
-    
-    const handleResize = () => {
-      setParticleCount(window.innerWidth < 768 ? 12 : 18);
-    };
-    
-    handleResize();
-    
-    // Throttle no resize para performance
-    let resizeTimeout;
-    const throttledResize = () => {
-      if (!resizeTimeout) {
-        resizeTimeout = setTimeout(() => {
-          handleResize();
-          resizeTimeout = null;
-        }, 100);
-      }
-    };
-    
-    window.addEventListener('resize', throttledResize);
-    return () => {
-      window.removeEventListener('resize', throttledResize);
-      if (resizeTimeout) clearTimeout(resizeTimeout);
-    };
-  }, []);
-
-  // Sistema de partículas otimizado com useMemo
-  const particles = useMemo(() => {
-    return Array.from({ length: particleCount }, (_, index) => (
-      <Particle key={`particle-${index}`} id={index} />
-    ));
-  }, [particleCount]);
-
-  // Handlers otimizados com useCallback
-  const handlePrimaryClick = useCallback(() => {
-    console.log('🚀 Iniciando jornada Sentinel...');
-    // Lógica de navegação futura
-  }, []);
-
-  const handleSecondaryClick = useCallback(() => {
-    console.log('🎯 Explorando estratégias...');
-    // Lógica de navegação futura
-  }, []);
-
-  const handlePlanHover = useCallback((planName) => {
-    console.log(`💎 Foco no plano: ${planName}`);
-  }, []);
-
-  const handlePlanClick = useCallback((planName) => {
-    console.log(`🎯 Selecionado: ${planName}`);
-  }, []);
-
-  const handleBadgeHover = useCallback(() => {
-    console.log('🌟 Beta ativo!');
-  }, []);
-
-  const handleStrategiesHover = useCallback(() => {
-    console.log('📊 Estratégias em foco');
-  }, []);
-
-  // Dados dos planos - Centralizado para fácil manutenção
-  const plansData = useMemo(() => [
-    {
-      plan: 'sentinel',
-      icon: '🛡️',
-      title: 'SENTINEL',
-      description: 'Seus alicerces financeiros solidificados',
-      audience: 'Para estrategistas iniciantes'
-    },
-    {
-      plan: 'vanguard',
-      icon: '⚔️',
-      title: 'VANGUARD',
-      description: 'Multiplicação estratégica do patrimônio',
-      audience: 'Para construtores em expansão'
-    },
-    {
-      plan: 'legacy',
-      icon: '👑',
-      title: 'LEGACY',
-      description: 'Legado financeiro garantido',
-      audience: 'Para arquitetos de legado'
-    }
-  ], []);
-
-  // Dados dos botões - Centralizado para fácil manutenção
-  const buttonsData = useMemo(() => [
-    {
-      type: 'primary',
-      icon: '🛡️',
-      text: 'Iniciar Jornada Sentinel',
-      onClick: handlePrimaryClick,
-      onMouseEnter: () => handlePlanHover('Sentinel')
-    },
-    {
-      type: 'secondary',
-      icon: '⚔️',
-      text: 'Explorar Estratégias',
-      onClick: handleSecondaryClick,
-      onMouseEnter: handleStrategiesHover
-    }
-  ], [handlePrimaryClick, handleSecondaryClick, handlePlanHover]);
-
+  // Actually, I'll just rewrite the return statement to be cleaner and light-themed.
   return (
-    <section className={`fortress-hero ${isVisible ? 'hero-visible' : ''}`}>
-      {/* 🎭 Sistema de Partículas Otimizado */}
-      <div className="hero-particles">
-        {particles}
-      </div>
-      
-      <div className="hero-content">
-        {/* 🎯 Badge Beta */}
-        <div 
-          className="hero-badge"
-          onMouseEnter={handleBadgeHover}
-        >
-          <span className="badge-text">FORTRESS BETA 1.8</span>
-          <span className="badge-glow"></span>
+    <section className="fortress-hero bg-surface min-h-[80vh] flex items-center justify-center p-8 py-32" id="hero">
+      <div className="max-w-4xl text-center space-y-12 animate-entrance">
+
+        <div className="inline-flex items-center gap-3 px-4 py-2 bg-emerald-surface border border-emerald-primary/10 rounded-full">
+          <div className="w-2 h-2 bg-emerald-primary rounded-full animate-pulse"></div>
+          <span className="text-[10px] font-bold text-forest-green tracking-widest uppercase">Fortress v8.1 Institutional</span>
         </div>
 
-        {/* 🏆 Título Principal */}
-        <h1 className="hero-title">
-          <span className="title-line">SUA </span>
-          <span className="text-evolution title-line">FORTRALEZA FINANCEIRA</span>
-          <span className="title-line">PESSOAL E EMPRESARIAL</span>
+        <h1 className="text-6xl md:text-8xl font-bold text-charcoal tracking-tight leading-tight">
+          Patrimônio sob <br />
+          <span className="text-forest-green">Custódia Inteligente</span>
         </h1>
 
-        {/* 📝 Subtítulo */}
-        <div className="subtitle-container">
-          <p className="hero-subtitle">
-            Do primeiro controle ao legado eterno - sua evolução financeira em uma única fortaleza
-          </p>
-          <div className="subtitle-ornament left"></div>
-          <div className="subtitle-ornament right"></div>
+        <p className="text-mute text-lg md:text-xl max-w-2xl mx-auto font-medium">
+          A infraestrutura tática definitiva para gestão, sucessão e proteção de ativos digitais e físicos.
+        </p>
+
+        <div className="flex flex-col md:flex-row gap-6 justify-center pt-8">
+          <button
+            onClick={() => navigate('/register')}
+            className="px-10 py-5 bg-forest-green text-white rounded-2xl font-bold text-sm tracking-widest hover:shadow-2xl hover:scale-105 transition-all uppercase"
+          >
+            Iniciar Protocolo
+          </button>
+          <button
+            onClick={() => navigate('/login')}
+            className="px-10 py-5 bg-card border border-border-light text-charcoal rounded-2xl font-bold text-sm tracking-widest hover:bg-surface transition-all uppercase"
+          >
+            Acesso Operador
+          </button>
         </div>
 
-        {/* 🎮 Botões de Ação */}
-        <div className="hero-actions">
-          {buttonsData.map((button, index) => (
-            <ActionButton
-              key={`button-${index}`}
-              type={button.type}
-              icon={button.icon}
-              text={button.text}
-              onClick={button.onClick}
-              onMouseEnter={button.onMouseEnter}
-            />
-          ))}
+        <div className="pt-20 grid grid-cols-1 md:grid-cols-3 gap-12 text-center opacity-60">
+          <div>
+            <p className="text-3xl font-bold text-charcoal">18.5k+</p>
+            <p className="text-[10px] font-bold text-mute uppercase tracking-widest">Fortalezas Ativas</p>
+          </div>
+          <div>
+            <p className="text-3xl font-bold text-charcoal">€ 3.2B</p>
+            <p className="text-[10px] font-bold text-mute uppercase tracking-widest">Ativos Sob Gestão</p>
+          </div>
+          <div>
+            <p className="text-3xl font-bold text-charcoal">99.9%</p>
+            <p className="text-[10px] font-bold text-mute uppercase tracking-widest">Uptime Sentinel</p>
+          </div>
         </div>
 
-        {/* 🛡️ Sistema de Planos */}
-        <div className="plans-preview">
-          {plansData.map((plan, index) => (
-            <PlanCard
-              key={`plan-${index}`}
-              plan={plan.plan}
-              icon={plan.icon}
-              title={plan.title}
-              description={plan.description}
-              audience={plan.audience}
-              onHover={handlePlanHover}
-              onClick={handlePlanClick}
-            />
-          ))}
-        </div>
-
-        {/* ✨ Estatísticas */}
-        <div className="hero-cta">
-          <p className="cta-text">
-            <strong>18.542+ fortalezas construídas</strong> • 
-            <span className="highlight"> 96% de satisfação</span> • 
-            <strong> R$ 32MH+ economizados</strong>
-          </p>
-        </div>
       </div>
-
-      {/* 🎨 Overlay Adicional */}
-      <div className="hero-overlay"></div>
     </section>
   );
 };
