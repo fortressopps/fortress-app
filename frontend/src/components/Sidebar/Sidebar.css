@@ -4,8 +4,8 @@
     position: fixed;
     left: 0;
     top: 0;
-    background: var(--bg-sidebar);
-    border-right: 1px solid var(--border-light);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 55%), var(--bg-obsidian-soft);
+    border-right: 1px solid var(--border-dark);
     display: flex;
     flex-direction: column;
     z-index: 100;
@@ -22,7 +22,7 @@
 .brand-circle {
     width: 32px;
     height: 32px;
-    background: var(--emerald-primary);
+    background: radial-gradient(circle at 30% 30%, #2dd4bf, var(--emerald-primary));
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -41,7 +41,7 @@
     font-size: 1.1rem;
     font-weight: 800;
     letter-spacing: 0.1em;
-    color: var(--text-main);
+    color: var(--text-main-dark);
 }
 
 .sidebar-nav {
@@ -61,7 +61,7 @@
     text-decoration: none;
     border-radius: 12px;
     transition: var(--transition-enterprise);
-    color: var(--text-mute);
+    color: var(--text-mute-dark);
 }
 
 .nav-icon {
@@ -76,13 +76,14 @@
 }
 
 .nav-item:hover {
-    background: var(--bg-surface);
-    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-main-dark);
 }
 
 .nav-item.active {
-    background: var(--emerald-primary);
-    color: white;
+    background: rgba(16, 96, 72, 0.25);
+    color: var(--text-main-dark);
+    border: 1px solid rgba(16, 96, 72, 0.5);
 }
 
 .nav-item.active .nav-icon {
@@ -92,7 +93,7 @@
 .sidebar-footer {
     margin-top: auto;
     padding: 24px 16px;
-    border-top: 1px solid var(--border-light);
+    border-top: 1px solid var(--border-dark);
 }
 
 .user-persona-card {
@@ -104,13 +105,13 @@
 .persona-avatar-circle {
     width: 40px;
     height: 40px;
-    background: var(--bg-surface);
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
-    border: 1px solid var(--border-light);
+    border: 1px solid var(--border-dark);
 }
 
 .persona-info {
@@ -121,6 +122,7 @@
 .persona-name {
     font-size: 0.8rem;
     font-weight: 700;
+    color: var(--text-main-dark);
 }
 
 .persona-status {
@@ -128,6 +130,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    color: var(--neon-accent);
 }
 
 @media (max-width: 1024px) {

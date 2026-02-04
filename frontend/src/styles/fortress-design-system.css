@@ -7,6 +7,17 @@
   --bg-card: #FFFFFF;
   --bg-sidebar: #FFFFFF;
 
+  /* 🌑 OBSIDIAN DARK LAYER */
+  --bg-obsidian: #0f1116;
+  --bg-obsidian-deep: #0b0d12;
+  --bg-obsidian-soft: #161a22;
+  --bg-obsidian-glow: rgba(16, 96, 72, 0.12);
+  --bg-obsidian-card: #141821;
+  --border-dark: rgba(255, 255, 255, 0.08);
+  --border-dark-strong: rgba(255, 255, 255, 0.16);
+  --text-main-dark: #E5E7EB;
+  --text-mute-dark: rgba(229, 231, 235, 0.62);
+
   /* 🌲 FOREST GREEN ADAPTATION */
   --emerald-primary: #106048;
   /* Deep Forest Green */

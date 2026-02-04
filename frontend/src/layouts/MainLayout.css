@@ -1,27 +1,24 @@
 .main-layout {
     display: flex;
     min-height: 100vh;
-    background: var(--bg-obsidian-deep);
-    perspective: 1200px;
+    background: radial-gradient(circle at top left, rgba(16, 96, 72, 0.12), transparent 55%), var(--bg-obsidian-deep);
 }
 
 .main-content {
     flex: 1;
-    margin-left: 280px;
-    padding: 40px;
+    margin-left: 240px;
+    padding: 32px 40px 48px;
     min-height: 100vh;
 }
 
 .content-container {
     max-width: 1400px;
     margin: 0 auto;
-    transform: rotateX(1deg);
-    transform-style: preserve-3d;
 }
 
 @media (max-width: 1024px) {
     .main-content {
         margin-left: 80px;
-        padding: 20px;
+        padding: 24px;
     }
 }
