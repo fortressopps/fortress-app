@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './Header.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import "./Header.css";
 
 const Header = () => {
   return (
@@ -15,9 +15,15 @@ const Header = () => {
 
         <div className="header-actions flex items-center gap-8">
           <div className="header-icon-group flex items-center gap-6 text-mute text-lg">
-            <span className="cursor-pointer hover:text-charcoal transition-all">🔔</span>
-            <span className="cursor-pointer hover:text-charcoal transition-all">👤</span>
-            <span className="cursor-pointer hover:text-charcoal transition-all">🔍</span>
+            <span className="cursor-pointer hover:text-charcoal transition-all">
+              🔔
+            </span>
+            <span className="cursor-pointer hover:text-charcoal transition-all">
+              👤
+            </span>
+            <span className="cursor-pointer hover:text-charcoal transition-all">
+              🔍
+            </span>
           </div>
 
           <Link to="/login" className="desktop-only">

@@ -1,2 +1,8 @@
-.error-message { color: #d32f2f; margin-top: 8px; }
-.success-message { color: #388e3c; margin-top: 8px; }
+.error-message {
+  color: #d32f2f;
+  margin-top: 8px;
+}
+.success-message {
+  color: #388e3c;
+  margin-top: 8px;
+}

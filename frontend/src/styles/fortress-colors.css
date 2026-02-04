@@ -3,24 +3,24 @@
 
 :root {
   /* 💎 CORES PRIMÁRIAS - IDENTIDADE FORTRESS */
-  --emerald-fortress: #065F46;
-  --green-evolution: #10B981;
+  --emerald-fortress: #065f46;
+  --green-evolution: #10b981;
   --green-deep: #059669;
-  
+
   /* 🚀 CORES FUNCIONAIS - SISTEMA FORTRESS */
-  --green-ocean: #0F766E;
-  --white-pure: #ECFDF5;
-  --steel-tech: #1E293B;
+  --green-ocean: #0f766e;
+  --white-pure: #ecfdf5;
+  --steel-tech: #1e293b;
   --gray-strategic: #475569;
-  
+
   /* 🛡️ CORES DOS PLANOS */
-  --sentinel-color: #065F46;
-  --vanguard-color: #0F766E;
-  --legacy-color: #1E293B;
-  
+  --sentinel-color: #065f46;
+  --vanguard-color: #0f766e;
+  --legacy-color: #1e293b;
+
   /* 🌈 GRADIENTES OFICIAIS */
-  --gradient-fortress: linear-gradient(135deg, #065F46, #10B981);
-  --gradient-sentinel: linear-gradient(135deg, #065F46, #059669);
-  --gradient-vanguard: linear-gradient(135deg, #0F766E, #10B981);
-  --gradient-legacy: linear-gradient(135deg, #1E293B, #475569);
+  --gradient-fortress: linear-gradient(135deg, #065f46, #10b981);
+  --gradient-sentinel: linear-gradient(135deg, #065f46, #059669);
+  --gradient-vanguard: linear-gradient(135deg, #0f766e, #10b981);
+  --gradient-legacy: linear-gradient(135deg, #1e293b, #475569);
 }

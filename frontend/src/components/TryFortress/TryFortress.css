@@ -87,7 +87,11 @@
 }
 
 .tool-button {
-  background: linear-gradient(135deg, var(--emerald-fortress), var(--green-deep));
+  background: linear-gradient(
+    135deg,
+    var(--emerald-fortress),
+    var(--green-deep)
+  );
   color: var(--white-pure);
   border: none;
   padding: 0.8rem 1.5rem;
@@ -126,7 +130,8 @@
   justify-content: center;
 }
 
-.btn-primary, .btn-secondary {
+.btn-primary,
+.btn-secondary {
   padding: 1rem 2rem;
   border: none;
   border-radius: 12px;
@@ -138,7 +143,11 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--emerald-fortress), var(--green-deep));
+  background: linear-gradient(
+    135deg,
+    var(--emerald-fortress),
+    var(--green-deep)
+  );
   color: var(--white-pure);
 }
 
@@ -165,19 +174,19 @@
   .try-fortress-container {
     padding: 1rem;
   }
-  
+
   .try-fortress-header h1 {
     font-size: 2rem;
   }
-  
+
   .tools-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .save-buttons {
     flex-direction: column;
   }
-  
+
   .back-button {
     position: relative;
     margin-bottom: 1rem;
