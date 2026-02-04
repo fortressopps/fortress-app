@@ -25,7 +25,7 @@
 }
 
 .brand-circle-small::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 6px;
   background: white;

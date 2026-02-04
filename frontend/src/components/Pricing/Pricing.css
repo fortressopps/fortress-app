@@ -215,7 +215,7 @@
   }
 }
 
-.expanded-content:not(:empty)>* {
+.expanded-content:not(:empty) > * {
   animation: expandContent 0.4s ease-out;
 }
 

@@ -1,12 +1,12 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header/Header';
-import HeroSection from './components/HeroSection/HeroSection';
-import Benefits from './components/Benefits/Benefits';
-import Pricing from './components/Pricing/Pricing';
-import Footer from './components/Footer/Footer';
-import TryFortress from './components/TryFortress/TryFortress';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./components/Header/Header";
+import HeroSection from "./components/HeroSection/HeroSection";
+import Benefits from "./components/Benefits/Benefits";
+import Pricing from "./components/Pricing/Pricing";
+import Footer from "./components/Footer/Footer";
+import TryFortress from "./components/TryFortress/TryFortress";
+import "./App.css";
 
 function HomePage() {
   return (
@@ -22,15 +22,15 @@ function HomePage() {
   );
 }
 
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import Goals from './pages/Goals';
-import Supermarket from './pages/Supermarket';
-import Intelligence from './pages/Intelligence';
-import OAuthCallback from './pages/OAuthCallback';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import MainLayout from './layouts/MainLayout';
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Goals from "./pages/Goals";
+import Supermarket from "./pages/Supermarket";
+import Intelligence from "./pages/Intelligence";
+import OAuthCallback from "./pages/OAuthCallback";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import MainLayout from "./layouts/MainLayout";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -52,10 +52,38 @@ function App() {
             <Route path="/auth/callback" element={<OAuthCallback />} />
 
             {/* Protected Routes - Wrapped in MainLayout via ProtectedRoute */}
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
-            <Route path="/supermarket" element={<ProtectedRoute><Supermarket /></ProtectedRoute>} />
-            <Route path="/intelligence" element={<ProtectedRoute><Intelligence /></ProtectedRoute>} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/goals"
+              element={
+                <ProtectedRoute>
+                  <Goals />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/supermarket"
+              element={
+                <ProtectedRoute>
+                  <Supermarket />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/intelligence"
+              element={
+                <ProtectedRoute>
+                  <Intelligence />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </div>
       </AuthProvider>

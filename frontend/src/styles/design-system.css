@@ -1,5 +1,5 @@
 /* ===== FORTRESS DESIGN SYSTEM - FINtech PREMIUM ===== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
 :root {
   /* Cores Premium - Esmeralda & Neutros */
@@ -9,28 +9,40 @@
   --emerald-600: #059669;
   --emerald-700: #047857;
   --emerald-800: #065f46;
-  
+
   /* Neutros Sofisticados */
   --neutral-50: #fafaf9;
   --neutral-100: #f5f5f4;
   --neutral-200: #e7e5e4;
   --neutral-800: #292524;
   --neutral-900: #1c1917;
-  
+
   /* Cores Funcionais */
   --success: #10b981;
   --warning: #f59e0b;
   --error: #ef4444;
   --info: #3b82f6;
-  
+
   /* Gradientes Premium */
-  --gradient-primary: linear-gradient(135deg, var(--emerald-600) 0%, var(--emerald-700) 100%);
-  --gradient-hero: linear-gradient(135deg, var(--emerald-700) 0%, var(--neutral-900) 100%);
-  --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-  
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--emerald-600) 0%,
+    var(--emerald-700) 100%
+  );
+  --gradient-hero: linear-gradient(
+    135deg,
+    var(--emerald-700) 0%,
+    var(--neutral-900) 100%
+  );
+  --gradient-glass: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+
   /* Tipografia */
-  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  
+  --font-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+
   /* Espaçamentos */
   --space-xs: 0.5rem;
   --space-sm: 1rem;
@@ -38,18 +50,21 @@
   --space-lg: 2rem;
   --space-xl: 3rem;
   --space-2xl: 4rem;
-  
+
   /* Bordas */
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
-  
+
   /* Sombras */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
   /* Transições */
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -78,7 +93,12 @@ body {
 }
 
 /* Tipografia */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 600;
   line-height: 1.2;
   color: var(--neutral-900);
@@ -123,13 +143,18 @@ h3 {
 }
 
 .btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s;
 }
 
@@ -185,13 +210,23 @@ h3 {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .animate-fadeInUp {
@@ -207,7 +242,9 @@ h3 {
 }
 
 /* Utility Classes */
-.text-center { text-align: center; }
+.text-center {
+  text-align: center;
+}
 .text-gradient {
   background: var(--gradient-primary);
   -webkit-background-clip: text;
@@ -217,10 +254,16 @@ h3 {
 
 /* Responsive */
 @media (max-width: 768px) {
-  h1 { font-size: 2.5rem; }
-  h2 { font-size: 2rem; }
-  h3 { font-size: 1.75rem; }
-  
+  h1 {
+    font-size: 2.5rem;
+  }
+  h2 {
+    font-size: 2rem;
+  }
+  h3 {
+    font-size: 1.75rem;
+  }
+
   .container {
     padding: 0 var(--space-sm);
   }

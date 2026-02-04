@@ -1,5 +1,5 @@
-import React from 'react';
-import './Dashboard.css';
+import React from "react";
+import "./Dashboard.css";
 
 const Dashboard = () => {
   return (
@@ -11,10 +11,9 @@ const Dashboard = () => {
           <span className="archetype-badge strategist">O ESTRATEGISTA</span>
         </div>
       </div>
-      
+
       {/* 📊 GRID PRINCIPAL */}
       <div className="dashboard-grid">
-        
         {/* 🗺️ MAPA PATRIMONIAL */}
         <div className="dashboard-card map-card">
           <h3>🗺️ Mapa Patrimonial</h3>
@@ -23,7 +22,7 @@ const Dashboard = () => {
             <small>Patrimônio total: R$ ---</small>
           </div>
         </div>
-        
+
         {/* 🔔 ALERTAS DO GUARDIÃO */}
         <div className="dashboard-card alerts-card">
           <h3>🔔 Alertas do Guardião</h3>
@@ -42,7 +41,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        
+
         {/* 🏆 TRILHA DE EVOLUÇÃO FORTRESS */}
         <div className="dashboard-card progress-card">
           <h3>🏆 Trilha de Evolução</h3>
@@ -64,27 +63,38 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        
+
         {/* 💰 FLUXO FINANCEIRO */}
         <div className="dashboard-card">
           <h3>💰 Fluxo Financeiro</h3>
-          <div style={{padding: '2rem', textAlign: 'center', color: 'var(--gray-strategic)'}}>
-            <div style={{fontSize: '2rem', marginBottom: '1rem'}}>📊</div>
+          <div
+            style={{
+              padding: "2rem",
+              textAlign: "center",
+              color: "var(--gray-strategic)",
+            }}
+          >
+            <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>📊</div>
             <p>Seu fluxo de entrada e saída este mês</p>
             <small>Em desenvolvimento</small>
           </div>
         </div>
-        
+
         {/* 🎯 METAS E OBJETIVOS */}
         <div className="dashboard-card">
           <h3>🎯 Metas do Estrategista</h3>
-          <div style={{padding: '2rem', textAlign: 'center', color: 'var(--gray-strategic)'}}>
-            <div style={{fontSize: '2rem', marginBottom: '1rem'}}>🎯</div>
+          <div
+            style={{
+              padding: "2rem",
+              textAlign: "center",
+              color: "var(--gray-strategic)",
+            }}
+          >
+            <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>🎯</div>
             <p>Suas metas financeiras em andamento</p>
             <small>Em desenvolvimento</small>
           </div>
         </div>
-
       </div>
     </div>
   );

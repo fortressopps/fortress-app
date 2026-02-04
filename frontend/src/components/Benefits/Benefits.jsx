@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Benefits.css';
+import React, { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Benefits.css";
 
 const Benefits = () => {
   const navigate = useNavigate();
@@ -12,134 +12,139 @@ const Benefits = () => {
 
   const benefitsData = [
     {
-      id: 'supermarket',
-      icon: '🛒',
-      name: 'MODO SUPERMERCADO',
-      description: 'Controle total das compras do mês',
-      shortDescription: 'Economize até 30% nas compras',
+      id: "supermarket",
+      icon: "🛒",
+      name: "MODO SUPERMERCADO",
+      description: "Controle total das compras do mês",
+      shortDescription: "Economize até 30% nas compras",
       features: [
-        'Lista de compras inteligente',
-        'Comparação de preços automática',
-        'Alertas de promoções',
-        'Controle de validade dos produtos',
-        'Histórico de gastos detalhado',
-        'Planos de compra semanais/mensais'
+        "Lista de compras inteligente",
+        "Comparação de preços automática",
+        "Alertas de promoções",
+        "Controle de validade dos produtos",
+        "Histórico de gastos detalhado",
+        "Planos de compra semanais/mensais",
       ],
-      stats: 'Economia média: R$ 287/mês',
+      stats: "Economia média: R$ 287/mês",
       featured: true,
-      type: 'supermarket'
+      type: "supermarket",
     },
     {
-      id: 'financial-goals',
-      icon: '🎯',
-      name: 'METAS FINANCEIRAS',
-      description: 'Alcance seus objetivos com planejamento',
-      shortDescription: 'Visualize seu progresso em tempo real',
+      id: "financial-goals",
+      icon: "🎯",
+      name: "METAS FINANCEIRAS",
+      description: "Alcance seus objetivos com planejamento",
+      shortDescription: "Visualize seu progresso em tempo real",
       features: [
-        'Definição de metas personalizadas',
-        'Acompanhamento de progresso',
-        'Alertas de milestones',
-        'Projeções automáticas',
-        'Dicas personalizadas',
-        'Comemoração de conquistas'
+        "Definição de metas personalizadas",
+        "Acompanhamento de progresso",
+        "Alertas de milestones",
+        "Projeções automáticas",
+        "Dicas personalizadas",
+        "Comemoração de conquistas",
       ],
-      stats: '87% mais chances de sucesso',
+      stats: "87% mais chances de sucesso",
       featured: false,
-      type: 'goals'
+      type: "goals",
     },
     {
-      id: 'investment',
-      icon: '📈',
-      name: 'ANÁLISE DE INVESTIMENTOS',
-      description: 'Tome decisões inteligentes',
-      shortDescription: 'Otimize seus retornos',
+      id: "investment",
+      icon: "📈",
+      name: "ANÁLISE DE INVESTIMENTOS",
+      description: "Tome decisões inteligentes",
+      shortDescription: "Otimize seus retornos",
       features: [
-        'Análise de perfil de risco',
-        'Recomendações personalizadas',
-        'Simulação de cenários',
-        'Diversificação automática',
-        'Alertas de oportunidades',
-        'Relatórios de performance'
+        "Análise de perfil de risco",
+        "Recomendações personalizadas",
+        "Simulação de cenários",
+        "Diversificação automática",
+        "Alertas de oportunidades",
+        "Relatórios de performance",
       ],
-      stats: 'Retorno médio: +18% ao ano',
+      stats: "Retorno médio: +18% ao ano",
       featured: false,
-      type: 'investment'
+      type: "investment",
     },
     {
-      id: 'family',
-      icon: '👨‍👩‍👧‍👦',
-      name: 'CONTROLE FAMILIAR',
-      description: 'Organize as finanças da família',
-      shortDescription: 'Transparência e colaboração',
+      id: "family",
+      icon: "👨‍👩‍👧‍👦",
+      name: "CONTROLE FAMILIAR",
+      description: "Organize as finanças da família",
+      shortDescription: "Transparência e colaboração",
       features: [
-        'Perfis individuais',
-        'Metas familiares compartilhadas',
-        'Controle de mesada',
-        'Educação financeira infantil',
-        'Relatórios familiares',
-        'Orçamento colaborativo'
+        "Perfis individuais",
+        "Metas familiares compartilhadas",
+        "Controle de mesada",
+        "Educação financeira infantil",
+        "Relatórios familiares",
+        "Orçamento colaborativo",
       ],
-      stats: 'Famílias organizadas: 92%',
+      stats: "Famílias organizadas: 92%",
       featured: true,
-      type: 'family'
+      type: "family",
     },
     {
-      id: 'reports',
-      icon: '📊',
-      name: 'RELATÓRIOS DETALHADOS',
-      description: 'Insights profundos sobre seus gastos',
-      shortDescription: 'Tome decisões baseadas em dados',
+      id: "reports",
+      icon: "📊",
+      name: "RELATÓRIOS DETALHADOS",
+      description: "Insights profundos sobre seus gastos",
+      shortDescription: "Tome decisões baseadas em dados",
       features: [
-        'Dashboard personalizável',
-        'Análise por categorias',
-        'Comparativo mensal/anual',
-        'Projeções futuras',
-        'Exportação de dados',
-        'Alertas inteligentes'
+        "Dashboard personalizável",
+        "Análise por categorias",
+        "Comparativo mensal/anual",
+        "Projeções futuras",
+        "Exportação de dados",
+        "Alertas inteligentes",
       ],
-      stats: '15+ tipos de relatórios',
+      stats: "15+ tipos de relatórios",
       featured: false,
-      type: 'reports'
+      type: "reports",
     },
     {
-      id: 'security',
-      icon: '🔒',
-      name: 'SEGURANÇA AVANÇADA',
-      description: 'Suas finanças protegidas',
-      shortDescription: 'Tranquilidade garantida',
+      id: "security",
+      icon: "🔒",
+      name: "SEGURANÇA AVANÇADA",
+      description: "Suas finanças protegidas",
+      shortDescription: "Tranquilidade garantida",
       features: [
-        'Criptografia de ponta a ponta',
-        'Autenticação biométrica',
-        'Backup automático',
-        'Monitoramento 24/7',
-        'Seguro contra fraudes',
-        'Conformidade LGPD'
+        "Criptografia de ponta a ponta",
+        "Autenticação biométrica",
+        "Backup automático",
+        "Monitoramento 24/7",
+        "Seguro contra fraudes",
+        "Conformidade LGPD",
       ],
-      stats: 'Proteção 100% garantida',
+      stats: "Proteção 100% garantida",
       featured: false,
-      type: 'security'
-    }
+      type: "security",
+    },
   ];
 
-  const handleLearnMore = useCallback((benefitType) => {
-    switch (benefitType) {
-      case 'supermarket':
-        navigate('/receipts');
-        break;
-      case 'goals':
-        navigate('/goals');
-        break;
-      case 'reports':
-      case 'family':
-      case 'investment':
-      case 'security':
-        navigate('/register');
-        break;
-      default:
-        document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
-        break;
-    }
-  }, [navigate]);
+  const handleLearnMore = useCallback(
+    (benefitType) => {
+      switch (benefitType) {
+        case "supermarket":
+          navigate("/receipts");
+          break;
+        case "goals":
+          navigate("/goals");
+          break;
+        case "reports":
+        case "family":
+        case "investment":
+        case "security":
+          navigate("/register");
+          break;
+        default:
+          document
+            .getElementById("pricing")
+            ?.scrollIntoView({ behavior: "smooth" });
+          break;
+      }
+    },
+    [navigate],
+  );
 
   return (
     <section className="benefits-container" id="benefits">
@@ -155,12 +160,10 @@ const Benefits = () => {
           {benefitsData.map((benefit, index) => (
             <div
               key={index}
-              className={`benefits-card ${benefit.featured ? 'featured' : ''} ${benefit.type}`}
+              className={`benefits-card ${benefit.featured ? "featured" : ""} ${benefit.type}`}
             >
               {benefit.featured && (
-                <div className="featured-badge">
-                  ⭐ Popular
-                </div>
+                <div className="featured-badge">⭐ Popular</div>
               )}
 
               <div className="benefits-header">
@@ -169,13 +172,13 @@ const Benefits = () => {
                 </div>
                 <h3 className="benefit-name">{benefit.name}</h3>
                 <p className="benefit-description">{benefit.description}</p>
-                <p className="benefit-short-description">{benefit.shortDescription}</p>
+                <p className="benefit-short-description">
+                  {benefit.shortDescription}
+                </p>
               </div>
 
               <div className="benefits-stats">
-                <div className="stats-badge">
-                  {benefit.stats}
-                </div>
+                <div className="stats-badge">{benefit.stats}</div>
               </div>
 
               {/* Botão Ler Mais */}
@@ -183,9 +186,9 @@ const Benefits = () => {
                 className="read-more-btn"
                 onClick={() => toggleBenefit(benefit.id)}
               >
-                {expandedBenefit === benefit.id ? 'Ver Menos' : 'Ver Detalhes'}
+                {expandedBenefit === benefit.id ? "Ver Menos" : "Ver Detalhes"}
                 <span className="read-more-arrow">
-                  {expandedBenefit === benefit.id ? '↑' : '↓'}
+                  {expandedBenefit === benefit.id ? "↑" : "↓"}
                 </span>
               </button>
 
@@ -202,20 +205,26 @@ const Benefits = () => {
                   </div>
 
                   <button
-                    className={`benefits-button ${benefit.featured ? 'btn-primary' : 'btn-secondary'}`}
+                    className={`benefits-button ${benefit.featured ? "btn-primary" : "btn-secondary"}`}
                     onClick={() => handleLearnMore(benefit.type)}
                   >
-                    {benefit.type === 'supermarket' ? 'Ativar Modo' :
-                      benefit.type === 'family' ? 'Começar Agora' : 'Experimentar'}
+                    {benefit.type === "supermarket"
+                      ? "Ativar Modo"
+                      : benefit.type === "family"
+                        ? "Começar Agora"
+                        : "Experimentar"}
                   </button>
 
                   {/* Micro-copy contextual */}
                   <div className="micro-copy">
                     <span>
-                      {benefit.type === 'supermarket' && '✅ Disponível em todos os planos'}
-                      {benefit.type === 'family' && '👨‍👩‍👧‍👦 Perfeito para famílias'}
-                      {benefit.type === 'investment' && '📈 A partir do plano Vanguard'}
-                      {benefit.type === 'reports' && '📊 Relatórios em tempo real'}
+                      {benefit.type === "supermarket" &&
+                        "✅ Disponível em todos os planos"}
+                      {benefit.type === "family" && "👨‍👩‍👧‍👦 Perfeito para famílias"}
+                      {benefit.type === "investment" &&
+                        "📈 A partir do plano Vanguard"}
+                      {benefit.type === "reports" &&
+                        "📊 Relatórios em tempo real"}
                     </span>
                   </div>
                 </div>
@@ -224,11 +233,14 @@ const Benefits = () => {
               {/* Botão CTA quando não expandido */}
               {expandedBenefit !== benefit.id && (
                 <button
-                  className={`benefits-button ${benefit.featured ? 'btn-primary' : 'btn-secondary'}`}
+                  className={`benefits-button ${benefit.featured ? "btn-primary" : "btn-secondary"}`}
                   onClick={() => handleLearnMore(benefit.type)}
                 >
-                  {benefit.type === 'supermarket' ? 'Ativar Modo' :
-                    benefit.type === 'family' ? 'Começar Agora' : 'Saiba Mais'}
+                  {benefit.type === "supermarket"
+                    ? "Ativar Modo"
+                    : benefit.type === "family"
+                      ? "Começar Agora"
+                      : "Saiba Mais"}
                 </button>
               )}
             </div>
@@ -238,16 +250,16 @@ const Benefits = () => {
         {/* Prova Social - Similar ao Pricing */}
         <div className="benefits-social-proof">
           <div className="benefits-proof-stats">
-            <strong>15.328+</strong> benefícios ativos •
-            <strong> 94%</strong> de adoção •
-            <strong> 4.8/5</strong> satisfação
+            <strong>15.328+</strong> benefícios ativos •<strong> 94%</strong> de
+            adoção •<strong> 4.8/5</strong> satisfação
           </div>
 
           <div className="benefits-testimonials">
             <div className="benefit-testimonial">
               <div className="testimonial-content">
-                "O modo supermercado mudou completamente minha relação com as compras.
-                Economizo em média R$ 300 por mês só com a lista inteligente!"
+                "O modo supermercado mudou completamente minha relação com as
+                compras. Economizo em média R$ 300 por mês só com a lista
+                inteligente!"
               </div>
               <div className="testimonial-author">
                 <span className="author-name">Maria S.</span>
@@ -257,8 +269,9 @@ const Benefits = () => {
 
             <div className="benefit-testimonial">
               <div className="testimonial-content">
-                "As metas financeiras me ajudaram a juntar R$ 15.000 para minha viagem dos sonhos.
-                O acompanhamento visual foi fundamental para manter a motivação."
+                "As metas financeiras me ajudaram a juntar R$ 15.000 para minha
+                viagem dos sonhos. O acompanhamento visual foi fundamental para
+                manter a motivação."
               </div>
               <div className="testimonial-author">
                 <span className="author-name">Pedro L.</span>

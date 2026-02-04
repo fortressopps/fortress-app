@@ -2,7 +2,7 @@
  * Fortress Core API - Frontend Service Layer
  * Connects to backend core modules (Supermarket, Goals, Forecast)
  */
-import api from './axiosClient';
+import api from "./axiosClient";
 
 /**
  * Process a receipt through the full core flow
@@ -11,8 +11,8 @@ import api from './axiosClient';
  * @returns {Promise} - { success, data: { receipt, insight, decision, notification } }
  */
 export async function processReceipt(data) {
-    const response = await api.post('/supermarket/receipts/process', data);
-    return response.data;
+  const response = await api.post("/supermarket/receipts/process", data);
+  return response.data;
 }
 
 /**
@@ -21,8 +21,8 @@ export async function processReceipt(data) {
  * @returns {Promise} - Array of goals with progress
  */
 export async function getGoals() {
-    const response = await api.get('/goals');
-    return response.data;
+  const response = await api.get("/goals");
+  return response.data;
 }
 
 /**
@@ -31,8 +31,8 @@ export async function getGoals() {
  * @param {Object} data - { name, value, periodicity }
  */
 export async function createGoal(data) {
-    const response = await api.post('/goals', data);
-    return response.data;
+  const response = await api.post("/goals", data);
+  return response.data;
 }
 
 /**
@@ -41,8 +41,8 @@ export async function createGoal(data) {
  * @returns {Promise} - { previsaoMensal, previsaoSemanal, riscoLeve }
  */
 export async function getForecast() {
-    const response = await api.get('/forecast');
-    return response.data;
+  const response = await api.get("/forecast");
+  return response.data;
 }
 
 /**
@@ -50,10 +50,10 @@ export async function getForecast() {
  * GET /supermarket/lists
  */
 export async function getSupermarketLists(page = 1, pageSize = 20) {
-    const response = await api.get('/supermarket/lists', {
-        params: { page, pageSize }
-    });
-    return response.data;
+  const response = await api.get("/supermarket/lists", {
+    params: { page, pageSize },
+  });
+  return response.data;
 }
 
 /**
@@ -61,8 +61,8 @@ export async function getSupermarketLists(page = 1, pageSize = 20) {
  * POST /supermarket/lists
  */
 export async function createSupermarketList(data) {
-    const response = await api.post('/supermarket/lists', data);
-    return response.data;
+  const response = await api.post("/supermarket/lists", data);
+  return response.data;
 }
 
 /**
@@ -70,8 +70,8 @@ export async function createSupermarketList(data) {
  * GET /supermarket/lists/:id
  */
 export async function getSupermarketListById(id) {
-    const response = await api.get(`/supermarket/lists/${id}`);
-    return response.data;
+  const response = await api.get(`/supermarket/lists/${id}`);
+  return response.data;
 }
 
 /**
@@ -79,8 +79,8 @@ export async function getSupermarketListById(id) {
  * POST /supermarket/lists/:id/items
  */
 export async function addSupermarketItem(listId, data) {
-    const response = await api.post(`/supermarket/lists/${listId}/items`, data);
-    return response.data;
+  const response = await api.post(`/supermarket/lists/${listId}/items`, data);
+  return response.data;
 }
 
 /**
@@ -88,8 +88,11 @@ export async function addSupermarketItem(listId, data) {
  * PATCH /supermarket/lists/:listId/items/:itemId
  */
 export async function updateSupermarketItem(listId, itemId, data) {
-    const response = await api.patch(`/supermarket/lists/${listId}/items/${itemId}`, data);
-    return response.data;
+  const response = await api.patch(
+    `/supermarket/lists/${listId}/items/${itemId}`,
+    data,
+  );
+  return response.data;
 }
 
 /**
@@ -97,8 +100,10 @@ export async function updateSupermarketItem(listId, itemId, data) {
  * DELETE /supermarket/lists/:listId/items/:itemId
  */
 export async function deleteSupermarketItem(listId, itemId) {
-    const response = await api.delete(`/supermarket/lists/${listId}/items/${itemId}`);
-    return response.data;
+  const response = await api.delete(
+    `/supermarket/lists/${listId}/items/${itemId}`,
+  );
+  return response.data;
 }
 
 /**
@@ -106,20 +111,20 @@ export async function deleteSupermarketItem(listId, itemId) {
  * GET /kernel
  */
 export async function getKernelState() {
-    const response = await api.get('/kernel');
-    return response.data;
+  const response = await api.get("/kernel");
+  return response.data;
 }
 
 export default {
-    processReceipt,
-    getGoals,
-    createGoal,
-    getForecast,
-    getSupermarketLists,
-    createSupermarketList,
-    getSupermarketListById,
-    addSupermarketItem,
-    updateSupermarketItem,
-    deleteSupermarketItem,
-    getKernelState,
+  processReceipt,
+  getGoals,
+  createGoal,
+  getForecast,
+  getSupermarketLists,
+  createSupermarketList,
+  getSupermarketListById,
+  addSupermarketItem,
+  updateSupermarketItem,
+  deleteSupermarketItem,
+  getKernelState,
 };

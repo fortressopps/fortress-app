@@ -3,22 +3,22 @@
 
 :root {
   /* 🏁 LIGHT INSTITUTIONAL SUBSTRATE */
-  --bg-surface: #F9FAFB;
-  --bg-card: #FFFFFF;
-  --bg-sidebar: #FFFFFF;
+  --bg-surface: #f9fafb;
+  --bg-card: #ffffff;
+  --bg-sidebar: #ffffff;
 
   /* 🌲 FOREST GREEN ADAPTATION */
   --emerald-primary: #106048;
   /* Deep Forest Green */
   --emerald-glow: rgba(16, 96, 72, 0.1);
   --emerald-surface: rgba(16, 96, 72, 0.05);
-  --neon-accent: #10B981;
+  --neon-accent: #10b981;
   /* Keeping a bright accent for highlights */
 
   /* ⚖️ HIGH CONTRAST TEXT & BORDERS */
   --text-main: #111827;
   /* Near Black */
-  --text-mute: #6B7280;
+  --text-mute: #6b7280;
   /* Steel Grey */
   --border-light: rgba(0, 0, 0, 0.06);
   --border-strong: rgba(0, 0, 0, 0.1);
@@ -28,7 +28,7 @@
   --elevated-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 
   /* 📏 TYPOGRAPHY */
-  --font-main: 'Outfit', 'Inter', sans-serif;
+  --font-main: "Outfit", "Inter", sans-serif;
   --transition-enterprise: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
   /* 🔄 LEGACY MAPPING (v8.0 -> v8.1) */
@@ -42,7 +42,6 @@
 
 /* 🌀 CINEMATIC AMBIENT GLOW */
 @keyframes volcanicEmerald {
-
   0%,
   100% {
     opacity: 0.05;
@@ -78,7 +77,6 @@
 }
 
 @keyframes floatSubtle {
-
   0%,
   100% {
     transform: translateY(0);
