@@ -291,13 +291,80 @@ A Fortress nasce da necessidade real, humana, cotidiana. Uma mãe cansada, um si
 
 # **8. IDENTIDADE VISUAL CONCEITUAL (VISUAL LAYER)**
 
-* tons calmos
-* geometrias estáveis
-* metáforas estruturais
-* leves gradientes
-* estética sóbria
+## **8.1 Princípios Visuais**
+
+* tons calmos e sem ruído visual
+* geometrias estáveis e bordas suaves
+* contraste legível sem agressividade
+* profundidade sutil (sombras e camadas)
+* estética institucional, sofisticada e discreta
 
 Diretriz geral: **segurança visual, jamais caos.**
+
+## **8.2 Sistema de Temas — Obsidian Night & Porcelain Light**
+
+O produto opera em dois modos visuais inspirados nas referências:
+
+### **Obsidian Night (dark mode)**
+
+* **Fundo primário:** grafite profundo (ex.: `#0F1116`)
+* **Cards/containers:** carvão acetinado (ex.: `#1B1E27`)
+* **Bordas:** aço escuro (ex.: `#2A2F3A`)
+* **Texto principal:** cinza neve (ex.: `#E5E7EB`)
+* **Texto secundário:** cinza médio (ex.: `#9CA3AF`)
+* **Acento Fortress (verde):** `#106048` (principal) + `#2F7A5C` (interações)
+* **Glow controlado:** brilho sutil em verde (ex.: `rgba(16, 96, 72, 0.15)`)
+
+### **Porcelain Light (light mode)**
+
+* **Fundo primário:** porcelana fria (ex.: `#F7F8FA`)
+* **Cards/containers:** branco absoluto (ex.: `#FFFFFF`)
+* **Bordas:** cinza gelo (ex.: `#E6E8EC`)
+* **Texto principal:** grafite (ex.: `#111827`)
+* **Texto secundário:** cinza aço (ex.: `#6B7280`)
+* **Acento Fortress:** mesmo verde institucional para consistência global
+
+Regra de coerência: **ícones, gráficos e botões usam o mesmo acento verde em ambos os modos.**
+
+## **8.3 Tipografia & Hierarquia**
+
+* **Fonte primária:** Outfit (fallback: Inter, sans-serif)
+* **Títulos:** peso 600–700, tracking sutil, ritmo confortável
+* **Texto auxiliar:** 11–12px, tracking amplo em labels
+* **Números críticos:** peso 700, alinhados à esquerda, alta legibilidade
+* **Caps & microtextos:** sempre em uppercase com espaçamento (branding institucional)
+
+## **8.4 Layout & Composição**
+
+* **Grid base:** 12 colunas, 24–32px de spacing
+* **Sidebar fixa:** largura 220–240px, ícones + labels curtos
+* **Cards:** raio 18–24px, sombra suave, borda sempre visível
+* **Interações:** hover levíssimo (elevação + borda reforçada)
+* **Scrollbars:** discretos, sem destaque excessivo
+
+## **8.5 Componentes-chave**
+
+1. **Card de saldo principal:** destaque de valor com cor verde institucional.
+2. **Cards analíticos:** gráfico, market data, transações e insights.
+3. **Botões primários:** fundo verde, texto branco, raio 14–18px.
+4. **Botões secundários:** outline sutil + texto verde.
+5. **Chips/Badges:** cantos arredondados, fundo claro, texto em uppercase.
+6. **Ícone de marca:** círculo com núcleo interno (marca “Fortress core”).
+
+## **8.6 Visualização de Dados**
+
+* **Gráficos de barras/linhas:** barras com fill verde e destaque em um ponto de pico.
+* **Gridlines discretas:** cinza gelo, transparência baixa.
+* **Tooltips:** card pequeno com sombra leve, sem borda agressiva.
+* **Indicadores de variação:** usar setas ↗/↘ com verde para positivo e vermelho controlado para negativo.
+
+## **8.7 Imagens de referência e alinhamento**
+
+As duas referências (dark & light) definem o padrão visual da dashboard e precisam refletir:
+
+* **Clareza institucional** no modo claro.
+* **Foco analítico** no modo escuro.
+* **Acento verde como pilar identitário** em ambos os modos.
 
 ---
 
