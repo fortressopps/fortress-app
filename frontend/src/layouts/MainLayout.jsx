@@ -11,21 +11,26 @@ import {
   Search,
   User,
   Menu,
+  CreditCard,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-
-const navItems = [
-  { to: '/dashboard', icon: Home, label: 'Home' },
-  { to: '/goals', icon: Target, label: 'Goals' },
-  { to: '/supermarket', icon: ShoppingCart, label: 'Supermarket' },
-  { to: '/intelligence', icon: BarChart3, label: 'Intelligence' },
-  { to: '/settings', icon: Settings, label: 'Settings' },
-];
+import { useLang } from '../hooks/useLang';
+import { LanguageSelector } from '../components/LanguageSelector';
 
 export default function MainLayout() {
   const { user, logout } = useAuth();
+  const { lang, setLang, t } = useLang();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const navItems = [
+    { to: '/dashboard', icon: Home, label: t.navHome || 'Home' },
+    { to: '/transactions', icon: CreditCard, label: t.navTransactions || 'Transactions' },
+    { to: '/goals', icon: Target, label: t.navGoals || 'Goals' },
+    { to: '/supermarket', icon: ShoppingCart, label: t.navSupermarket || 'Supermarket' },
+    { to: '/intelligence', icon: BarChart3, label: t.navIntelligence || 'Intelligence' },
+    { to: '/settings', icon: Settings, label: t.navSettings || 'Settings' },
+  ];
 
   return (
     <div className="layout">
@@ -60,6 +65,7 @@ export default function MainLayout() {
           </button>
           <div className="navbar-logo">FORTRESS</div>
           <div className="navbar-right">
+            <LanguageSelector currentLang={lang} onSelect={setLang} />
             <button className="navbar-icon" aria-label="Search">
               <Search size={20} />
             </button>
@@ -82,17 +88,17 @@ export default function MainLayout() {
         </main>
       </div>
 
-      {/* Mobile bottom nav */}
       <nav className="bottom-nav">
-        {navItems.map(({ to, icon: Icon }) => (
+        {navItems.map(({ to, icon: Icon, label }) => (
           <NavLink
             key={to}
             to={to}
             className={({ isActive }) =>
-              `bottom-nav-link ${isActive ? 'bottom-nav-link-active' : ''}`
+              `bottom-nav-item ${isActive ? 'bottom-nav-item-active' : ''}`
             }
           >
-            <Icon size={22} />
+            <Icon size={20} />
+            <span>{label}</span>
           </NavLink>
         ))}
       </nav>

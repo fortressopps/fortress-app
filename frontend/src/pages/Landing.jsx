@@ -1,189 +1,229 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, BarChart3, Zap } from 'lucide-react';
+import { useLang } from '../hooks/useLang';
+import { LanguageSelector } from '../components/LanguageSelector';
+import './Landing.css';
 
 export default function Landing() {
+  const { lang, setLang, t } = useLang();
+
+  useEffect(() => {
+    const nav = document.querySelector('.landing-navbar');
+    const onScroll = () => {
+      if (window.scrollY > 20) nav?.classList.add('scrolled');
+      else nav?.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const htmlLangMap = {
+      en: 'en', ptBR: 'pt-BR', de: 'de',
+      ru: 'ru', es: 'es', zh: 'zh', ja: 'ja'
+    }
+    document.documentElement.lang = htmlLangMap[lang] || 'en'
+  }, [lang])
+
   return (
-    <div className="landing">
-      <header className="landing-header">
-        <div className="landing-logo">FORTRESS</div>
-        <div className="landing-header-actions">
-          <Link to="/login" className="btn btn-outline">
-            Sign In
-          </Link>
-          <Link to="/register" className="btn btn-primary">
-            Get Started
-          </Link>
+    <div className="landing-page">
+      {/* Seção 1 — Navbar */}
+      <nav className="landing-navbar">
+        <div className="landing-navbar-inner">
+          <span className="landing-logo">FORTRESS</span>
+          <div className="landing-nav-actions">
+            <LanguageSelector currentLang={lang} onSelect={setLang} />
+            <Link to="/login" className="landing-nav-link">{t.signIn}</Link>
+            <Link to="/register" className="landing-nav-cta">{t.joinNow}</Link>
+          </div>
         </div>
-      </header>
+      </nav>
 
+      {/* Seção 2 — Hero */}
       <section className="landing-hero">
-        <h1 className="landing-hero-title">
-          Your Financial Intelligence,
-          <br />
-          <span className="landing-hero-accent">Fortified</span>
-        </h1>
-        <p className="landing-hero-sub">
-          Smart insights, AI-powered forecasting, and complete control over your
-          financial fortress.
-        </p>
-        <div className="landing-hero-ctas">
-          <Link to="/register" className="btn btn-primary btn-lg">
-            Get Started
+        <div className="hero-grid-bg" aria-hidden="true" />
+        <div className="hero-content">
+          <div className="hero-badge">{t.heroBadge}</div>
+          <h1 className="hero-title">
+            {t.heroTitle.split('\n').map((line, i) => (
+              <span key={i}>{line}{i === 0 && <br />}</span>
+            ))}
+          </h1>
+          <p className="hero-subtitle">{t.heroSubtitle}</p>
+          <div className="hero-ctas">
+            <Link to="/register" className="hero-cta-primary">{t.heroGetStarted}</Link>
+            <Link to="/try" className="hero-cta-secondary">{t.heroTryDemo}</Link>
+          </div>
+          <div className="hero-social-proof">
+            <div className="hero-avatars">
+              {['A','B','C','D','E'].map((l, i) => (
+                <div key={i} className="hero-avatar" style={{ zIndex: 5 - i }}>
+                  {l}
+                </div>
+              ))}
+            </div>
+            <span className="hero-proof-text">
+              <strong>{t.heroSocialProof}</strong>
+              <span className="hero-stars">★★★★★</span>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* Seção 3 — Features */}
+      <section className="landing-section" id="features">
+        <div className="landing-container">
+          <h2 className="section-title">
+            {t.featuresTitle.split('\n').map((line, i) => (
+              <span key={i}>{line}{i === 0 && <br />}</span>
+            ))}
+          </h2>
+          <div className="features-grid">
+            {[
+              { icon: '🧠', title: t.feature1Title, desc: t.feature1Desc },
+              { icon: '📊', title: t.feature2Title, desc: t.feature2Desc },
+              { icon: '🔒', title: t.feature3Title, desc: t.feature3Desc }
+            ].map((f, i) => (
+              <div key={i} className="feature-card">
+                <span className="feature-icon">{f.icon}</span>
+                <h3 className="feature-title">{f.title}</h3>
+                <p className="feature-desc">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Seção 4 — Como funciona */}
+      <section className="landing-section landing-section-alt">
+        <div className="landing-container">
+          <h2 className="section-title">{t.stepsTitle}</h2>
+          <div className="steps-row">
+            {[
+              { n: '01', title: t.step1Title, desc: t.step1Desc },
+              { n: '02', title: t.step2Title, desc: t.step2Desc },
+              { n: '03', title: t.step3Title, desc: t.step3Desc }
+            ].map((s, i) => (
+              <div key={i} className="step-item">
+                <div className="step-number">{s.n}</div>
+                <h3 className="step-title">{s.title}</h3>
+                <p className="step-desc">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Seção 5 — Pricing */}
+      <section className="landing-section" id="pricing">
+        <div className="landing-container">
+          <h2 className="section-title">
+            {t.pricingTitle.split('\n').map((line, i) => (
+              <span key={i}>{line}{i === 0 && <br />}</span>
+            ))}
+          </h2>
+          <p className="section-subtitle">{t.pricingSubtitle}</p>
+          <div className="pricing-grid">
+
+            <div className="pricing-card">
+              <div className="pricing-tier">SENTINEL</div>
+              <div className="pricing-price">R$ 0<span>{t.pricingPerMonth}</span></div>
+              <ul className="pricing-features">
+                <li>✓ {t.pricingF1}</li>
+                <li>✓ {t.pricingF2}</li>
+                <li>✓ {t.pricingF3}</li>
+                <li>✓ {t.pricingF4}</li>
+                <li className="pricing-unavailable">— {t.pricingF5}</li>
+                <li className="pricing-unavailable">— {t.pricingF6}</li>
+                <li className="pricing-unavailable">— {t.pricingF7}</li>
+                <li className="pricing-unavailable">— {t.pricingF8}</li>
+              </ul>
+              <Link to="/register" className="pricing-btn pricing-btn-ghost">{t.pricingBtnFree}</Link>
+            </div>
+
+            <div className="pricing-card pricing-card-featured">
+              <div className="pricing-popular-badge">{t.pricingMostPopular}</div>
+              <div className="pricing-tier">VANGUARD</div>
+              <div className="pricing-price pricing-price-soon">
+                {t.pricingComingSoon}
+                <span className="pricing-coming-badge">{t.pricingEarlyAccess}</span>
+              </div>
+              <ul className="pricing-features">
+                <li>✓ {t.pricingF1} ({t.pricingFree})</li>
+                <li>✓ {t.pricingF5}</li>
+                <li>✓ {t.pricingF6}</li>
+                <li>✓ {t.pricingF7}</li>
+                <li>✓ {t.pricingF8}</li>
+                <li className="pricing-unavailable">— {t.pricingF9}</li>
+              </ul>
+              <Link to="/register" className="pricing-btn pricing-btn-primary">{t.pricingBtnPro}</Link>
+            </div>
+
+            <div className="pricing-card">
+              <div className="pricing-tier">LEGACY</div>
+              <div className="pricing-price">
+                {t.pricingCustom}
+                <span style={{ display: 'block', fontSize: '0.8rem', fontWeight: 400, color: 'var(--text-secondary)', marginTop: '4px' }}>
+                  {t.pricingContactSub}
+                </span>
+              </div>
+              <ul className="pricing-features">
+                <li>✓ {t.pricingF1} ({t.pricingBtnPro})</li>
+                <li>✓ {t.pricingF9}</li>
+                <li>✓ {t.pricingF10}</li>
+                <li>✓ {t.pricingF11}</li>
+              </ul>
+              <a href="mailto:hello@fortress.app" className="pricing-btn pricing-btn-ghost">{t.pricingBtnEnterprise}</a>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Seção 6 — CTA Final */}
+      <section className="landing-section landing-section-alt landing-cta-final">
+        <div className="landing-container" style={{ textAlign: 'center' }}>
+          <h2 className="section-title">
+            {t.ctaTitle.split('\n').map((line, i) => (
+              <span key={i}>{line}{i === 0 && <br />}</span>
+            ))}
+          </h2>
+          <p className="hero-subtitle" style={{ margin: '0 auto 2rem' }}>
+            {t.ctaSubtitle}
+          </p>
+          <Link to="/register" className="cta-final-btn">
+            {t.ctaBtn}
           </Link>
-          <Link to="/try" className="btn btn-outline btn-lg">
-            See Demo
-          </Link>
         </div>
       </section>
 
-      <section className="landing-features">
-        <h2 className="landing-section-title">Why Fortress</h2>
-        <div className="landing-features-grid">
-          <div className="card landing-feature-card">
-            <div className="landing-feature-icon">
-              <Shield size={28} />
-            </div>
-            <h3>Protected Goals</h3>
-            <p>Set and track financial goals with smart progress monitoring.</p>
-          </div>
-          <div className="card landing-feature-card">
-            <div className="landing-feature-icon">
-              <BarChart3 size={28} />
-            </div>
-            <h3>AI Insights</h3>
-            <p>Get intelligent forecasts and behavioral insights.</p>
-          </div>
-          <div className="card landing-feature-card">
-            <div className="landing-feature-icon">
-              <Zap size={28} />
-            </div>
-            <h3>Receipt Processing</h3>
-            <p>Scan receipts and auto-categorize spending.</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="landing-pricing">
-        <h2 className="landing-section-title">Pricing</h2>
-        <div className="landing-pricing-grid">
-          <div className="card landing-pricing-card">
-            <h3>Free</h3>
-            <div className="landing-pricing-price">$0</div>
-            <p className="landing-pricing-desc">Core features, up to 3 goals</p>
-            <Link to="/register" className="btn btn-outline" style={{ width: '100%' }}>
-              Start Free
-            </Link>
-          </div>
-          <div className="card landing-pricing-card landing-pricing-featured">
-            <h3>Pro</h3>
-            <div className="landing-pricing-price">$9<span>/mo</span></div>
-            <p className="landing-pricing-desc">Unlimited goals, AI insights</p>
-            <Link to="/register" className="btn btn-primary" style={{ width: '100%' }}>
-              Get Pro
-            </Link>
-          </div>
-          <div className="card landing-pricing-card">
-            <h3>Enterprise</h3>
-            <div className="landing-pricing-price">Custom</div>
-            <p className="landing-pricing-desc">Teams, API, support</p>
-            <Link to="/register" className="btn btn-outline" style={{ width: '100%' }}>
-              Contact
-            </Link>
-          </div>
-        </div>
-      </section>
-
+      {/* Seção 7 — Footer */}
       <footer className="landing-footer">
-        <div className="landing-footer-logo">FORTRESS</div>
-        <p className="landing-footer-copy">© {new Date().getFullYear()} Fortress. Your financial fortress.</p>
+        <div className="landing-container">
+          <div className="footer-grid">
+            <div>
+              <div className="landing-logo" style={{ marginBottom: '0.5rem' }}>FORTRESS</div>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', margin: 0 }}>
+                {t.footerTagline}
+              </p>
+            </div>
+            <div className="footer-links">
+              <a href="#features">{t.footerLinks}</a>
+              <a href="#pricing">{t.footerPricing}</a>
+              <Link to="/login">{t.signIn}</Link>
+              <Link to="/register">{t.joinNow}</Link>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', margin: '0 0 4px' }}>
+                {t.footerRights}
+              </p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', margin: 0 }}>
+                {t.footerNoAds}
+              </p>
+            </div>
+          </div>
+        </div>
       </footer>
-
-      <style>{`
-        .landing { min-height: 100vh; }
-        .landing-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 20px 24px;
-          border-bottom: 1px solid var(--card-border);
-        }
-        .landing-logo { font-weight: 700; font-size: 18px; letter-spacing: 0.05em; }
-        .landing-header-actions { display: flex; gap: 12px; }
-        .landing-hero {
-          padding: 80px 24px 100px;
-          text-align: center;
-          max-width: 720px;
-          margin: 0 auto;
-        }
-        .landing-hero-title {
-          font-size: clamp(2rem, 5vw, 3.5rem);
-          font-weight: 700;
-          line-height: 1.2;
-          margin-bottom: 20px;
-        }
-        .landing-hero-accent { color: var(--primary); }
-        .landing-hero-sub {
-          color: var(--text-secondary);
-          font-size: 18px;
-          margin-bottom: 32px;
-        }
-        .landing-hero-ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-        .btn-lg { padding: 14px 28px; font-size: 16px; }
-        .landing-section-title {
-          text-align: center;
-          font-size: 1.75rem;
-          margin-bottom: 40px;
-        }
-        .landing-features { padding: 60px 24px; }
-        .landing-features-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: 24px;
-          max-width: 960px;
-          margin: 0 auto;
-        }
-        .landing-feature-card {
-          padding: 28px;
-        }
-        .landing-feature-icon {
-          width: 48px;
-          height: 48px;
-          border-radius: var(--radius-btn);
-          background: rgba(34, 197, 94, 0.15);
-          color: var(--primary);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 16px;
-        }
-        .landing-feature-card h3 { margin-bottom: 8px; font-size: 1.1rem; }
-        .landing-feature-card p { color: var(--text-secondary); font-size: 14px; }
-        .landing-pricing { padding: 60px 24px; }
-        .landing-pricing-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 24px;
-          max-width: 800px;
-          margin: 0 auto;
-        }
-        .landing-pricing-card {
-          padding: 28px;
-          text-align: center;
-        }
-        .landing-pricing-card h3 { margin-bottom: 12px; }
-        .landing-pricing-price { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
-        .landing-pricing-price span { font-size: 1rem; color: var(--text-secondary); font-weight: 500; }
-        .landing-pricing-desc { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; }
-        .landing-pricing-featured { border-color: var(--primary); }
-        .landing-footer {
-          padding: 40px 24px;
-          text-align: center;
-          border-top: 1px solid var(--card-border);
-        }
-        .landing-footer-logo { font-weight: 700; margin-bottom: 8px; }
-        .landing-footer-copy { color: var(--text-secondary); font-size: 14px; }
-      `}</style>
     </div>
   );
 }

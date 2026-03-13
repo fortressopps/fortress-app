@@ -1,0 +1,360 @@
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-bottom: 40px;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 4px;
+}
+
+.dashboard-header h1 {
+    font-size: 1.5rem;
+}
+
+.dashboard-header-stats {
+    display: flex;
+    gap: 24px;
+}
+
+.header-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.stat-val {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+}
+
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dashboard-main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.dash-main-card {
+    padding: 40px;
+    background: linear-gradient(135deg, #0a0a0a 0%, #111 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.dash-main-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: var(--primary);
+    filter: blur(120px);
+    opacity: 0.05;
+    pointer-events: none;
+}
+
+.dash-main-info label {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.dash-main-balance {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+}
+
+.dash-main-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dash-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s;
+}
+
+.dash-link:hover {
+    color: var(--primary);
+}
+
+.dash-chart-card {
+    padding: 24px;
+}
+
+.dash-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.dash-chart-header h3 {
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+}
+
+.dash-chart-header p {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.dash-chart-legend {
+    display: flex;
+    gap: 16px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #4b5563;
+    text-transform: uppercase;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-item i {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+}
+
+.bg-primary {
+    background: var(--primary);
+}
+
+.dash-ai-card {
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px dashed rgba(34, 197, 94, 0.3);
+    background: rgba(34, 197, 94, 0.02);
+}
+
+.dash-ai-icon {
+    font-size: 24px;
+}
+
+.dash-ai-content {
+    flex: 1;
+}
+
+.dash-ai-content h3 {
+    font-size: 15px;
+    margin-bottom: 2px;
+}
+
+.dash-ai-content p {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.dash-ai-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.dashboard-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.dash-sidebar-card {
+    padding: 24px;
+}
+
+.sidebar-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #1a1a1a;
+    padding-bottom: 12px;
+}
+
+.sidebar-card-header h3 {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+}
+
+.dash-goals-list,
+.dash-activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.dash-goal-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dash-goal-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.dash-progress-bg {
+    height: 4px;
+    background: #1a1a1a;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.dash-progress-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 2px;
+}
+
+.dash-activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.dash-activity-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.dash-activity-name {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.dash-activity-date {
+    font-size: 12px;
+    color: #4b5563;
+}
+
+.dash-activity-amount {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.sidebar-more {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    margin-top: 4px;
+    display: inline-block;
+}
+
+.empty-text {
+    font-size: 13px;
+    color: #4b5563;
+    font-style: italic;
+}
+
+.dashboard-error {
+    padding: 20px;
+    color: #ef4444;
+    text-align: center;
+}
+
+.dash-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 16px;
+    color: var(--text-secondary);
+}
+
+.dash-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--card-border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid,
+  .dashboard-cards,
+  .dash-split-row {
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+  }
+  .dash-chart-card,
+  .dash-chart-body {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  .dash-market-list {
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    padding-bottom: 8px;
+  }
+  .dash-market-list .dash-activity-item {
+    min-width: 140px;
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 8px;
+  }
+  .dash-main-balance {
+    font-size: 2rem;
+  }
+}

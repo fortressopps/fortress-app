@@ -150,8 +150,13 @@ app.post("/receipts/process", async (c) => {
   const body = await c.req.json().catch(() => ({}));
 
   // Validation (simplified)
-  if (!body.total || !body.category) {
-    return c.json({ error: "total and category required" }, 400);
+  if (!body.total || !body.category || !body.listId) {
+    return c.json({ error: "total, category and listId required" }, 400);
+  }
+
+  const list = await repo.getSupermarketListById(body.listId);
+  if (!list || list.userId !== user.id) {
+    return c.json({ error: "Lista não encontrada" }, 404);
   }
 
   // Orchestration
@@ -163,6 +168,12 @@ app.post("/receipts/process", async (c) => {
     projectedMonthTotal: body.projectedTotal || 100000,
     monthAverageScale: body.average || 5000,
   });
+
+  // Convert the total back to decimal formatting from cents (e.g. 15000 -> 150.00)
+  const decimalTotal = body.total / 100;
+
+  const { transactionService } = await import("../../services/transaction.service");
+  await transactionService.upsertFromSupermarket(user.id, list.id, decimalTotal, list.name);
 
   return c.json(result);
 });

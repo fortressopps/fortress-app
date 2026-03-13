@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { LangProvider } from './context/LangContext';
 
 import Landing from './pages/Landing';
 import Login from './pages/Login';
@@ -16,6 +17,16 @@ import Goals from './pages/Goals';
 import Supermarket from './pages/Supermarket';
 import Intelligence from './pages/Intelligence';
 import Settings from './pages/Settings';
+import Transactions from './pages/Transactions';
+import Onboarding from './pages/Onboarding';
+
+function OnboardingGuard({ children }) {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/login" />;
+  if (user.onboardingCompleted) return <Navigate to="/dashboard" />;
+  return children;
+}
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -50,14 +61,18 @@ function ProtectedRoute({ children }) {
   if (!user) {
     return <Navigate to="/login" replace />;
   }
+  if (!user.onboardingCompleted) {
+    return <Navigate to="/onboarding" replace />;
+  }
   return <MainLayout>{children}</MainLayout>;
 }
 
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Routes>
+      <LangProvider>
+        <AuthProvider>
+          <Routes>
           {/* Public routes */}
           <Route path="/" element={<Landing />} />
           <Route path="/try" element={<TryDemo />} />
@@ -66,9 +81,11 @@ export default function App() {
           <Route path="/oauth-callback" element={<OAuthCallback />} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/onboarding" element={<OnboardingGuard><Onboarding /></OnboardingGuard>} />
 
           {/* Protected routes */}
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
           <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
           <Route path="/supermarket" element={<ProtectedRoute><Supermarket /></ProtectedRoute>} />
           <Route path="/supermarket/:listId" element={<ProtectedRoute><Supermarket /></ProtectedRoute>} />
@@ -79,6 +96,7 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
-    </BrowserRouter>
+    </LangProvider>
+  </BrowserRouter>
   );
 }

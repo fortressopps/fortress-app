@@ -1,0 +1,201 @@
+.transactions-page {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tx-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.tx-header-sub {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.tx-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.tx-select {
+  background: var(--bg);
+  border: 1px solid var(--card-border);
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: var(--radius-btn);
+  outline: none;
+}
+
+.tx-pagination {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.tx-table-container {
+  overflow-x: auto;
+}
+
+.tx-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tx-table th, .tx-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--card-border);
+  text-align: left;
+}
+
+.tx-table th {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tx-table tr:last-child td {
+  border-bottom: none;
+}
+
+.tx-badge {
+  background: #1a1a1a;
+  color: var(--text);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.tx-badge.source {
+  background: var(--card-border);
+  color: var(--text-secondary);
+}
+
+.tx-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.tx-modal-card {
+  width: 100%;
+  max-width: 500px;
+  padding: 32px;
+}
+
+.tx-modal-card h2 {
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 16px;
+}
+
+.tx-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tx-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tx-field label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.tx-field input, .tx-field select {
+  background: var(--bg);
+  border: 1px solid var(--card-border);
+  color: var(--text);
+  padding: 12px;
+  border-radius: var(--radius-btn);
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.tx-form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.tx-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--card-border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@media (max-width: 768px) {
+  /* Tabela vira cards */
+  .tx-table thead {
+    display: none;
+  }
+  .tx-table tr {
+    display: block;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+  }
+  .tx-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+    border: none;
+    font-size: 0.875rem;
+  }
+  .tx-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-right: 0.5rem;
+  }
+  /* Filtros colapsam */
+  .tx-filters {
+    display: none;
+  }
+  .tx-filters.open {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .btn-filter-toggle {
+    display: flex;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+}
+
+@media (min-width: 769px) {
+  .btn-filter-toggle {
+    display: none;
+  }
+}

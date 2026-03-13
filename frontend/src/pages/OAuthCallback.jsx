@@ -11,6 +11,7 @@ export default function OAuthCallback() {
   useEffect(() => {
     const token = searchParams.get('token');
     if (token) {
+      window.history.replaceState({}, document.title, window.location.pathname);
       setAccessToken(token);
       refreshUser().then(() => {
         navigate('/dashboard');

@@ -51,7 +51,14 @@ api.interceptors.response.use(
       } catch {
         // Refresh failed — clear token and redirect to login
         clearAccessToken();
-        if (typeof window !== 'undefined') {
+
+        // Prevent redirect loop if:
+        // 1. The request that failed is the refresh call itself
+        // 2. The user is already on the login page
+        const isRefreshCall = original.url?.includes('/auth/refresh');
+        const isAlreadyOnLogin = typeof window !== 'undefined' && window.location.pathname === '/login';
+
+        if (!isRefreshCall && !isAlreadyOnLogin) {
           window.location.href = '/login';
         }
       }

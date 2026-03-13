@@ -11,6 +11,7 @@ import {
 } from '../api/coreApi';
 
 import { ShoppingCart, ArrowLeft, Receipt } from 'lucide-react';
+import './Supermarket.css';
 
 const CATEGORIES = [
   'PRODUCE', 'DAIRY', 'MEAT', 'BAKERY', 'FROZEN', 'BEVERAGES',
@@ -121,6 +122,7 @@ export default function Supermarket() {
     setReceiptSubmitting(true);
     try {
       await processReceipt({
+        listId: currentList.id,
         total: totalCents,
         category: receiptCategory,
         projectedTotal: 100000,
@@ -341,105 +343,6 @@ export default function Supermarket() {
           </div>
         )}
 
-        <style>{`
-          .supermarket-back {
-            display: inline-flex;
-            text-decoration: none;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 12px;
-          }
-          .supermarket-back:hover { color: var(--primary); }
-          .supermarket-list-detail { margin-top: 24px; }
-          .supermarket-list-actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-          }
-          .supermarket-add-btn { display: inline-flex; align-items: center; gap: 6px; }
-          .supermarket-add-form {
-            padding: 24px;
-            margin-bottom: 24px;
-          }
-          .supermarket-add-form h3 { margin-bottom: 16px; font-size: 1rem; }
-          .supermarket-add-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
-          }
-          @media (max-width: 500px) {
-            .supermarket-add-grid { grid-template-columns: 1fr; }
-          }
-          .supermarket-add-actions { display: flex; gap: 12px; }
-
-          .supermarket-list-detail { margin-top: 24px; }
-          .supermarket-list-stats {
-            display: flex;
-            gap: 24px;
-            margin-bottom: 20px;
-            color: var(--text-secondary);
-            font-size: 14px;
-          }
-          .supermarket-items { margin-bottom: 24px; }
-          .supermarket-empty { color: var(--text-secondary); padding: 24px; }
-          .supermarket-item-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border: 1px solid var(--card-border);
-            border-radius: var(--radius-btn);
-            margin-bottom: 8px;
-          }
-          .supermarket-item-row.purchased .supermarket-item-name { text-decoration: line-through; opacity: 0.6; }
-          .supermarket-item-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-          .supermarket-item-name { font-weight: 500; }
-          .supermarket-item-meta { font-size: 12px; color: var(--text-secondary); }
-          .supermarket-item-delete {
-            background: none;
-            border: none;
-            color: #ef4444;
-            cursor: pointer;
-            font-size: 12px;
-          }
-          .supermarket-process-btn { display: inline-flex; align-items: center; gap: 8px; }
-          .supermarket-receipt-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-            padding: 24px;
-          }
-          .supermarket-receipt-card {
-            padding: 24px;
-            max-width: 400px;
-            width: 100%;
-          }
-          .supermarket-receipt-card h2 { margin-bottom: 20px; }
-          .supermarket-field { margin-bottom: 16px; }
-          .supermarket-field label {
-            display: block;
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-          }
-          .supermarket-field input, .supermarket-field select {
-            width: 100%;
-            padding: 10px 14px;
-            background: #1a1a1a;
-            border: 1px solid var(--card-border);
-            border-radius: var(--radius-btn);
-            color: var(--text);
-          }
-          .supermarket-receipt-actions { display: flex; gap: 12px; margin-top: 20px; }
-        `}</style>
       </div>
     );
   }
@@ -515,75 +418,6 @@ export default function Supermarket() {
         )}
       </div>
 
-      <style>{`
-        .supermarket-loading {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          min-height: 200px;
-          gap: 16px;
-          color: var(--text-secondary);
-        }
-        .supermarket-spinner {
-          width: 40px;
-          height: 40px;
-          border: 3px solid var(--card-border);
-          border-top-color: var(--primary);
-          border-radius: 50%;
-          animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .supermarket-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .supermarket-header h1 { font-size: 1.5rem; }
-        .supermarket-error {
-          padding: 12px;
-          background: rgba(239, 68, 68, 0.1);
-          border: 1px solid rgba(239, 68, 68, 0.3);
-          border-radius: var(--radius-btn);
-          color: #ef4444;
-          margin-bottom: 24px;
-        }
-        .supermarket-new-form {
-          padding: 20px;
-          margin-bottom: 24px;
-          display: flex;
-          gap: 12px;
-          align-items: center;
-        }
-        .supermarket-new-form input {
-          flex: 1;
-          padding: 10px 14px;
-          background: #1a1a1a;
-          border: 1px solid var(--card-border);
-          border-radius: var(--radius-btn);
-          color: var(--text);
-        }
-        .supermarket-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-          gap: 24px;
-        }
-        .supermarket-list-card {
-          padding: 24px;
-          text-decoration: none;
-          color: inherit;
-          display: block;
-          transition: border-color 0.2s;
-        }
-        .supermarket-list-card:hover { border-color: var(--primary); }
-        .supermarket-list-card h3 { margin-bottom: 8px; }
-        .supermarket-list-card p { color: var(--text-secondary); font-size: 14px; }
-        .supermarket-list-date { font-size: 12px; margin-top: 4px; }
-        .supermarket-empty {
-          grid-column: 1 / -1;
-          padding: 48px;
-          text-align: center;
-        }
-        .supermarket-empty-icon { color: var(--text-secondary); margin-bottom: 16px; opacity: 0.5; }
-        .supermarket-empty h3 { margin-bottom: 8px; }
-        .supermarket-empty p { color: var(--text-secondary); margin-bottom: 20px; }
-      `}</style>
     </div>
   );
 }

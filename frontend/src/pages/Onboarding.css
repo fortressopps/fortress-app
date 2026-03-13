@@ -1,0 +1,130 @@
+.onboarding-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 24px;
+}
+
+.onboarding-card {
+  width: 100%;
+  max-width: 500px;
+  padding: 40px;
+  background: var(--card);
+}
+
+.onboarding-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.onboarding-progress-bar {
+  height: 4px;
+  background: var(--primary);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.onboarding-progress span {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.onboarding-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.onboarding-title {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  /* i18n */
+  word-break: break-all;
+  line-break: strict;
+  hyphens: auto;
+}
+
+.onboarding-subtitle {
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.onboarding-input {
+  width: 100%;
+  padding: 16px;
+  background: #1a1a1a;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-btn);
+  color: var(--text);
+  font-size: 1.5rem;
+  text-align: center;
+  outline: none;
+}
+
+.onboarding-input:focus {
+  border-color: var(--primary);
+}
+
+.onboarding-hint {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.onboarding-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+  margin-top: 24px;
+}
+
+.onboarding-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-color: var(--card-border);
+}
+
+.onboarding-option:hover {
+  border-color: var(--primary);
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.onboarding-option.active {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: var(--primary);
+}
+
+.onboarding-option-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.onboarding-option-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.onboarding-error {
+  padding: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  border-radius: 8px;
+  color: #ef4444;
+  width: 100%;
+  margin-bottom: 24px;
+  text-align: center;
+}

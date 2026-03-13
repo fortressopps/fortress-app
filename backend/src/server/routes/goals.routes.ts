@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { authMiddleware, type AuthVariables } from "../../middleware/auth";
 import { GoalsService } from "../../modules/goals/domain/goals.commitment-projection";
+import { transactionService } from "../../services/transaction.service";
 import type { GoalPeriodicity } from "../../modules/goals/domain/goal.entity";
 
 const app = new Hono<{ Variables: AuthVariables }>();
@@ -42,6 +43,36 @@ app.get("/", async (c) => {
   const user = c.get("user");
   const goals = await service.listGoals(user.id);
   return c.json(goals);
+});
+
+// GET /goals/with-progress — listar metas recalculadas automaticamente
+app.get("/with-progress", async (c) => {
+  const user = c.get("user");
+  const [goals, summary] = await Promise.all([
+    service.listGoals(user.id),
+    transactionService.getSummary(user.id),
+  ]);
+
+  const { totalIncome, totalExpenses } = summary;
+  const realBalance = totalIncome - totalExpenses;
+
+  const calculatedGoals = goals.map((goal: any) => {
+    if (goal.periodicity === "MONTHLY") {
+      let progress = 0;
+      if (goal.value > 0) {
+        progress = Math.min(100, Math.max(0, (realBalance / goal.value) * 100));
+      }
+      return {
+        ...goal,
+        progress,
+        autoCalculated: true,
+        realBalance,
+      };
+    }
+    return { ...goal, autoCalculated: false };
+  });
+
+  return c.json(calculatedGoals);
 });
 
 // PATCH /goals/:id/progress — atualizar progresso

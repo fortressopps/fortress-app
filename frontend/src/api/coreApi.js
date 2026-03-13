@@ -6,9 +6,6 @@ import api from './axiosClient';
 
 /**
  * Process a receipt through the full core flow
- * POST /supermarket/receipts/process
- * @param {Object} data - { total, category, projectedTotal?, average? }
- * @returns {Promise} - { success, data: { receipt, insight, decision, notification } }
  */
 export async function processReceipt(data) {
     const response = await api.post('/supermarket/receipts/process', data);
@@ -16,9 +13,15 @@ export async function processReceipt(data) {
 }
 
 /**
+ * Get Active Alerts
+ */
+export async function getAlerts() {
+    const response = await api.get('/alerts');
+    return response.data;
+}
+
+/**
  * Get user's financial goals
- * GET /goals
- * @returns {Promise} - Array of goals with progress
  */
 export async function getGoals() {
     const response = await api.get('/goals');
@@ -26,9 +29,15 @@ export async function getGoals() {
 }
 
 /**
+ * Get user's goals with automatically calculated progress
+ */
+export async function getGoalsWithProgress() {
+    const response = await api.get('/goals/with-progress');
+    return response.data;
+}
+
+/**
  * Create a new goal
- * POST /goals
- * @param {Object} data - { name, value, periodicity }
  */
 export async function createGoal(data) {
     const response = await api.post('/goals', data);
@@ -37,9 +46,6 @@ export async function createGoal(data) {
 
 /**
  * Update goal progress
- * PATCH /goals/:id/progress
- * @param {string} id - Goal ID
- * @param {number} progress - 0-100
  */
 export async function updateGoalProgress(id, progress) {
     const response = await api.patch(`/goals/${id}/progress`, { progress });
@@ -48,7 +54,6 @@ export async function updateGoalProgress(id, progress) {
 
 /**
  * Delete goal
- * DELETE /goals/:id
  */
 export async function deleteGoal(id) {
     const response = await api.delete(`/goals/${id}`);
@@ -57,8 +62,6 @@ export async function deleteGoal(id) {
 
 /**
  * Get financial forecast
- * GET /forecast (to be implemented on backend)
- * @returns {Promise} - { previsaoMensal, previsaoSemanal, riscoLeve }
  */
 export async function getForecast() {
     const response = await api.get('/forecast');
@@ -67,7 +70,6 @@ export async function getForecast() {
 
 /**
  * Get supermarket lists
- * GET /supermarket/lists
  */
 export async function getSupermarketLists(page = 1, pageSize = 20) {
     const response = await api.get('/supermarket/lists', {
@@ -78,7 +80,6 @@ export async function getSupermarketLists(page = 1, pageSize = 20) {
 
 /**
  * Create supermarket list
- * POST /supermarket/lists
  */
 export async function createSupermarketList(data) {
     const response = await api.post('/supermarket/lists', data);
@@ -87,7 +88,6 @@ export async function createSupermarketList(data) {
 
 /**
  * Get supermarket list by ID
- * GET /supermarket/lists/:id
  */
 export async function getSupermarketListById(id) {
     const response = await api.get(`/supermarket/lists/${id}`);
@@ -96,7 +96,6 @@ export async function getSupermarketListById(id) {
 
 /**
  * Add item to supermarket list
- * POST /supermarket/lists/:id/items
  */
 export async function addSupermarketItem(listId, data) {
     const response = await api.post(`/supermarket/lists/${listId}/items`, data);
@@ -105,7 +104,6 @@ export async function addSupermarketItem(listId, data) {
 
 /**
  * Update supermarket item
- * PATCH /supermarket/lists/:listId/items/:itemId
  */
 export async function updateSupermarketItem(listId, itemId, data) {
     const response = await api.patch(`/supermarket/lists/${listId}/items/${itemId}`, data);
@@ -114,7 +112,6 @@ export async function updateSupermarketItem(listId, itemId, data) {
 
 /**
  * Delete supermarket item
- * DELETE /supermarket/lists/:listId/items/:itemId
  */
 export async function deleteSupermarketItem(listId, itemId) {
     const response = await api.delete(`/supermarket/lists/${listId}/items/${itemId}`);
@@ -123,7 +120,6 @@ export async function deleteSupermarketItem(listId, itemId) {
 
 /**
  * Get Kernel / Neural state
- * GET /kernel
  */
 export async function getKernelState() {
     const response = await api.get('/kernel');
@@ -132,7 +128,6 @@ export async function getKernelState() {
 
 /**
  * Update user profile
- * PUT /users/me
  */
 export async function updateProfile(data) {
     const response = await api.put('/users/me', data);
@@ -141,7 +136,6 @@ export async function updateProfile(data) {
 
 /**
  * Resend verification email
- * POST /auth/resend-verification
  */
 export async function resendVerification() {
     const response = await api.post('/auth/resend-verification');
@@ -150,7 +144,6 @@ export async function resendVerification() {
 
 /**
  * Change password
- * POST /auth/change-password
  */
 export async function changePassword(currentPassword, newPassword) {
     const response = await api.post('/auth/change-password', {
@@ -160,12 +153,80 @@ export async function changePassword(currentPassword, newPassword) {
     return response.data;
 }
 
+/**
+ * Soft delete account
+ */
+export async function deleteAccount() {
+    const response = await api.delete('/auth/account');
+    return response.data;
+}
+
+/**
+ * Get Market Data
+ */
+export async function getMarketData() {
+    const response = await api.get('/market-data');
+    return response.data;
+}
+
+/**
+ * Get Transactions
+ */
+export async function getTransactions(params = {}) {
+    const response = await api.get('/transactions', { params });
+    return response.data;
+}
+
+/**
+ * Get Transactions Summary
+ */
+export async function getTransactionSummary(month) {
+    const response = await api.get('/transactions/summary', { params: { month } });
+    return response.data;
+}
+
+/**
+ * Create Transaction
+ */
+export async function createTransaction(data) {
+    const response = await api.post('/transactions', data);
+    return response.data;
+}
+
+/**
+ * Import Transactions CSV
+ */
+export async function importTransactions(formData) {
+    const response = await api.post('/transactions/import', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return response.data;
+}
+
+/**
+ * Update Transaction
+ */
+export async function updateTransaction(id, data) {
+    const response = await api.put(`/transactions/${id}`, data);
+    return response.data;
+}
+
+/**
+ * Delete Transaction
+ */
+export async function deleteTransaction(id) {
+    const response = await api.delete(`/transactions/${id}`);
+    return response.data;
+}
+
 export default {
     processReceipt,
     getGoals,
+    getGoalsWithProgress,
     createGoal,
     updateGoalProgress,
     deleteGoal,
+    getAlerts,
     getForecast,
     getSupermarketLists,
     createSupermarketList,
@@ -177,4 +238,17 @@ export default {
     updateProfile,
     resendVerification,
     changePassword,
+    deleteAccount,
+    getMarketData,
+    getTransactions,
+    getTransactionSummary,
+    createTransaction,
+    importTransactions,
+    updateTransaction,
+    deleteTransaction,
 };
+export const completeOnboarding = (data) =>
+  api.post('/users/onboarding/complete', data).then(r => r.data);
+
+export const getTransactionReport = (month) =>
+  api.get(`/transactions/report?month=${month}`).then(r => r.data);

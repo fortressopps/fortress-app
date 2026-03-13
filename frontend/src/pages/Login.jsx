@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLang } from '../hooks/useLang';
+import { LanguageSelector } from '../components/LanguageSelector';
+import './Auth.css';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
@@ -9,22 +12,29 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const { lang, setLang, t } = useLang();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
+
     try {
-      const ok = await login(email, password);
-      if (ok) {
-        navigate('/dashboard');
-      } else {
-        setError('Invalid credentials');
-      }
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'Login failed');
+
+      login(data.token, data.user);
+      navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed');
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -32,152 +42,82 @@ export default function Login() {
 
   return (
     <div className="auth-page">
-      <div className="auth-card card">
+      <div className="auth-navbar">
+        <LanguageSelector currentLang={lang} onSelect={setLang} />
+      </div>
+      <div className="auth-card card login-card">
         <div className="auth-logo">FORTRESS</div>
-        <h1 className="auth-title">Sign In</h1>
-        <p className="auth-subtitle">Access your financial fortress</p>
+        <div className="login-header">
+          <h1 className="login-title">{t.authLoginTitle}</h1>
+          <p className="login-subtitle">{t.authLoginSubtitle}</p>
+        </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="auth-field">
-            <label>Email</label>
+            <label>{t.authEmailLabel}</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
+              placeholder="name@company.com"
               required
-              autoComplete="email"
             />
           </div>
           <div className="auth-field">
-            <label>Password</label>
+            <label>{t.authPasswordLabel}</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              autoComplete="current-password"
             />
           </div>
-          <button type="submit" className="btn btn-primary auth-submit" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign In'}
+
+          {error && <div className="auth-error">{error}</div>}
+
+          <button type="submit" className="btn btn-primary auth-btn" disabled={loading}>
+            {loading ? t.authAuthenticating : t.authSignInBtn}
           </button>
         </form>
 
+        <p className="auth-footer login-register-link">
+          {t.authNoAccount} <Link to="/register">{t.authJoinFortress}</Link>
+        </p>
+
         <div className="auth-divider">
-          <span>or continue with</span>
+          <span>{t.authContinueWith}</span>
         </div>
 
         <div className="auth-oauth">
-          <a
-            href={`${API_BASE}/auth/google`}
+          <button
+            type="button"
             className="btn btn-outline auth-oauth-btn"
+            onClick={() => window.location.href = `${API_BASE}/auth/google`}
           >
-            <svg width="18" height="18" viewBox="0 0 18 18">
-              <path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/>
-              <path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/>
-              <path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z"/>
-              <path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.3z"/>
+            <svg viewBox="0 0 24 24" width="18" height="18">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-1 .67-2.28 1.07-3.71 1.07-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.11c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.09H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.91l3.66-2.8z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 6.51l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
             Google
-          </a>
-          <a
-            href={`${API_BASE}/auth/microsoft`}
+          </button>
+          <button
+            type="button"
             className="btn btn-outline auth-oauth-btn"
+            onClick={() => window.location.href = `${API_BASE}/auth/microsoft`}
           >
-            <svg width="18" height="18" viewBox="0 0 23 23">
+            <svg viewBox="0 0 23 23" width="18" height="18">
               <path fill="#f35325" d="M1 1h10v10H1z"/>
               <path fill="#81bc06" d="M12 1h10v10H12z"/>
               <path fill="#05a6f0" d="M1 12h10v10H1z"/>
               <path fill="#ffba08" d="M12 12h10v10H12z"/>
             </svg>
             Microsoft
-          </a>
+          </button>
         </div>
-
-        <p className="auth-switch">
-          Don&apos;t have an account? <Link to="/register">Register</Link>
-        </p>
       </div>
-
-      {error && <div className="auth-error">{error}</div>}
-
-      <style>{`
-        .auth-page {
-          min-height: 100vh;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 24px;
-        }
-        .auth-card {
-          width: 100%;
-          max-width: 400px;
-          padding: 40px;
-        }
-        .auth-logo {
-          font-weight: 700;
-          font-size: 20px;
-          letter-spacing: 0.05em;
-          text-align: center;
-          margin-bottom: 24px;
-        }
-        .auth-title { font-size: 1.5rem; margin-bottom: 4px; text-align: center; }
-        .auth-subtitle { color: var(--text-secondary); font-size: 14px; text-align: center; margin-bottom: 28px; }
-        .auth-form { display: flex; flex-direction: column; gap: 20px; }
-        .auth-field label {
-          display: block;
-          font-size: 12px;
-          font-weight: 500;
-          color: var(--text-secondary);
-          margin-bottom: 8px;
-        }
-        .auth-field input {
-          width: 100%;
-          padding: 12px 16px;
-          background: #1a1a1a;
-          border: 1px solid var(--card-border);
-          border-radius: var(--radius-btn);
-          color: var(--text);
-          font-size: 14px;
-          font-family: inherit;
-        }
-        .auth-field input:focus {
-          outline: none;
-          border-color: var(--primary);
-        }
-        .auth-submit { width: 100%; padding: 12px; }
-        .auth-divider {
-          display: flex;
-          align-items: center;
-          margin: 24px 0;
-          color: var(--text-secondary);
-          font-size: 12px;
-        }
-        .auth-divider::before, .auth-divider::after {
-          content: '';
-          flex: 1;
-          height: 1px;
-          background: var(--card-border);
-        }
-        .auth-divider span { padding: 0 12px; }
-        .auth-oauth { display: flex; gap: 12px; }
-        .auth-oauth-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .auth-switch { text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-secondary); }
-        .auth-switch a { color: var(--primary); }
-        .auth-error {
-          margin-top: 16px;
-          padding: 12px;
-          background: rgba(239, 68, 68, 0.1);
-          border: 1px solid rgba(239, 68, 68, 0.3);
-          border-radius: var(--radius-btn);
-          color: #ef4444;
-          font-size: 14px;
-          max-width: 400px;
-        }
-      `}</style>
     </div>
   );
 }

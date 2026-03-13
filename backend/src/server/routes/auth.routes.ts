@@ -47,8 +47,13 @@ const loginSchema = z.object({
 
 const REFRESH_COOKIE = "fortress_refresh";
 
-function sanitizeUser(user: { id: string; email: string; name: string | null }) {
-  return { id: user.id, email: user.email, name: user.name };
+function sanitizeUser(user: any) {
+  return { 
+    id: user.id, 
+    email: user.email, 
+    name: user.name, 
+    onboardingCompleted: user.onboardingCompleted 
+  };
 }
 
 // Rate limit em memória (compatível com Hono) — 20 req/15min por IP para rotas sensíveis
@@ -159,9 +164,9 @@ authRoutes.post("/auth/login", async (c) => {
     return c.json({ error: "Email e senha obrigatórios" }, 400);
   }
   const { email, password } = parsed.data;
-  const user = await prisma.user.findUnique({
-    where: { email },
-    select: { id: true, email: true, password: true, name: true, emailVerified: true },
+  const user = await prisma.user.findFirst({
+    where: { email, deletedAt: null },
+    select: { id: true, email: true, password: true, name: true, emailVerified: true, onboardingCompleted: true },
   });
   if (!user || !user.password) {
     return c.json({ error: "Credenciais inválidas" }, 401);
@@ -189,7 +194,7 @@ authRoutes.post("/auth/refresh", async (c) => {
     const { sub: userId } = verifyRefreshToken(refreshToken);
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, email: true, name: true, emailVerified: true },
+      select: { id: true, email: true, name: true, emailVerified: true, onboardingCompleted: true },
     });
     if (!user) {
       return c.json({ error: "Usuário não encontrado" }, 401);
@@ -214,9 +219,9 @@ authRoutes.get("/users/me", async (c) => {
   }
   try {
     const { sub: userId } = verifyAccessToken(token);
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true, email: true, name: true, emailVerified: true, tier: true, createdAt: true },
+    const user = await prisma.user.findFirst({
+      where: { id: userId, deletedAt: null },
+      select: { id: true, email: true, name: true, emailVerified: true, tier: true, createdAt: true, onboardingCompleted: true },
     });
     if (!user) {
       return c.json({ error: "Usuário não encontrado" }, 401);
@@ -242,11 +247,34 @@ authRoutes.put("/users/me", async (c) => {
     const body = await c.req.json().catch(() => ({}));
     const parsed = updateProfileSchema.safeParse(body);
     if (!parsed.success) return c.json({ error: "Invalid data", details: parsed.error.flatten() }, 400);
+
+    const currentUser = await prisma.user.findUnique({ where: { id: userId } });
+    if (!currentUser) return c.json({ error: "User not found" }, 404);
+
+    const updateData: any = { ...parsed.data };
+    let verifyToken = null;
+
+    if (parsed.data.email && parsed.data.email !== currentUser.email) {
+      updateData.emailVerified = false;
+      verifyToken = crypto.randomBytes(32).toString("hex");
+      updateData.emailVerificationToken = verifyToken;
+      updateData.emailVerificationExpires = new Date(Date.now() + 1000 * 60 * 60 * 24);
+    }
+
     const updated = await prisma.user.update({
       where: { id: userId },
-      data: parsed.data,
+      data: updateData,
       select: { id: true, email: true, name: true, emailVerified: true, tier: true, createdAt: true },
     });
+
+    if (verifyToken) {
+      try {
+        await sendVerificationEmail(updated.email, updated.name, verifyToken);
+      } catch (err) {
+        Logger.warn({ err }, "Failed to send verification email on profile update");
+      }
+    }
+
     return c.json(updated);
   } catch {
     return c.json({ error: "Token inválido" }, 401);
@@ -311,7 +339,36 @@ authRoutes.post("/auth/change-password", async (c) => {
       where: { id: userId },
       data: { password: hashPassword(parsed.data.newPassword) },
     });
+
+    c.header("Set-Cookie", `${REFRESH_COOKIE}=; Path=/; HttpOnly; Max-Age=0`);
     return c.json({ ok: true, message: "Password changed successfully." });
+  } catch {
+    return c.json({ error: "Token inválido" }, 401);
+  }
+});
+
+// POST /auth/delete-account — soft delete
+const deleteAccountSchema = z.object({
+  confirmation: z.literal("DELETE"),
+});
+
+authRoutes.post("/auth/delete-account", async (c) => {
+  const auth = c.req.header("Authorization");
+  const token = auth?.startsWith("Bearer ") ? auth.slice(7) : null;
+  if (!token) return c.json({ error: "Token ausente" }, 401);
+  try {
+    const { sub: userId } = verifyAccessToken(token);
+    const body = await c.req.json().catch(() => ({}));
+    const parsed = deleteAccountSchema.safeParse(body);
+    if (!parsed.success) return c.json({ error: "Invalid confirmation string." }, 400);
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { deletedAt: new Date() },
+    });
+
+    c.header("Set-Cookie", `${REFRESH_COOKIE}=; Path=/; HttpOnly; Max-Age=0`);
+    return c.json({ ok: true, message: "Account deleted" });
   } catch {
     return c.json({ error: "Token inválido" }, 401);
   }

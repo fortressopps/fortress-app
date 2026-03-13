@@ -22,6 +22,7 @@ model User {
   emailVerificationToken String?      @unique
   emailVerificationExpires DateTime?  // expiração do token
   tier              UserTier          @default(SENTINEL)
+  onboardingCompleted Boolean         @default(false)
 
   // Cognitive Tracking (Upgrade Level 3)
   lastDashboardVisit DateTime?
@@ -30,8 +31,10 @@ model User {
 
   createdAt         DateTime          @default(now())
   updatedAt         DateTime         @updatedAt
+  deletedAt         DateTime?
   supermarketLists  SupermarketList[]
   goals             Goal[]
+  transactions      Transaction[]
   kernelProfile     KernelProfile?
 }
 
@@ -107,4 +110,37 @@ model KernelProfile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum TransactionCategory {
+  FOOD
+  TRANSPORT
+  HEALTH
+  ENTERTAINMENT
+  SHOPPING
+  SALARY
+  OTHER
+}
+
+enum TransactionSource {
+  MANUAL
+  SUPERMARKET
+  IMPORT
+}
+
+model Transaction {
+  id          String              @id @default(uuid())
+  userId      String
+  amount      Decimal
+  category    TransactionCategory
+  description String
+  source      TransactionSource   @default(MANUAL)
+  referenceId String?             // e.g. ID da lista do Supermarket
+  date        DateTime
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
 }
