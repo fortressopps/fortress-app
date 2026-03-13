@@ -36,6 +36,26 @@ export async function createGoal(data) {
 }
 
 /**
+ * Update goal progress
+ * PATCH /goals/:id/progress
+ * @param {string} id - Goal ID
+ * @param {number} progress - 0-100
+ */
+export async function updateGoalProgress(id, progress) {
+    const response = await api.patch(`/goals/${id}/progress`, { progress });
+    return response.data;
+}
+
+/**
+ * Delete goal
+ * DELETE /goals/:id
+ */
+export async function deleteGoal(id) {
+    const response = await api.delete(`/goals/${id}`);
+    return response.data;
+}
+
+/**
  * Get financial forecast
  * GET /forecast (to be implemented on backend)
  * @returns {Promise} - { previsaoMensal, previsaoSemanal, riscoLeve }
@@ -114,6 +134,8 @@ export default {
     processReceipt,
     getGoals,
     createGoal,
+    updateGoalProgress,
+    deleteGoal,
     getForecast,
     getSupermarketLists,
     createSupermarketList,

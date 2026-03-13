@@ -1,4 +1,5 @@
 // App Hono exportado para testes (sem subir servidor)
+import "./libs/env-db-patch";
 import { Hono } from "hono";
 import { bootstrap } from "./server/bootstrap";
 

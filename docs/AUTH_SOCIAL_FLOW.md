@@ -4,7 +4,7 @@
 - Rotas OAuth implementadas com Passport
 - Usuário é criado/atualizado no banco com email e nome
 - JWT gerado e enviado ao frontend via callback
-- Variáveis necessárias: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, MICROSOFT_CLIENT_ID, MICROSOFT_CLIENT_SECRET, FRONTEND_URL
+- Variáveis necessárias: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, MICROSOFT_CLIENT_ID, MICROSOFT_CLIENT_SECRET, FRONTEND_URL, APP_BASE_URL
 
 ## Frontend
 - Botões de login social (Google/Microsoft)
@@ -18,6 +18,7 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 MICROSOFT_CLIENT_ID=your-microsoft-client-id
 MICROSOFT_CLIENT_SECRET=your-microsoft-client-secret
 FRONTEND_URL=http://localhost:5173
+APP_BASE_URL=http://localhost:3001
 ```
 
 ## Fluxo
@@ -25,3 +26,10 @@ FRONTEND_URL=http://localhost:5173
 2. Redireciona para provedor OAuth
 3. Após autenticação, backend gera JWT e redireciona para frontend
 4. Frontend recebe token, atualiza estado e navega para dashboard
+
+## Rotas (referência)
+
+- `GET /auth/google` → inicia OAuth Google
+- `GET /auth/google/callback` → redireciona para `${FRONTEND_URL}/oauth-callback?token=<jwt>`
+- `GET /auth/microsoft` → inicia OAuth Microsoft
+- `GET /auth/microsoft/callback` → redireciona para `${FRONTEND_URL}/oauth-callback?token=<jwt>`

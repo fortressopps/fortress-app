@@ -1,16 +1,41 @@
-# React + Vite
+# Fortress Frontend (Vite + React)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend SPA do Fortress, reconstruído com um design system dark e layout com sidebar + navbar.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React 18 + React Router 7
+- Vite 4
+- Recharts (gráficos)
+- Lucide React (ícones)
+- Axios (via `src/api/axiosClient.js`)
 
-## React Compiler
+## Design System
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Background: `#0a0a0a`
+- Cards: `#111111` com borda `#1a1a1a`
+- Accent: `#22c55e` (primary) / `#16a34a` (hover)
+- Tipografia: Inter (Google Fonts)
 
-## Expanding the ESLint configuration
+Definido em `src/index.css`.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Rotas
+
+- `/` (Landing)
+- `/try` (Demo)
+- `/login`, `/register`
+- `/oauth-callback` (callback OAuth)
+- Protegidas: `/dashboard`, `/goals`, `/supermarket`, `/intelligence`, `/settings`
+
+## Rodar local
+
+```bash
+npm install
+npm run dev
+```
+
+Por padrão o backend é `http://localhost:3001`. Para customizar:
+
+```env
+VITE_API_URL=http://localhost:3001
+```

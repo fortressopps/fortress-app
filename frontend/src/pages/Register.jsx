@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axiosClient';
-import { useNavigate } from 'react-router-dom';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const nav = useNavigate();
+  const navigate = useNavigate();
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -21,94 +23,188 @@ export default function Register() {
     try {
       const res = await api.post('/auth/register', form);
       if (res.data.ok) {
-        setSuccess(res.data.message || 'Verifique seu email para ativar a conta.');
+        setSuccess(res.data.message || 'Check your email to activate your account.');
       } else {
-        setError(res.data.error || 'Erro ao registrar.');
+        setError(res.data.error || 'Registration failed.');
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Erro ao registrar.');
+      setError(err.response?.data?.error || 'Registration failed.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-surface p-6">
-      <div className="card-panel p-16 w-full max-w-md animate-entrance shadow-xl border-border-light bg-card">
-        <header className="mb-12 text-center">
-          <div className="brand-circle mx-auto mb-6 w-12 h-12 flex items-center justify-center bg-forest-green rounded-full">
-            <div className="w-4 h-4 bg-white/90 rounded-full"></div>
-          </div>
-          <h2 className="text-2xl font-bold text-charcoal tracking-tight mb-2">Nova Fortaleza</h2>
-          <p className="text-mute text-xs font-medium uppercase tracking-widest">Inicie sua reconquista patrimonial v8.1</p>
-        </header>
+    <div className="auth-page">
+      <div className="auth-card card">
+        <div className="auth-logo">FORTRESS</div>
+        <h1 className="auth-title">Create Account</h1>
+        <p className="auth-subtitle">Start building your financial fortress</p>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-mute uppercase tracking-[0.2em] ml-2">Designação (Nome)</label>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="auth-field">
+            <label>Name</label>
             <input
               name="name"
+              type="text"
               value={form.name}
               onChange={handleChange}
-              className="w-full bg-surface border border-border-light rounded-xl p-4 text-charcoal outline-none focus:border-forest-green transition-all text-sm"
-              placeholder="Nome completo"
+              placeholder="Your name"
               required
             />
           </div>
-
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-mute uppercase tracking-[0.2em] ml-2">Identidade (Email)</label>
+          <div className="auth-field">
+            <label>Email</label>
             <input
               name="email"
               type="email"
               value={form.email}
               onChange={handleChange}
-              className="w-full bg-surface border border-border-light rounded-xl p-4 text-charcoal outline-none focus:border-forest-green transition-all text-sm"
-              placeholder="exemplo@fortress.local"
+              placeholder="you@example.com"
               required
             />
           </div>
-
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-mute uppercase tracking-[0.2em] ml-2">Assinatura (Senha)</label>
+          <div className="auth-field">
+            <label>Password</label>
             <input
               name="password"
               type="password"
               value={form.password}
               onChange={handleChange}
-              className="w-full bg-surface border border-border-light rounded-xl p-4 text-charcoal outline-none focus:border-forest-green transition-all text-sm"
-              placeholder="********"
+              placeholder="••••••••"
               required
+              minLength={6}
             />
           </div>
-
-          <button
-            disabled={loading}
-            className="w-full py-4 rounded-xl bg-forest-green text-white font-bold text-xs uppercase tracking-[0.2em] hover:shadow-lg active:scale-95 transition-all disabled:opacity-50">
-            {loading ? 'Processando...' : 'Protocolar Registro'}
+          <button type="submit" className="btn btn-primary auth-submit" disabled={loading}>
+            {loading ? 'Creating account...' : 'Register'}
           </button>
         </form>
 
-        <div className="mt-12 text-center border-t border-border-light pt-8">
-          <button
-            onClick={() => nav('/login')}
-            className="text-mute text-[10px] font-bold uppercase tracking-[0.2em] hover:text-charcoal transition-all">
-            Já possuo acesso validado
-          </button>
+        <div className="auth-divider">
+          <span>or continue with</span>
         </div>
 
-        {error && (
-          <div className="mt-8 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-xs text-center font-bold">
-            {error}
-          </div>
-        )}
+        <div className="auth-oauth">
+          <a
+            href={`${API_BASE}/auth/google`}
+            className="btn btn-outline auth-oauth-btn"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18">
+              <path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/>
+              <path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/>
+              <path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z"/>
+              <path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.3z"/>
+            </svg>
+            Google
+          </a>
+          <a
+            href={`${API_BASE}/auth/microsoft`}
+            className="btn btn-outline auth-oauth-btn"
+          >
+            <svg width="18" height="18" viewBox="0 0 23 23">
+              <path fill="#f35325" d="M1 1h10v10H1z"/>
+              <path fill="#81bc06" d="M12 1h10v10H12z"/>
+              <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+              <path fill="#ffba08" d="M12 12h10v10H12z"/>
+            </svg>
+            Microsoft
+          </a>
+        </div>
 
-        {success && (
-          <div className="mt-8 p-4 bg-emerald-50 border border-emerald-100 rounded-xl text-forest-green text-xs text-center font-bold">
-            {success}
-          </div>
-        )}
+        <p className="auth-switch">
+          Already have an account? <Link to="/login">Sign In</Link>
+        </p>
       </div>
+
+      {error && <div className="auth-error">{error}</div>}
+      {success && <div className="auth-success">{success}</div>}
+
+      <style>{`
+        .auth-page {
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+        }
+        .auth-card {
+          width: 100%;
+          max-width: 400px;
+          padding: 40px;
+        }
+        .auth-logo {
+          font-weight: 700;
+          font-size: 20px;
+          letter-spacing: 0.05em;
+          text-align: center;
+          margin-bottom: 24px;
+        }
+        .auth-title { font-size: 1.5rem; margin-bottom: 4px; text-align: center; }
+        .auth-subtitle { color: var(--text-secondary); font-size: 14px; text-align: center; margin-bottom: 28px; }
+        .auth-form { display: flex; flex-direction: column; gap: 20px; }
+        .auth-field label {
+          display: block;
+          font-size: 12px;
+          font-weight: 500;
+          color: var(--text-secondary);
+          margin-bottom: 8px;
+        }
+        .auth-field input {
+          width: 100%;
+          padding: 12px 16px;
+          background: #1a1a1a;
+          border: 1px solid var(--card-border);
+          border-radius: var(--radius-btn);
+          color: var(--text);
+          font-size: 14px;
+          font-family: inherit;
+        }
+        .auth-field input:focus {
+          outline: none;
+          border-color: var(--primary);
+        }
+        .auth-submit { width: 100%; padding: 12px; }
+        .auth-divider {
+          display: flex;
+          align-items: center;
+          margin: 24px 0;
+          color: var(--text-secondary);
+          font-size: 12px;
+        }
+        .auth-divider::before, .auth-divider::after {
+          content: '';
+          flex: 1;
+          height: 1px;
+          background: var(--card-border);
+        }
+        .auth-divider span { padding: 0 12px; }
+        .auth-oauth { display: flex; gap: 12px; }
+        .auth-oauth-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .auth-switch { text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-secondary); }
+        .auth-switch a { color: var(--primary); }
+        .auth-error {
+          margin-top: 16px;
+          padding: 12px;
+          background: rgba(239, 68, 68, 0.1);
+          border: 1px solid rgba(239, 68, 68, 0.3);
+          border-radius: var(--radius-btn);
+          color: #ef4444;
+          font-size: 14px;
+          max-width: 400px;
+        }
+        .auth-success {
+          margin-top: 16px;
+          padding: 12px;
+          background: rgba(34, 197, 94, 0.1);
+          border: 1px solid rgba(34, 197, 94, 0.3);
+          border-radius: var(--radius-btn);
+          color: var(--primary);
+          font-size: 14px;
+          max-width: 400px;
+        }
+      `}</style>
     </div>
   );
 }

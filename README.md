@@ -1,82 +1,50 @@
-# Fortress App — v7.23 → v7.24
+# Fortress App — v7.24
 
-# Plataforma financeira com arquitetura empresarial, modular e previsível
+Plataforma de finanças pessoais com **backend modular** (Hono + Prisma) e **frontend SPA** (Vite + React) com design system dark.
 
-# 
+## Stack (atual)
 
-# A Fortress é uma plataforma criada para reestruturar a relação psicológica das pessoas com o dinheiro, usando tecnologia inteligente, automação e uma arquitetura limpa e fortificada.
+- **Backend**: Node + TypeScript, Hono, Prisma, Postgres
+- **Auth**: JWT (access/refresh) + OAuth (Google/Microsoft via Passport)
+- **Frontend**: React 18, React Router 7, Vite 4, Axios, Recharts, Lucide React
 
-# 
+## Rotas do frontend
 
-# O objetivo é transformar finanças pessoais em algo leve, seguro e previsível, com decisões guiadas por estrutura — não por improviso.
+- Público: `/` (Landing), `/try`, `/login`, `/register`, `/oauth-callback`
+- Protegido: `/dashboard`, `/goals`, `/supermarket`, `/intelligence`, `/settings`
 
-# 
+## Desenvolvimento local (rápido)
 
-# 🚀 Visão Geral
+### 1) Backend
 
-# 
+Configure `backend/.env` com um Postgres acessível (Supabase recomendado com **Session Pooler**):
 
-# Após o ciclo v7.21 → v7.23, o repositório passou por uma reconstrução total:
+- Guia: `docs/SUPABASE_SETUP.md`
 
-# 
+Depois:
 
-# ✔ Arquitetura Hexagonal real
+```bash
+cd backend
+npm install
+npx prisma migrate deploy
+npm run dev
+```
 
-# 
+Backend por padrão em `http://localhost:3001` (health: `GET /health`).
 
-# ✔ Backend modular com Domain Layer isolado
+### 2) Frontend
 
-# 
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-# ✔ ESM + TypeScript em todos os pontos
+Por padrão usa o backend em `http://localhost:3001`. Para customizar:
 
-# 
-
-# ✔ Regras de segurança reforçadas
-
-# 
-
-# ✔ CI/CD simplificado
-
-# 
-
-# ✔ Frontend e backend completamente isolados
-
-# 
-
-# ✔ Estrutura consolidada e revisada
-
-# 
-
-# ✔ Repositório limpo, sem legados
-
-# 
-
-# A versão v7.24 evoluirá para:
-
-# 
-
-# Domain Kernel
-
-# 
-
-# Bounded Contexts reais
-
-# 
-
-# Regras financeiras sólidas
-
-# 
-
-# Módulos comportamentais
-
-# 
-
-# Observabilidade
-
-# 
-
-# Foundation do Fortress BI Core
+```env
+VITE_API_URL=http://localhost:3001
+```
 
 # 
 
@@ -286,35 +254,10 @@
 
 # 
 
-# 🛠️ Desenvolvimento Local
+# 🛠️ Notas
 
-# 1\. Instale dependências
-
-# cd backend
-
-# npm install
-
-# npm run dev
-
-# 
-
-# 2\. Gere o Prisma Client
-
-# npx prisma generate
-
-# 
-
-# 3\. Crie migrações
-
-# npx prisma migrate dev --name init
-
-# 
-
-# 4\. Frontend: API URL (opcional)
-
-# O frontend usa a API em http://localhost:3001 por padrão. Para outro host/porta, crie no frontend um arquivo .env com:
-
-# VITE_API_URL=http://localhost:3001
+- Para deploy e operação: `docs/DEPLOY.md`
+- Para autenticação: `docs/AUTH_FLOW.md` e `docs/AUTH_SOCIAL_FLOW.md`
 
 # 
 

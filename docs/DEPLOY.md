@@ -80,6 +80,8 @@ docker-compose up -d --scale app=3
 ## Troubleshooting
 
 ### Database Connection Issues
+If you are using Supabase and see `P1001` or `FATAL: Tenant or user not found`, use the **Session pooler** connection string and the correct pooler user (`postgres.<project_ref>`). See `docs/SUPABASE_SETUP.md`.
+
 ```bash
 # Check PostgreSQL logs
 docker-compose logs postgres

@@ -8,19 +8,21 @@
 
 ## 1. Arquitetura Atual
 
+> Nota (2026-03-12): este documento reflete um estado antigo (2025-01-31). O projeto evoluiu (backend funcional + frontend reconstruído). Mantemos como histórico, e os pontos abaixo foram atualizados minimamente onde estavam desatualizados.
+
 ### 1.1 Visão geral
 
 O Fortress é um **monorepo npm workspaces** com dois pacotes: `frontend` (SPA React + Vite) e `backend` (API Node + Hono + Prisma). A documentação de referência está em `FORTRESS_DOCS_V7/` (Blueprint v7.24, PFS, runbooks). A arquitetura alvo é **hexagonal / DDD**, com camadas **app → domain → infra**; na prática, parte do código ainda não está alinhada a esse modelo.
 
-### 1.2 Backend
+### 1.2 Backend (atual)
 
 | Camada / Conceito | Localização | Descrição |
 |-------------------|-------------|-----------|
-| **Entrypoint** | `backend/src/main.server.ts` | Cria app Hono, chama `bootstrap(app)`, sobe servidor na porta `process.env.PORT \|\| 3001`. **Não usa** `ENV` de `libs/env.ts` nem `gracefulShutdown`. |
+| **Entrypoint** | `backend/src/main.server.ts` | Sobe servidor com `serve()` na porta `ENV.PORT`, com `gracefulShutdown(server)`. |
 | **Bootstrap** | `backend/src/server/bootstrap.ts` | Ordem: `initInfra()` → `applySecurity(app)` → `registerHealthRoutes(app)` → `registerModuleRoutes(app)`. |
 | **Infra init** | `backend/src/libs/infra.init.ts` | Conecta Prisma; Redis comentado. |
 | **Segurança** | `backend/src/libs/security.ts` | Middleware global com headers (X-Content-Type-Options, X-Frame-Options, CSP, etc.). |
-| **Rotas** | `backend/src/server/routes/` | `health.routes.ts`: `GET /health`. `index.routes.ts`: apenas `GET /` com mensagem; **nenhuma rota de módulo montada**. |
+| **Rotas** | `backend/src/server/routes/` | `health.routes.ts`: `GET /health`. `auth.routes.ts` + `oauth.routes.ts` + módulos (goals, supermarket, forecast). |
 | **Módulos** | `backend/src/modules/` | **example**: `example.controller.ts` (Express-style, `prisma.item`, paths quebrados). **supermarket**: `domain/` (types, utils), `infra/repository.ts`; `index.ts` exporta controllers/services inexistentes; repositório usa modelos Prisma que **não existem** no schema. |
 | **Shared** | `backend/src/shared/pagination/` | DTO/helper/pipe com imports para `utils/pagination` inexistente e dependências NestJS/class-validator não listadas no `package.json`. |
 | **Libs** | `backend/src/libs/` | `prisma.ts`, `logger.ts` (export `Logger`), `env.ts` (Zod), `jwt.ts` (Express-style), `appError.ts`, `security.ts`, `uuid.ts`, `gracefulShutdown.ts` (importa `fortressLogger` que **não existe** em `logger.ts`). |
@@ -29,19 +31,19 @@ O Fortress é um **monorepo npm workspaces** com dois pacotes: `frontend` (SPA R
 
 **Stack efetiva:** Hono + @hono/node-server, Prisma, Pino, Zod, dotenv. Express, helmet, cors, cookie-parser, express-rate-limit, ioredis estão no `package.json` mas **não são usados** no fluxo principal (apenas `server.ts` Express não utilizado).
 
-### 1.3 Frontend
+### 1.3 Frontend (atual)
 
 | Camada / Conceito | Localização | Descrição |
 |-------------------|-------------|-----------|
-| **Entrypoint** | `frontend/src/main.jsx` | Renderiza `<Router />` (de `router/index.jsx`). |
-| **Roteamento** | `frontend/src/router/index.jsx` | `BrowserRouter` + `AuthProvider`. Rotas: `/login` → Login; `/` → `Protected` → Dashboard; `*` → `App`. **Landing (HomePage)** está dentro de `App.jsx` e só é acessível quando `*` coincide; como `/` é Dashboard, a rota `/` interna de `App` **nunca** é atingida — landing inacessível. |
-| **App (landing)** | `frontend/src/App.jsx` | Router interno: `/` → HomePage (Header, HeroSection, Benefits, Pricing, Footer), `/try` → TryFortress. Usado como fallback para `*`. |
+| **Entrypoint** | `frontend/src/main.jsx` | Renderiza `App`. |
+| **Roteamento** | `frontend/src/App.jsx` | Público: `/`, `/try`, `/login`, `/register`, `/oauth-callback`. Protegido: `/dashboard`, `/goals`, `/supermarket`, `/supermarket/:listId`, `/intelligence`, `/settings`. |
+| **Layout** | `frontend/src/layouts/MainLayout.jsx` | Sidebar + navbar; bottom nav no mobile. |
 | **Auth** | `frontend/src/context/AuthContext.jsx` | Estado user/loading; login, logout; refresh no mount; chama `/auth/refresh`, `/auth/login`, `/auth/logout`, `/users/me` — **nenhuma implementada no backend**. |
-| **API** | `frontend/src/api/axiosClient.js` | BaseURL `VITE_API_URL \|\| 'http://localhost:4000'`; backend sobe em **3001** — mismatch. Interceptor 401 com refresh; Bearer token. |
+| **API** | `frontend/src/api/axiosClient.js` | BaseURL `VITE_API_URL \|\| 'http://localhost:3001'`. Interceptor 401 com refresh; Bearer; withCredentials. |
 | **Páginas** | `frontend/src/pages/` | Login (credenciais default), Dashboard (boas-vindas + logout). |
 | **Componentes** | `frontend/src/components/` | Header, HeroSection, Benefits, Pricing, Footer, TryFortress, Dashboard, SupermarketMode (placeholder), Layout, Common/Button, etc. |
 
-**Stack:** React 18, React Router 7, Vite 4. Sem biblioteca de UI; CSS por componente. Sem axios no `package.json` (possível dependência transitiva ou omitida).
+**Stack:** React 18, React Router 7, Vite 4, Axios, Recharts, Lucide React.
 
 ### 1.4 DevOps e deploy
 
@@ -59,7 +61,7 @@ O Fortress é um **monorepo npm workspaces** com dois pacotes: `frontend` (SPA R
 ```
 [main.server.ts] → bootstrap → initInfra (Prisma) + security + health.routes + index.routes
 [index.routes]   → GET / only; no module routes
-[Frontend]      → AuthContext → axiosClient → VITE_API_URL:4000 → (no backend auth routes)
+[Frontend]      → AuthContext → axiosClient → VITE_API_URL:3001 → (backend auth + oauth)
 [Router]        → / → Dashboard, * → App (/, /try) → Landing unreachable at /
 ```
 
@@ -71,10 +73,10 @@ O Fortress é um **monorepo npm workspaces** com dois pacotes: `frontend` (SPA R
 
 | Gap | Arquivos envolvidos | Descrição |
 |-----|---------------------|-----------|
-| **Auth backend inexistente** | `frontend/src/context/AuthContext.jsx`, `frontend/src/api/axiosClient.js` | Frontend chama `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout`, `GET /users/me`. Nenhuma rota implementada em `backend/src/server/routes/` ou em módulos. Login/refresh sempre falham. |
-| **Porta API incorreta** | `frontend/src/api/axiosClient.js` | Default `http://localhost:4000`; backend em `backend/src/main.server.ts` usa porta **3001**. |
+| **Auth backend inexistente** | `frontend/src/context/AuthContext.jsx` | ✅ Resolvido — backend expõe `/auth/login`, `/auth/refresh`, `/auth/logout`, `/users/me` e OAuth. |
+| **Porta API incorreta** | `frontend/src/api/axiosClient.js` | ✅ Resolvido — default `http://localhost:3001` (override via `VITE_API_URL`). |
 | **Schema Prisma vs módulo Supermarket** | `backend/prisma/schema.prisma`, `backend/src/modules/supermarket/infra/supermarket.repository.ts`, `backend/src/modules/supermarket/domain/supermarket.types.ts` | Schema só tem `User`. Repositório e types usam `SupermarketList`, `SupermarketItem`, `SupermarketCategory` — não existem. Build/run quebrados se o módulo for importado. |
-| **Landing inacessível** | `frontend/src/router/index.jsx`, `frontend/src/App.jsx` | Rota `/` no router principal é Dashboard. HomePage (HeroSection, Benefits, Pricing) está em `App` com path `/` interno; esse `/` nunca é alcançado. |
+| **Landing inacessível** | frontend | ✅ Resolvido — `/` é Landing; rotas protegidas usam `/dashboard` etc. |
 | **Supermarket index quebrado** | `backend/src/modules/supermarket/index.ts` | `export * from "@/controllers/supermarketController"` e `"@/services/supermarketService"` — arquivos/pastas inexistentes; `tsconfig.json` não define alias `@/`. |
 
 ### 2.2 Altos (código quebrado ou inconsistente)
@@ -106,11 +108,11 @@ Priorização alinhada à documentação (PFS Supermarket, auth, observabilidade
 | Prioridade | Feature | Justificativa | Arquivos / ações |
 |------------|---------|----------------|-----------------|
 | **P0** | **Auth API (login, refresh, me)** | Desbloqueia Dashboard e fluxo logado. | Novo módulo ou rotas em `server/routes/`; usar `libs/jwt.ts` adaptado ao Hono; `libs/env.ts` para secrets. |
-| **P0** | **Corrigir roteamento frontend** | Tornar landing acessível e separar app autenticada. | `frontend/src/router/index.jsx`: e.g. `/` → landing (App/HomePage), `/app` ou `/dashboard` → Protected Dashboard; ou mover landing para rota explícita. |
+| **P0** | **Corrigir roteamento frontend** | Tornar landing acessível e separar app autenticada. | ✅ Resolvido — `/` é Landing e `/dashboard` é app protegida. |
 | **P0** | **Alinhar URL da API** | Garantir que front e back conversem em dev. | `frontend/src/api/axiosClient.js`: default 3001 ou documentar `VITE_API_URL`; `.env.example` no frontend. |
 | **P1** | **Schema + rotas Supermarket** | PFS 4B e repositório já escritos; falta persistência e HTTP. | `backend/prisma/schema.prisma`: modelos SupermarketList, SupermarketItem, enum SupermarketCategory; migração; rotas Hono em `modules/supermarket/` (adapters/http); corrigir `index.ts` e imports em `supermarket.utils.ts`. |
 | **P1** | **Middleware auth e proteção de rotas** | Garantir que apenas usuários autenticados acessem recursos. | `backend/src/middleware/auth.ts`: validar JWT e anexar user ao context Hono; aplicar em rotas de módulos. |
-| **P2** | **TryFortress + SupermarketMode funcionais** | Conectar UI à API Supermarket (listas/itens). | `frontend/src/components/TryFortress/TryFortress.jsx`, `SupermarketMode/SupermarketMode.jsx`: chamadas ao backend; rota `/try/supermarket` ou modal. |
+| **P2** | **Try (demo) e Supermarket funcionais** | Conectar UI à API Supermarket (listas/itens). | ✅ Resolvido — rotas/páginas em `frontend/src/pages/` (`/try`, `/supermarket`, `/supermarket/:listId`). |
 | **P2** | **Readiness / observabilidade** | Blueprint v7 e operação. | `backend/src/server/routes/health.routes.ts`: e.g. `GET /ready` (Prisma + opcional Redis); logs estruturados (já Pino); métricas opcionais. |
 | **P3** | **CI backend** | Garantir que backend compila e testes passam. | `.github/workflows/ci.yml`: job build + lint + testes do backend. |
 | **P3** | **Notificações / Insights (PFS 4D, 4E)** | Conforme roadmap v7.24. | Novos módulos domain + infra + rotas; após Supermarket e auth estáveis. |

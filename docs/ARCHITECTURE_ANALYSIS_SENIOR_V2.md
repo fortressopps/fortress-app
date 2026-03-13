@@ -36,19 +36,18 @@ A documentação de referência está em **`FORTRESS_DOCS_V7/`** (Blueprint v7.2
 
 **Stack efetiva:** Hono, @hono/node-server, Prisma, Pino, Zod, dotenv, jsonwebtoken, uuid. **Não utilizados no fluxo principal:** express, helmet, cors, cookie-parser, express-rate-limit, ioredis, compression (listados em `package.json`).
 
-### 1.3 Frontend — estado atual
+### 1.3 Frontend — estado atual (atualizado em 2026-03-12)
 
 | Camada / Conceito | Localização | Descrição |
 |-------------------|-------------|-----------|
-| **Entrypoint** | `frontend/src/main.jsx` | Renderiza `<Router />` (de `router/index.jsx`). |
-| **Roteamento** | `frontend/src/router/index.jsx` | **`/login`** → Login. **`/app`** → Protected → Dashboard. **`/try`** → App (TryFortress). **`/`** → App (landing: HomePage). Landing acessível em `/`. |
-| **App (landing)** | `frontend/src/App.jsx` | Router interno: `/` → HomePage (Header, HeroSection, Benefits, Pricing, Footer), `/try` → TryFortress. |
-| **Auth** | `frontend/src/context/AuthContext.jsx` | user, loading, login, logout; refresh no mount; chama `/auth/refresh`, `/auth/login`, `/users/me`. Backend implementado. |
-| **API** | `frontend/src/api/axiosClient.js` | BaseURL **VITE_API_URL \|\| 'http://localhost:3001'**. Interceptor 401 com refresh; Bearer token; withCredentials. |
-| **Páginas** | `frontend/src/pages/` | Login (redireciona para `/app`), Dashboard (boas-vindas + logout). |
-| **Componentes** | `frontend/src/components/` | Header, HeroSection, Benefits, Pricing, Footer, TryFortress, SupermarketMode (placeholder), Layout, Common/Button, etc. |
+| **Entrypoint** | `frontend/src/main.jsx` | Renderiza `App`. |
+| **Roteamento** | `frontend/src/App.jsx` | Público: `/`, `/try`, `/login`, `/register`, `/oauth-callback`. Protegido: `/dashboard`, `/goals`, `/supermarket`, `/supermarket/:listId`, `/intelligence`, `/settings`. |
+| **Layout** | `frontend/src/layouts/MainLayout.jsx` | Sidebar + navbar; mobile com bottom nav. |
+| **Auth** | `frontend/src/context/AuthContext.jsx` | user, loading, login, logout, `refreshUser`; refresh no mount; `/auth/refresh` e `/users/me`. |
+| **API** | `frontend/src/api/axiosClient.js` | BaseURL **VITE_API_URL \|\| 'http://localhost:3001'**. Interceptor 401 com refresh; Bearer; withCredentials. |
+| **Páginas** | `frontend/src/pages/` | Landing, Login, Register, Dashboard, Goals, Supermarket, Intelligence, Settings, TryDemo, OAuthCallback. |
 
-**Stack:** React 18, React Router 7, Vite 4, axios (usado em `axiosClient.js`; **não listado** em `frontend/package.json` — dependência implícita ou omitida).
+**Stack:** React 18, React Router 7, Vite 4, axios (declarado), Recharts, Lucide React.
 
 ### 1.4 DevOps e deploy
 
@@ -76,7 +75,7 @@ A documentação de referência está em **`FORTRESS_DOCS_V7/`** (Blueprint v7.2
 | Gap | Onde | Impacto |
 |-----|------|---------|
 | **CI sem backend** | `.github/workflows/ci.yml` | Backend pode quebrar em PR sem feedback; testes e build do backend não rodam no pipeline. |
-| **axios não declarado no frontend** | `frontend/package.json` | `axios` é usado em `axiosClient.js` mas não aparece em dependencies; risco de build/install inconsistente. |
+| **axios não declarado no frontend** | `frontend/package.json` | ✅ Resolvido — `axios` está declarado. |
 | **vercel.json com framework Next.js** | `vercel.json` | App é Vite+React; pode confundir ferramentas ou comportamentos de deploy. |
 | **Dependências backend não usadas** | `backend/package.json` | express, helmet, cors, cookie-parser, express-rate-limit, ioredis, compression não são usados; aumenta superfície e ruído. |
 | **Credenciais default no Login** | `frontend/src/pages/Login.jsx` | Valores iniciais `ops@fortress.local` / `devpass`; risco se expostos em produção. |
@@ -86,7 +85,7 @@ A documentação de referência está em **`FORTRESS_DOCS_V7/`** (Blueprint v7.2
 
 | Gap | Onde | Impacto |
 |-----|------|---------|
-| **SupermarketMode / TryFortress** | `frontend/src/components/` | SupermarketMode é placeholder; TryFortress não chama API Supermarket; funcionalidade de listas não exposta na UI. |
+| **SupermarketMode / TryFortress** | `frontend/src/components/` | ✅ Resolvido — UI reconstruída; Supermarket e Demo estão em `frontend/src/pages/`. |
 | **Sem rota de registro** | Backend + frontend | Apenas login; criação de usuário depende de seed ou outro canal. |
 | **Sem rate limit na API** | Backend | express-rate-limit está no package mas não aplicado; risco de abuso em endpoints públicos. |
 | **Config Clerk não utilizada** | `backend/src/config/clerk.ts` | Código morto ou preparação para auth alternativa. |

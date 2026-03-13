@@ -1,39 +1,81 @@
-@import './styles/fortress-design-system.css';
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-body {
-  background-color: var(--bg-surface);
-  color: var(--text-main);
-  font-family: 'Outfit', sans-serif;
-  margin: 0;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Fortress Design System */
+:root {
+  --bg: #0a0a0a;
+  --card: #111111;
+  --card-border: #1a1a1a;
+  --primary: #22c55e;
+  --primary-hover: #16a34a;
+  --text: #ffffff;
+  --text-secondary: #6b7280;
+  --sidebar: #0d0d0d;
+  --radius-card: 12px;
+  --radius-btn: 8px;
 }
 
-/* Smooth selection */
-::selection {
-  background: var(--emerald-primary);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Utility classes */
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: var(--radius-btn);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: var(--primary);
   color: white;
 }
 
-/* Global scrollbar - Clean & Discreet */
-::-webkit-scrollbar {
-  width: 8px;
+.btn-primary:hover {
+  background: var(--primary-hover);
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-surface);
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--card-border);
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--emerald-primary);
+.btn-outline:hover {
+  border-color: var(--primary);
+  color: var(--primary);
 }

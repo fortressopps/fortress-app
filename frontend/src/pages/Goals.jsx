@@ -1,183 +1,314 @@
-import { useState, useEffect } from 'react';
-import { getGoals, createGoal } from '../api/coreApi';
+import React, { useEffect, useState } from 'react';
+import { Target } from 'lucide-react';
+import { getGoals, createGoal, deleteGoal } from '../api/coreApi';
+
+function formatBRL(val) {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(val || 0);
+}
+
+function formatDate(d) {
+  if (!d) return '-';
+  return new Date(d).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
 
 export default function Goals() {
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [newGoal, setNewGoal] = useState({ name: '', value: '', periodicity: 'MONTHLY' });
+  const [error, setError] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ name: '', value: '', periodicity: 'MONTHLY' });
+  const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchGoals();
-  }, []);
-
-  const fetchGoals = async () => {
-    try {
-      const data = await getGoals();
-      setGoals(data);
-    } catch (err) {
-      console.error("Goals sync failed", err);
-    } finally {
-      setLoading(false);
-    }
+  const loadGoals = () => {
+    getGoals()
+      .then((data) => setGoals(Array.isArray(data) ? data : []))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   };
+
+  useEffect(loadGoals, []);
 
   const handleCreate = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
+    setError(null);
     try {
       await createGoal({
-        ...newGoal,
-        value: Math.round(parseFloat(newGoal.value) * 100)
+        name: form.name,
+        value: Number(form.value),
+        periodicity: form.periodicity,
       });
-      setShowModal(false);
-      setNewGoal({ name: '', value: '', periodicity: 'MONTHLY' });
-      fetchGoals();
+      setForm({ name: '', value: '', periodicity: 'MONTHLY' });
+      setShowForm(false);
+      loadGoals();
     } catch (err) {
-      alert('Falha ao registrar diretriz estratégica.');
+      setError(err.response?.data?.error || 'Failed to create goal');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const fmt = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val / 100);
+  const handleDelete = async (id) => {
+    if (!window.confirm('Delete this goal?')) return;
+    try {
+      await deleteGoal(id);
+      loadGoals();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
-  if (loading) return (
-    <div className="flex h-[80vh] items-center justify-center">
-      <div className="text-silver-mute font-medium tracking-[0.3em] uppercase animate-pulse">Sincronizando Diretrizes...</div>
-    </div>
-  );
+  if (loading) {
+    return (
+      <div className="goals-loading">
+        <div className="goals-spinner" />
+        <p>Loading goals...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-16 max-w-7xl mx-auto pb-20 p-8">
-      <div className="flex justify-between items-center opacity-0 animate-entrance">
-        <header className="space-y-1">
-          <h1 className="text-charcoal text-2xl font-bold tracking-tight">Metas de Evolução</h1>
-          <p className="text-mute text-sm">Diretrizes de crescimento e travas de segurança patrimonial.</p>
-        </header>
+    <div className="goals-page">
+      <header className="goals-header">
+        <h1>Goals</h1>
         <button
-          onClick={() => setShowModal(true)}
-          className="bg-forest-green text-white px-10 py-3 rounded-xl font-bold text-[10px] uppercase tracking-[0.3em] hover:scale-105 transition-all shadow-lg"
+          className="btn btn-primary"
+          onClick={() => setShowForm(!showForm)}
         >
-          + Registrar Diretriz
+          New Goal
         </button>
-      </div>
+      </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        {goals.map((goal, idx) => (
-          <div key={goal.id} className="card-panel p-10 group opacity-0 animate-entrance">
-            <div className="relative z-10 space-y-10">
-              <div className="flex justify-between items-start">
-                <div className="space-y-3">
-                  <h3 className="font-bold text-xl text-charcoal tracking-tight group-hover:text-forest-green transition-colors">{goal.name}</h3>
-                  <span className="text-[10px] bg-surface border border-border-light px-4 py-1 rounded-full text-mute font-bold tracking-[0.2em] uppercase">
-                    {goal.periodicity === 'MONTHLY' ? 'MENSAL' : goal.periodicity === 'WEEKLY' ? 'SEMANAL' : goal.periodicity}
-                  </span>
+      {error && <div className="goals-error">{error}</div>}
+
+      {showForm && (
+        <div className="card goals-form-card">
+          <h2>New Goal</h2>
+          <form onSubmit={handleCreate} className="goals-form">
+            <div className="goals-field">
+              <label>Name</label>
+              <input
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                placeholder="e.g. Monthly Groceries"
+                required
+              />
+            </div>
+            <div className="goals-field">
+              <label>Target Amount</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={form.value}
+                onChange={(e) => setForm({ ...form, value: e.target.value })}
+                placeholder="1000"
+                required
+              />
+            </div>
+            <div className="goals-field">
+              <label>Periodicity</label>
+              <select
+                value={form.periodicity}
+                onChange={(e) => setForm({ ...form, periodicity: e.target.value })}
+              >
+                <option value="MONTHLY">Monthly</option>
+                <option value="WEEKLY">Weekly</option>
+              </select>
+            </div>
+            <div className="goals-form-actions">
+              <button type="submit" className="btn btn-primary" disabled={submitting}>
+                {submitting ? 'Creating...' : 'Create Goal'}
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={() => setShowForm(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <div className="goals-grid">
+        {goals.length === 0 && !showForm ? (
+          <div className="card goals-empty">
+            <Target size={48} className="goals-empty-icon" />
+            <h3>No goals yet</h3>
+            <p>Create your first financial goal to get started.</p>
+            <button className="btn btn-primary" onClick={() => setShowForm(true)}>
+              New Goal
+            </button>
+          </div>
+        ) : (
+          goals.map((goal) => (
+            <div key={goal.id} className="card goals-card">
+              <div className="goals-card-header">
+                <h3>{goal.name}</h3>
+                <span className={`goals-badge goals-badge-${(goal.periodicity || '').toLowerCase()}`}>
+                  {goal.periodicity || 'MONTHLY'}
+                </span>
+              </div>
+              <div className="goals-progress">
+                <div className="goals-progress-bar">
+                  <div
+                    className="goals-progress-fill"
+                    style={{ width: `${Math.min(goal.progress || 0, 100)}%` }}
+                  />
                 </div>
               </div>
-
-              <div className="space-y-8">
-                <div className="flex justify-between items-end">
-                  <div className="space-y-1">
-                    <p className="text-[10px] text-mute font-bold uppercase tracking-[0.3em]">Target</p>
-                    <p className="font-bold text-charcoal text-3xl tracking-tighter">{fmt(goal.value)}</p>
-                  </div>
-                  <div className="text-right">
-                    <span className={`text-[10px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full ${goal.analysis?.atRisk ? 'bg-red-100 text-red-600 border border-red-200' : 'bg-emerald-surface text-forest-green border border-emerald-primary/20'}`}>
-                      {goal.analysis?.atRisk ? '⚠️ Risco' : '✓ Nominal'}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex justify-between text-[10px] text-mute uppercase font-bold tracking-[0.2em]">
-                    <span>Progresso Patrimonial</span>
-                    <span className="text-charcoal font-mono">{goal.progress}%</span>
-                  </div>
-                  <div className="w-full bg-surface h-2 rounded-full overflow-hidden border border-border-light">
-                    <div
-                      className={`h-full transition-all duration-[1.5s] ease-out ${goal.progress > 90 ? 'bg-red-500' : goal.progress > 60 ? 'bg-yellow-500' : 'bg-forest-green'}`}
-                      style={{ width: `${Math.min(100, goal.progress)}%` }}
-                    />
-                  </div>
-                </div>
-
-                {goal.analysis?.deviation && (
-                  <div className="pt-8 flex justify-between items-center border-t border-border-light">
-                    <span className="text-[10px] text-mute uppercase tracking-[0.2em] font-bold">Desvio Estimado</span>
-                    <span className={`text-xs font-mono font-bold ${goal.analysis.deviation.status === 'over' ? 'text-red-500' : 'text-forest-green'}`}>
-                      {goal.analysis.deviation.deviation_pct > 0 ? '+' : ''}{goal.analysis.deviation.deviation_pct}%
-                    </span>
-                  </div>
-                )}
+              <div className="goals-amounts">
+                <span>{formatBRL(goal.progress ? (goal.value * (goal.progress / 100)) : 0)}</span>
+                <span className="goals-sep">/</span>
+                <span>{formatBRL(goal.value)}</span>
+              </div>
+              <div className="goals-meta">
+                <span>Created {formatDate(goal.createdAt)}</span>
+                <button
+                  className="goals-delete"
+                  onClick={() => handleDelete(goal.id)}
+                  title="Delete goal"
+                >
+                  Delete
+                </button>
               </div>
             </div>
-          </div>
-        ))}
-
-        {goals.length === 0 && (
-          <div className="col-span-full py-24 text-center card-panel border-dashed opacity-0 animate-entrance">
-            <p className="text-mute text-sm italic">Nenhuma diretriz estratégica definida para este ciclo.</p>
-          </div>
+          ))
         )}
       </div>
 
-      {/* Modal: Museum-Grade Design (Light Adapted) */}
-      {showModal && (
-        <div className="fixed inset-0 bg-charcoal/40 backdrop-blur-sm flex items-center justify-center p-8 z-[1000] animate-entrance">
-          <div className="card-panel p-16 w-full max-w-xl shadow-2xl">
-            <h2 className="text-3xl font-bold text-charcoal tracking-tight mb-10">Provisionar Diretriz</h2>
-            <form onSubmit={handleCreate} className="space-y-10">
-              <div className="space-y-3">
-                <label className="text-[10px] font-bold text-mute uppercase tracking-[0.3em] ml-2">Nome da Operação</label>
-                <input
-                  required
-                  placeholder="Ex: Reserva Vanguard"
-                  className="w-full bg-surface border border-border-light rounded-2xl p-6 text-charcoal focus:border-forest-green outline-none transition-all placeholder:text-mute/30 text-lg"
-                  value={newGoal.name}
-                  onChange={e => setNewGoal({ ...newGoal, name: e.target.value })}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-8">
-                <div className="space-y-3">
-                  <label className="text-[10px] font-bold text-mute uppercase tracking-[0.3em] ml-2">Valor Alvo (R$)</label>
-                  <input
-                    required
-                    type="number"
-                    placeholder="0.00"
-                    className="w-full bg-surface border border-border-light rounded-2xl p-6 text-charcoal focus:border-forest-green outline-none transition-all placeholder:text-mute/30 text-lg"
-                    value={newGoal.value}
-                    onChange={e => setNewGoal({ ...newGoal, value: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-3">
-                  <label className="text-[10px] font-bold text-mute uppercase tracking-[0.3em] ml-2">Frequência</label>
-                  <select
-                    className="w-full bg-surface border border-border-light rounded-2xl p-6 text-charcoal focus:border-forest-green outline-none text-lg appearance-none cursor-pointer"
-                    value={newGoal.periodicity}
-                    onChange={e => setNewGoal({ ...newGoal, periodicity: e.target.value })}
-                  >
-                    <option value="MONTHLY">Mensal</option>
-                    <option value="WEEKLY">Semanal</option>
-                  </select>
-                </div>
-              </div>
-              <div className="flex gap-6 pt-6">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="flex-1 py-6 rounded-2xl text-mute text-[10px] font-bold uppercase tracking-[0.3em] hover:text-charcoal transition-all"
-                >
-                  Abortar
-                </button>
-                <button
-                  type="submit"
-                  className="flex-[2] py-6 px-12 rounded-2xl bg-forest-green text-white text-[10px] font-bold uppercase tracking-[0.3em] shadow-lg hover:scale-[1.02] transition-all duration-500"
-                >
-                  Implementar Diretriz
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <style>{`
+        .goals-loading {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 200px;
+          gap: 16px;
+          color: var(--text-secondary);
+        }
+        .goals-spinner {
+          width: 40px;
+          height: 40px;
+          border: 3px solid var(--card-border);
+          border-top-color: var(--primary);
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .goals-page { }
+        .goals-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 24px;
+        }
+        .goals-header h1 { font-size: 1.5rem; }
+        .goals-error {
+          padding: 12px;
+          background: rgba(239, 68, 68, 0.1);
+          border: 1px solid rgba(239, 68, 68, 0.3);
+          border-radius: var(--radius-btn);
+          color: #ef4444;
+          margin-bottom: 24px;
+        }
+        .goals-form-card {
+          padding: 24px;
+          margin-bottom: 24px;
+        }
+        .goals-form-card h2 { margin-bottom: 20px; font-size: 1.1rem; }
+        .goals-form { display: flex; flex-direction: column; gap: 16px; max-width: 400px; }
+        .goals-field label {
+          display: block;
+          font-size: 12px;
+          color: var(--text-secondary);
+          margin-bottom: 6px;
+        }
+        .goals-field input, .goals-field select {
+          width: 100%;
+          padding: 10px 14px;
+          background: #1a1a1a;
+          border: 1px solid var(--card-border);
+          border-radius: var(--radius-btn);
+          color: var(--text);
+          font-size: 14px;
+          font-family: inherit;
+        }
+        .goals-field input:focus, .goals-field select:focus {
+          outline: none;
+          border-color: var(--primary);
+        }
+        .goals-form-actions { display: flex; gap: 12px; margin-top: 8px; }
+        .goals-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 24px;
+        }
+        .goals-empty {
+          grid-column: 1 / -1;
+          padding: 48px;
+          text-align: center;
+        }
+        .goals-empty-icon { color: var(--text-secondary); margin-bottom: 16px; opacity: 0.5; }
+        .goals-empty h3 { margin-bottom: 8px; }
+        .goals-empty p { color: var(--text-secondary); margin-bottom: 20px; }
+        .goals-card {
+          padding: 24px;
+        }
+        .goals-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 16px;
+        }
+        .goals-card-header h3 { font-size: 1.1rem; }
+        .goals-badge {
+          font-size: 10px;
+          font-weight: 600;
+          padding: 4px 8px;
+          border-radius: 6px;
+          background: rgba(34, 197, 94, 0.2);
+          color: var(--primary);
+        }
+        .goals-progress { margin-bottom: 12px; }
+        .goals-progress-bar {
+          height: 8px;
+          background: #1a1a1a;
+          border-radius: 4px;
+          overflow: hidden;
+        }
+        .goals-progress-fill {
+          height: 100%;
+          background: var(--primary);
+          transition: width 0.3s;
+        }
+        .goals-amounts { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+        .goals-sep { color: var(--text-secondary); font-weight: 400; margin: 0 4px; }
+        .goals-meta {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 12px;
+          color: var(--text-secondary);
+        }
+        .goals-delete {
+          background: none;
+          border: none;
+          color: #ef4444;
+          cursor: pointer;
+          font-size: 12px;
+        }
+        .goals-delete:hover { text-decoration: underline; }
+      `}</style>
     </div>
   );
 }

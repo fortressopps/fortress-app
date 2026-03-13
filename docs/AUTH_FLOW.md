@@ -16,6 +16,8 @@
 - SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
 - GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 - MICROSOFT_CLIENT_ID, MICROSOFT_CLIENT_SECRET
+- FRONTEND_URL (para redirecionamento OAuth)
+- APP_BASE_URL (base do backend para callbacks OAuth)
 
 ## Rate Limit
 - Protege endpoints públicos de abuso

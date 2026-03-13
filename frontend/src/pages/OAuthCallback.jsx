@@ -1,22 +1,51 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { setAccessToken } from '../api/axiosClient';
 import { useAuth } from '../context/AuthContext';
 
 export default function OAuthCallback() {
-  const nav = useNavigate();
-  const { user, loading } = useAuth();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { refreshUser } = useAuth();
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
+    const token = searchParams.get('token');
     if (token) {
       setAccessToken(token);
-      nav('/app');
+      refreshUser().then(() => {
+        navigate('/dashboard');
+      }).catch(() => {
+        navigate('/login');
+      });
     } else {
-      nav('/login');
+      navigate('/login');
     }
-  }, [nav]);
+  }, [searchParams, navigate, refreshUser]);
 
-  return <div>Autenticando...</div>;
+  return (
+    <div className="oauth-loading">
+      <div className="oauth-loading-spinner" />
+      <p>Authenticating...</p>
+      <style>{`
+        .oauth-loading {
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 16px;
+          color: var(--text-secondary);
+        }
+        .oauth-loading-spinner {
+          width: 40px;
+          height: 40px;
+          border: 3px solid var(--card-border);
+          border-top-color: var(--primary);
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+      `}</style>
+    </div>
+  );
 }

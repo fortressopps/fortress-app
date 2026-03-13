@@ -1,7 +1,10 @@
 import axios from 'axios';
 let accessToken = null;
 export function setAccessToken(t) { accessToken = t; }
-const api = axios.create({ baseURL: 'http://localhost:3001', withCredentials: true });
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001',
+  withCredentials: true
+});
 api.interceptors.request.use(cfg => {
   if (accessToken) { cfg.headers = cfg.headers || {}; cfg.headers.Authorization = `Bearer ${accessToken}`; }
   return cfg;

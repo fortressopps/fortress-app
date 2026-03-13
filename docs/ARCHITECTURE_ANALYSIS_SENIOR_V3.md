@@ -106,16 +106,13 @@ Schema coerente com os domínios implementados.
 
 ### 4.1 Roteamento
 
-- `/` → App (landing: HeroSection, Benefits, Pricing, etc.).
-- `/login` → Login.
-- `/register` → `require('../pages/Register').default` ⚠️
-- `/verify-email` → `require('../pages/VerifyEmail').default` ⚠️
-- `/oauth-callback` → `require('../pages/OAuthCallback').default` ⚠️
-- `/app` → Protected → Dashboard.
-- `/goals` → Protected → Goals.
-- `/try` → App (TryFortress).
+- `/` → Landing
+- `/try` → Demo
+- `/login`, `/register`
+- `/oauth-callback` → callback OAuth
+- Protegidas: `/dashboard`, `/goals`, `/supermarket`, `/supermarket/:listId`, `/intelligence`, `/settings`
 
-**Problema:** Em ambiente ESM (Vite), `require()` não existe no bundle do browser. As rotas `/register`, `/verify-email` e `/oauth-callback` podem lançar `ReferenceError: require is not defined` ao serem acessadas. Deve-se usar `import` estático ou `React.lazy(() => import(...))`.
+**Atualização (2026-03-12):** frontend foi reconstruído; não há mais uso de `require()` no roteamento.
 
 ### 4.2 Auth e API
 
@@ -150,8 +147,8 @@ Alinhado ao backend (login, refresh, me, logout).
 
 | # | Arquivo | Problema | Ação recomendada |
 |---|---------|----------|-------------------|
-| 9 | router/index.jsx | Uso de `require('../pages/Register').default` (e idem para VerifyEmail, OAuthCallback). Em Vite/ESM, `require` não existe no cliente. | Substituir por `import Register from '../pages/Register'` (e equivalentes) ou por `React.lazy(() => import('../pages/Register'))` com `<Suspense>`. |
-| 10 | package.json (frontend) | **axios** é usado em api/axiosClient.js mas não está em dependencies. | Adicionar `"axios": "^1.x"` (ou versão alinhada) em dependencies. |
+| 9 | (resolvido) | Roteamento antigo com `require()` em Vite/ESM. | ✅ Frontend reconstruído; rotas agora são imports estáticos. |
+| 10 | (resolvido) | Axios ausente em dependencies. | ✅ `axios` está presente no `frontend/package.json`. |
 
 ---
 
