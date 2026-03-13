@@ -2,13 +2,23 @@
 import type { Hono } from "hono";
 import { ENV } from "./env";
 
+const ALLOWED_ORIGINS = new Set([
+  ENV.FRONTEND_URL,
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "http://localhost:4173", // vite preview
+]);
+
 export function applySecurity(app: Hono) {
-  // CORS — frontend em outra origem (ex.: localhost:3000)
+  // CORS — allowlist only (no wildcard https://)
   app.use("*", async (c, next) => {
-    const origin = c.req.header("Origin");
-    const allowOrigin = origin && (origin.startsWith("http://localhost") || origin.startsWith("https://"))
-      ? origin
-      : "http://localhost:3000";
+    const origin = c.req.header("Origin") ?? "";
+    // In development, also allow any localhost port
+    const isAllowed =
+      ALLOWED_ORIGINS.has(origin) ||
+      (ENV.APP_ENV === "development" && /^http:\/\/localhost(:\d+)?$/.test(origin));
+    const allowOrigin = isAllowed ? origin : (ENV.FRONTEND_URL ?? "http://localhost:5173");
+
     c.header("Access-Control-Allow-Origin", allowOrigin);
     c.header("Access-Control-Allow-Credentials", "true");
     c.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");

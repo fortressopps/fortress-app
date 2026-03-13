@@ -130,6 +130,36 @@ export async function getKernelState() {
     return response.data;
 }
 
+/**
+ * Update user profile
+ * PUT /users/me
+ */
+export async function updateProfile(data) {
+    const response = await api.put('/users/me', data);
+    return response.data;
+}
+
+/**
+ * Resend verification email
+ * POST /auth/resend-verification
+ */
+export async function resendVerification() {
+    const response = await api.post('/auth/resend-verification');
+    return response.data;
+}
+
+/**
+ * Change password
+ * POST /auth/change-password
+ */
+export async function changePassword(currentPassword, newPassword) {
+    const response = await api.post('/auth/change-password', {
+        currentPassword,
+        newPassword,
+    });
+    return response.data;
+}
+
 export default {
     processReceipt,
     getGoals,
@@ -144,4 +174,7 @@ export default {
     updateSupermarketItem,
     deleteSupermarketItem,
     getKernelState,
+    updateProfile,
+    resendVerification,
+    changePassword,
 };

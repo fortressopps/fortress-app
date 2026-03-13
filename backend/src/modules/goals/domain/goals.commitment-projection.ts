@@ -19,12 +19,14 @@ export class GoalsService {
     const goals = await this.repo.findByUser(userId);
     const { analyzeGoal } = await import("./goal.calculator");
 
+    const now = new Date();
+    const daysElapsed = now.getDate();
+    const totalDaysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
     return goals.map(goal => {
       // Reconstruct actual spent from progress field for analysis
       const actualSpent = (goal.progress / 100) * goal.value;
-
-      // Mock days elapsed for demo (e.g. middle of month)
-      const analysis = analyzeGoal(goal, actualSpent, 15, 30);
+      const analysis = analyzeGoal(goal, actualSpent, daysElapsed, totalDaysInMonth);
 
       return {
         ...goal,

@@ -1,4 +1,3 @@
-// src/server/routes/auth.routes.ts
 import crypto from "node:crypto";
 import { Hono } from "hono";
 import type { Context, Next } from "hono";
@@ -15,6 +14,23 @@ import {
   verifyAccessToken,
   verifyRefreshToken,
 } from "../../libs/jwt";
+
+// Helper: send verification email (reused in register + resend)
+async function sendVerificationEmail(email: string, name: string | null, token: string) {
+  if (!ENV.SMTP_HOST || !ENV.SMTP_USER) return;
+  const transport = nodemailer.createTransport({
+    host: ENV.SMTP_HOST,
+    port: ENV.SMTP_PORT ?? 587,
+    auth: { user: ENV.SMTP_USER, pass: ENV.SMTP_PASS },
+  });
+  const verifyUrl = `${ENV.FRONTEND_URL}/verify-email?token=${token}`;
+  await transport.sendMail({
+    from: ENV.SMTP_USER,
+    to: email,
+    subject: "Verify your email — Fortress",
+    html: `<p>Hi ${name || 'there'},</p><p>Click <a href="${verifyUrl}">here</a> to verify your email.</p><p>This link expires in 24 hours.</p>`,
+  });
+}
 
 export const authRoutes = new Hono();
 
@@ -38,9 +54,10 @@ function sanitizeUser(user: { id: string; email: string; name: string | null }) 
 // Rate limit em memória (compatível com Hono) — 20 req/15min por IP para rotas sensíveis
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_WINDOW_MS = 15 * 60 * 1000;
-const RATE_MAX = 20;
+const RATE_MAX_REGISTER = 20;
+const RATE_MAX_LOGIN = 10;
 
-function rateLimitMiddleware(pathPrefix: string) {
+function rateLimitMiddleware(pathPrefix: string, max: number) {
   return async (c: Context, next: Next) => {
     const key = `${pathPrefix}:${c.req.header("x-forwarded-for") ?? c.req.header("x-real-ip") ?? "unknown"}`;
     const now = Date.now();
@@ -50,15 +67,16 @@ function rateLimitMiddleware(pathPrefix: string) {
       rateLimitMap.set(key, entry);
     }
     entry.count += 1;
-    if (entry.count > RATE_MAX) {
+    if (entry.count > max) {
       return c.json({ error: "Muitas requisições, tente novamente mais tarde." }, 429);
     }
     await next();
   };
 }
 
-authRoutes.use("/auth/register", rateLimitMiddleware("register"));
-authRoutes.use("/auth/verify-email", rateLimitMiddleware("verify-email"));
+authRoutes.use("/auth/register", rateLimitMiddleware("register", RATE_MAX_REGISTER));
+authRoutes.use("/auth/verify-email", rateLimitMiddleware("verify-email", RATE_MAX_REGISTER));
+authRoutes.use("/auth/login", rateLimitMiddleware("login", RATE_MAX_LOGIN));
 
 // GET /auth/verify-email — confirmação de email
 authRoutes.get("/auth/verify-email", async (c) => {
@@ -198,12 +216,102 @@ authRoutes.get("/users/me", async (c) => {
     const { sub: userId } = verifyAccessToken(token);
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, email: true, name: true, emailVerified: true },
+      select: { id: true, email: true, name: true, emailVerified: true, tier: true, createdAt: true },
     });
     if (!user) {
       return c.json({ error: "Usuário não encontrado" }, 401);
     }
-    return c.json(sanitizeUser(user));
+    return c.json(user);
+  } catch {
+    return c.json({ error: "Token inválido" }, 401);
+  }
+});
+
+// PUT /users/me — update profile
+const updateProfileSchema = z.object({
+  name: z.string().min(2).optional(),
+  email: z.string().email().optional(),
+});
+
+authRoutes.put("/users/me", async (c) => {
+  const auth = c.req.header("Authorization");
+  const token = auth?.startsWith("Bearer ") ? auth.slice(7) : null;
+  if (!token) return c.json({ error: "Token ausente" }, 401);
+  try {
+    const { sub: userId } = verifyAccessToken(token);
+    const body = await c.req.json().catch(() => ({}));
+    const parsed = updateProfileSchema.safeParse(body);
+    if (!parsed.success) return c.json({ error: "Invalid data", details: parsed.error.flatten() }, 400);
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: parsed.data,
+      select: { id: true, email: true, name: true, emailVerified: true, tier: true, createdAt: true },
+    });
+    return c.json(updated);
+  } catch {
+    return c.json({ error: "Token inválido" }, 401);
+  }
+});
+
+// POST /auth/resend-verification
+authRoutes.use("/auth/resend-verification", rateLimitMiddleware("resend-verification", RATE_MAX_REGISTER));
+authRoutes.post("/auth/resend-verification", async (c) => {
+  const auth = c.req.header("Authorization");
+  const token = auth?.startsWith("Bearer ") ? auth.slice(7) : null;
+  if (!token) return c.json({ error: "Token ausente" }, 401);
+  try {
+    const { sub: userId } = verifyAccessToken(token);
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true, name: true, emailVerified: true },
+    });
+    if (!user) return c.json({ error: "Usuário não encontrado" }, 404);
+    if (user.emailVerified) return c.json({ error: "Email já verificado" }, 400);
+    const verifyToken = crypto.randomBytes(32).toString("hex");
+    const expires = new Date(Date.now() + 1000 * 60 * 60 * 24);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { emailVerificationToken: verifyToken, emailVerificationExpires: expires },
+    });
+    try {
+      await sendVerificationEmail(user.email, user.name, verifyToken);
+    } catch (err) {
+      Logger.warn({ err }, "Falha ao reenviar email de verificação");
+    }
+    return c.json({ ok: true, message: "Verification email sent." });
+  } catch {
+    return c.json({ error: "Token inválido" }, 401);
+  }
+});
+
+// POST /auth/change-password
+const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1),
+  newPassword: z.string().min(8),
+});
+
+authRoutes.post("/auth/change-password", async (c) => {
+  const auth = c.req.header("Authorization");
+  const token = auth?.startsWith("Bearer ") ? auth.slice(7) : null;
+  if (!token) return c.json({ error: "Token ausente" }, 401);
+  try {
+    const { sub: userId } = verifyAccessToken(token);
+    const body = await c.req.json().catch(() => ({}));
+    const parsed = changePasswordSchema.safeParse(body);
+    if (!parsed.success) return c.json({ error: "newPassword must be at least 8 characters." }, 400);
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, password: true },
+    });
+    if (!user || !user.password) return c.json({ error: "No password set (OAuth account)" }, 400);
+    if (!verifyPassword(parsed.data.currentPassword, user.password)) {
+      return c.json({ error: "Current password is incorrect." }, 401);
+    }
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashPassword(parsed.data.newPassword) },
+    });
+    return c.json({ ok: true, message: "Password changed successfully." });
   } catch {
     return c.json({ error: "Token inválido" }, 401);
   }

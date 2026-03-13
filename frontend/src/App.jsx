@@ -7,6 +7,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import OAuthCallback from './pages/OAuthCallback';
 import TryDemo from './pages/TryDemo';
+import VerifyEmail from './pages/VerifyEmail';
+import NotFound from './pages/NotFound';
 
 import MainLayout from './layouts/MainLayout';
 import Dashboard from './pages/Dashboard';
@@ -56,61 +58,25 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<Landing />} />
           <Route path="/try" element={<TryDemo />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/oauth-callback" element={<OAuthCallback />} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
 
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/goals"
-            element={
-              <ProtectedRoute>
-                <Goals />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/supermarket"
-            element={
-              <ProtectedRoute>
-                <Supermarket />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/supermarket/:listId"
-            element={
-              <ProtectedRoute>
-                <Supermarket />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/intelligence"
-            element={
-              <ProtectedRoute>
-                <Intelligence />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <ProtectedRoute>
-                <Settings />
-              </ProtectedRoute>
-            }
-          />
+          {/* Protected routes */}
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
+          <Route path="/supermarket" element={<ProtectedRoute><Supermarket /></ProtectedRoute>} />
+          <Route path="/supermarket/:listId" element={<ProtectedRoute><Supermarket /></ProtectedRoute>} />
+          <Route path="/intelligence" element={<ProtectedRoute><Intelligence /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+
+          {/* 404 catch-all */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

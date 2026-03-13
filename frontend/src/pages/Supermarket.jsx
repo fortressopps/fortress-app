@@ -4,10 +4,12 @@ import {
   getSupermarketLists,
   createSupermarketList,
   getSupermarketListById,
+  addSupermarketItem,
   updateSupermarketItem,
   deleteSupermarketItem,
   processReceipt,
 } from '../api/coreApi';
+
 import { ShoppingCart, ArrowLeft, Receipt } from 'lucide-react';
 
 const CATEGORIES = [
@@ -42,6 +44,11 @@ export default function Supermarket() {
   const [receiptTotal, setReceiptTotal] = useState('');
   const [receiptCategory, setReceiptCategory] = useState('PRODUCE');
   const [receiptSubmitting, setReceiptSubmitting] = useState(false);
+
+  // Add item form state
+  const [showAddItem, setShowAddItem] = useState(false);
+  const [newItem, setNewItem] = useState({ name: '', category: 'PRODUCE', estimatedPrice: '', quantity: 1 });
+  const [addingItem, setAddingItem] = useState(false);
 
   const loadLists = () => {
     getSupermarketLists()
@@ -128,6 +135,32 @@ export default function Supermarket() {
     }
   };
 
+  const handleAddItem = async (e) => {
+    e.preventDefault();
+    if (!newItem.name.trim()) return;
+    const price = parseFloat(newItem.estimatedPrice);
+    if (isNaN(price) || price < 0) { setError('Enter a valid price.'); return; }
+    setAddingItem(true);
+    setError(null);
+    try {
+      await addSupermarketItem(currentList.id, {
+        name: newItem.name.trim(),
+        category: newItem.category,
+        estimatedPrice: price,
+        quantity: Number(newItem.quantity) || 1,
+      });
+      setNewItem({ name: '', category: 'PRODUCE', estimatedPrice: '', quantity: 1 });
+      setShowAddItem(false);
+      // Refetch list detail
+      const updated = await getSupermarketListById(currentList.id);
+      setCurrentList(updated);
+    } catch (err) {
+      setError(err.response?.data?.error || err.message);
+    } finally {
+      setAddingItem(false);
+    }
+  };
+
   // List detail view
   if (listId && currentList) {
     const items = currentList.items || [];
@@ -185,13 +218,83 @@ export default function Supermarket() {
             )}
           </div>
 
-          <button
-            className="btn btn-primary supermarket-process-btn"
-            onClick={() => setProcessReceiptOpen(true)}
-          >
-            <Receipt size={18} />
-            Process Receipt
-          </button>
+          <div className="supermarket-list-actions">
+            <button
+              className="btn btn-primary supermarket-add-btn"
+              onClick={() => setShowAddItem(!showAddItem)}
+            >
+              + Add Item
+            </button>
+            <button
+              className="btn btn-outline supermarket-process-btn"
+              onClick={() => setProcessReceiptOpen(true)}
+            >
+              <Receipt size={18} />
+              Process Receipt
+            </button>
+          </div>
+
+          {showAddItem && (
+            <form onSubmit={handleAddItem} className="card supermarket-add-form">
+              <h3>Add Item</h3>
+              <div className="supermarket-add-grid">
+                <div className="supermarket-field">
+                  <label>Item name *</label>
+                  <input
+                    value={newItem.name}
+                    onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                    placeholder="e.g. Milk"
+                    required
+                    autoFocus
+                  />
+                </div>
+                <div className="supermarket-field">
+                  <label>Category</label>
+                  <select
+                    value={newItem.category}
+                    onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+                  >
+                    {CATEGORIES.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="supermarket-field">
+                  <label>Est. Price (BRL)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={newItem.estimatedPrice}
+                    onChange={(e) => setNewItem({ ...newItem, estimatedPrice: e.target.value })}
+                    placeholder="0.00"
+                    required
+                  />
+                </div>
+                <div className="supermarket-field">
+                  <label>Qty</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={newItem.quantity}
+                    onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className="supermarket-add-actions">
+                <button type="submit" className="btn btn-primary" disabled={addingItem}>
+                  {addingItem ? 'Adding...' : 'Add Item'}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={() => { setShowAddItem(false); setNewItem({ name: '', category: 'PRODUCE', estimatedPrice: '', quantity: 1 }); }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
         </div>
 
         {processReceiptOpen && (
@@ -249,6 +352,30 @@ export default function Supermarket() {
             margin-bottom: 12px;
           }
           .supermarket-back:hover { color: var(--primary); }
+          .supermarket-list-detail { margin-top: 24px; }
+          .supermarket-list-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+          }
+          .supermarket-add-btn { display: inline-flex; align-items: center; gap: 6px; }
+          .supermarket-add-form {
+            padding: 24px;
+            margin-bottom: 24px;
+          }
+          .supermarket-add-form h3 { margin-bottom: 16px; font-size: 1rem; }
+          .supermarket-add-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+          }
+          @media (max-width: 500px) {
+            .supermarket-add-grid { grid-template-columns: 1fr; }
+          }
+          .supermarket-add-actions { display: flex; gap: 12px; }
+
           .supermarket-list-detail { margin-top: 24px; }
           .supermarket-list-stats {
             display: flex;
