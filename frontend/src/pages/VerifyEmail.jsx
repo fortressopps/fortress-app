@@ -49,7 +49,7 @@ export default function VerifyEmail() {
             <h1 className="verify-title">Email Verified!</h1>
             <p className="verify-desc">{message}</p>
             <Link to="/dashboard" className="btn btn-primary verify-btn">
-              Go to Dashboard
+              Acessar Fortress
             </Link>
           </>
         )}

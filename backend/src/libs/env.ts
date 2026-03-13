@@ -23,6 +23,7 @@ const Schema = z.object({
   GOOGLE_CLIENT_SECRET: z.string().optional(),
   MICROSOFT_CLIENT_ID: z.string().optional(),
   MICROSOFT_CLIENT_SECRET: z.string().optional(),
+  ANTHROPIC_API_KEY: z.string().min(1),
 });
 
 const parsed = Schema.safeParse(process.env);

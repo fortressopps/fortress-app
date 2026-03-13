@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { completeOnboarding } from '../api/coreApi';
@@ -30,6 +30,39 @@ export default function Onboarding() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [demoData, setDemoData] = useState(null);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('fortress_demo_data');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Date.now() - parsed.savedAt < 1800000) {
+          setDemoData(parsed);
+        } else {
+          localStorage.removeItem('fortress_demo_data');
+        }
+      }
+    } catch {
+      localStorage.removeItem('fortress_demo_data');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!demoData) return;
+    if (demoData.income) {
+      setFormData(prev => ({ ...prev, monthlyBudget: demoData.income }));
+    }
+    if (demoData.goal) {
+      const match = goals.find(g => 
+        demoData.goal.toLowerCase().includes(g.id.toLowerCase()) ||
+        g.id.toLowerCase().includes(demoData.goal.toLowerCase())
+      );
+      if (match) {
+        setFormData(prev => ({ ...prev, mainGoal: match.id }));
+      }
+    }
+  }, [demoData]);
 
   const handleFinish = async () => {
     setLoading(true);
@@ -41,6 +74,7 @@ export default function Onboarding() {
         primaryCategory: formData.primaryCategory
       });
       await refreshUser();
+      localStorage.removeItem('fortress_demo_data');
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Erro ao finalizar configuração');
@@ -59,6 +93,20 @@ export default function Onboarding() {
           />
           <span>Passo {step} de 4</span>
         </div>
+
+        {demoData && (
+          <div className="onboarding-demo-banner animate-fade-in">
+            <span className="onboarding-demo-emoji">{demoData.report.profileEmoji}</span>
+            <div>
+              <p className="onboarding-demo-title">
+                Bem-vindo, {demoData.name}! Seu relatório foi salvo.
+              </p>
+              <p className="onboarding-demo-sub">
+                Pré-preenchemos seus dados da análise. Confirme ou ajuste abaixo.
+              </p>
+            </div>
+          </div>
+        )}
 
         {error && <div className="onboarding-error">{error}</div>}
 
@@ -96,6 +144,15 @@ export default function Onboarding() {
         {step === 3 && (
           <div className="onboarding-step">
             <h2 className="onboarding-title">Qual é seu principal objetivo financeiro?</h2>
+            {demoData && (
+              <div className="onboarding-insight-card animate-fade-in">
+                <span className="onboarding-insight-label">DA SUA ANÁLISE</span>
+                <p className="onboarding-insight-text">
+                  {demoData.report.profileEmoji} {demoData.report.profileName} —{' '}
+                  {demoData.report.mainAlert}
+                </p>
+              </div>
+            )}
             <div className="onboarding-grid">
               {goals.map(goal => (
                 <div

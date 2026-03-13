@@ -76,12 +76,14 @@ function MetricBar({ label, value, max = 1, color = '#22c55e' }) {
 }
 
 export default function Intelligence() {
+  const { refreshUser, user } = useAuth();
   const [kernelData, setKernelData] = useState(null);
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [toast, setToast] = useState(null);
   const [feedbackLoading, setFeedbackLoading] = useState(false);
+  const [firstAnalysisLoading, setFirstAnalysisLoading] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -96,6 +98,46 @@ export default function Intelligence() {
       setLoading(false);
     }
   }, []);
+
+  // Processar relatório pendente da Demo
+  useEffect(() => {
+    const processPendingDemo = async () => {
+      if (!user || !user.emailVerified) return;
+      
+      const raw = localStorage.getItem('fortress_demo_data');
+      if (!raw) return;
+
+      try {
+        const demoData = JSON.parse(raw);
+        // Evitar re-processamento se já tivermos um relatório recente no log (opcional, mas seguro)
+        setFirstAnalysisLoading(true);
+        
+        const res = await api.post('/ai/analyze', {
+          income: demoData.income,
+          food: demoData.expenses.food,
+          transport: demoData.expenses.transport,
+          health: demoData.expenses.health,
+          leisure: demoData.expenses.leisure,
+          others: demoData.expenses.others,
+          goal: demoData.goal,
+          currencyCode: demoData.currency.code,
+          currencySymbol: demoData.currency.symbol
+        });
+
+        if (res.data?.report) {
+          localStorage.removeItem('fortress_demo_data');
+          setToast('Seu relatório da demo foi processado com sucesso! 🎉');
+          await loadData();
+        }
+      } catch (err) {
+        console.error('Pending demo error:', err);
+      } finally {
+        setFirstAnalysisLoading(false);
+      }
+    };
+
+    processPendingDemo();
+  }, [user, loadData]);
 
   useEffect(() => { loadData(); }, [loadData]);
 
@@ -141,6 +183,17 @@ export default function Intelligence() {
   return (
     <div className="intel-page">
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
+
+      {firstAnalysisLoading && (
+        <div className="intel-first-analysis-overlay">
+          <div className="intel-first-analysis-content animate-fade-in">
+            <Sparkles className="intel-sparkle-icon" size={48} />
+            <h2>Gerando sua Inteligência Fortress...</h2>
+            <p>Estamos processando os dados da sua demo para criar seu relatório oficial e personalizado.</p>
+            <div className="intel-spinner-small" />
+          </div>
+        </div>
+      )}
 
       <header className="intel-header">
         <h1>AI Intelligence</h1>

@@ -337,8 +337,63 @@
     animation: spin .8s linear infinite;
 }
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+
+/* First Analysis Overlay */
+.intel-first-analysis-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+.intel-first-analysis-content {
+    max-width: 500px;
+    text-align: center;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.intel-sparkle-icon {
+    color: var(--primary);
+    filter: drop-shadow(0 0 15px var(--primary));
+    animation: pulse-glow 2s infinite ease-in-out;
+}
+
+.intel-first-analysis-content h2 {
+    font-size: 1.75rem;
+    margin: 0;
+    background: linear-gradient(to bottom, #fff, #888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.intel-first-analysis-content p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.intel-spinner-small {
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(34, 197, 94, 0.1);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-top: 10px;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+}

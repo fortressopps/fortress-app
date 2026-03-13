@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Sparkles, Check, AlertTriangle, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { 
+  Sparkles, Check, AlertTriangle, ArrowRight, ArrowLeft 
+} from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import './TryDemo.css';
 
 const CURRENCIES = [
@@ -16,30 +19,41 @@ const CURRENCIES = [
   { code: 'AUD', symbol: 'A$',  locale: 'en-AU', label: 'Australian Dollar'    },
 ];
 
+const EXPENSE_CATEGORIES = [
+  { field: 'food',      label: 'Alimentação', icon: '🛒' },
+  { field: 'transport', label: 'Transporte',  icon: '🚗' },
+  { field: 'health',    label: 'Saúde',       icon: '❤️' },
+  { field: 'leisure',   label: 'Lazer',       icon: '🎮' },
+  { field: 'others',    label: 'Outros',      icon: '📦' },
+];
+
 export default function TryDemo() {
-  const [step, setStep] = useState(1); // 1, 2, 3, 'loading', 'report', 'error'
+  const [step, setStep] = useState(1); // 1, 2, 3, 'loading', 'report', 'blocked', 'error'
   const [report, setReport] = useState(null);
   const [error, setError] = useState(null);
   const [msgIndex, setMsgIndex] = useState(0);
   const [currency, setCurrency] = useState(CURRENCIES[0]);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    income: '',
-    food: '',
-    transport: '',
-    health: '',
-    leisure: '',
-    others: '',
+    name: '',
+    income: '5000',
+    food: '1200',
+    transport: '600',
+    health: '300',
+    leisure: '400',
+    others: '200',
     goal: '',
     unexpected: ''
   });
 
   const loadingMessages = [
-    "Mapeando seu perfil financeiro...",
-    "Identificando padrões de gasto...",
-    "Calculando capacidade de economia...",
-    "Gerando metas personalizadas...",
-    "Preparando seu relatório..."
+    "Kernel está analisando seus dados...",
+    "Mapeando comportamentos financeiros...",
+    "Calculando metas sustentáveis...",
+    "Projetando sua independência...",
+    "Finalizando seu relatório personalizado..."
   ];
 
   useEffect(() => {
@@ -64,6 +78,34 @@ export default function TryDemo() {
   };
 
   const handleAnalyze = async () => {
+    // 1. Regra: Se não tiver conta, mostrar animação e depois BLOQUEADO
+    if (!user) {
+      setStep('loading');
+      setTimeout(() => {
+        const demoData = {
+          name: form.name,
+          goal: form.goal,
+          income: form.income,
+          currency: {
+            code: currency.code,
+            symbol: currency.symbol,
+            locale: currency.locale,
+          },
+          expenses: {
+            food:      form.food      || '0',
+            transport: form.transport || '0',
+            health:    form.health    || '0',
+            leisure:   form.leisure   || '0',
+            others:    form.others    || '0',
+          },
+          savedAt: Date.now(),
+        };
+        localStorage.setItem('fortress_demo_data', JSON.stringify(demoData));
+        setStep('blocked');
+      }, 3000); // Animação de 3 segundos
+      return;
+    }
+
     setStep('loading');
     setError(null);
     try {
@@ -82,6 +124,39 @@ export default function TryDemo() {
       setStep('error');
     }
   };
+  const handleUnlock = () => {
+    const demoData = {
+      name: form.name,
+      goal: form.goal,
+      income: form.income,
+      currency: {
+        code: currency.code,
+        symbol: currency.symbol,
+        locale: currency.locale,
+      },
+      expenses: {
+        food:      form.food      || '0',
+        transport: form.transport || '0',
+        health:    form.health    || '0',
+        leisure:   form.leisure   || '0',
+        others:    form.others    || '0',
+      },
+      report: {
+        profileName:    report.profileName,
+        profileEmoji:   report.profileEmoji,
+        scoreLabel:     report.scoreLabel,
+        savingsHealth:  report.savingsHealth,
+        mainAlert:      report.mainAlert,
+        goals:          report.goals,
+      },
+      savedAt: Date.now(),
+    }
+    localStorage.setItem('fortress_demo_data', JSON.stringify(demoData))
+    navigate('/register')
+  }
+
+  const totalExpenses = EXPENSE_CATEGORIES.reduce((acc, cat) => acc + (Number(form[cat.field]) || 0), 0);
+  const totalPct = form.income ? Math.round((totalExpenses / Number(form.income)) * 100) : 0;
 
   const renderStepIndicator = () => (
     <div className="try-steps-indicator">
@@ -121,7 +196,18 @@ export default function TryDemo() {
                 </div>
               </div>
               <div className="try-motivation">
-                ✦ <em>Toda grande jornada começa com uma meta clara.</em>
+                ✦ <em>Toda grande jornada começa com uma meta clara e um nome.</em>
+              </div>
+              <div className="try-field">
+                <label className="try-label">COMO VOCÊ SE CHAMA?</label>
+                <input
+                  type="text"
+                  className="try-input"
+                  placeholder="Ex: Roberto"
+                  value={form.name}
+                  onChange={update('name')}
+                  autoFocus
+                />
               </div>
               <div className="try-field">
                 <label className="try-label">QUAL É O SEU OBJETIVO FINANCEIRO?</label>
@@ -130,12 +216,11 @@ export default function TryDemo() {
                   placeholder="Ex: Quero viajar para Dubai em dezembro, juntar R$ 15.000 para entrada de um apartamento..."
                   value={form.goal}
                   onChange={update('goal')}
-                  autoFocus
                 />
               </div>
               <button 
                 className="try-btn" 
-                disabled={!form.goal.trim()} 
+                disabled={!form.goal.trim() || !form.name.trim()} 
                 onClick={() => setStep(2)}
               >
                 Próximo <ArrowRight size={18} />
@@ -146,10 +231,10 @@ export default function TryDemo() {
           {step === 2 && (
             <div className="try-step-content animate-fade-in">
               <div className="try-motivation">
-                💡 <em>Entender para onde vai o dinheiro é o primeiro passo para controlá-lo.</em>
+                💡 <em>{form.name}, entender para onde vai seu dinheiro é o primeiro passo para controlá-lo.</em>
               </div>
               <div className="try-field">
-                <label className="try-label">RENDA MENSAL LÍQUIDA (R$)</label>
+                <label className="try-label">RENDA MENSAL LÍQUIDA ({currency.code})</label>
                 <div className="try-input-currency-wrapper">
                   <span className="try-input-prefix">{currency.symbol}</span>
                   <input 
@@ -158,57 +243,74 @@ export default function TryDemo() {
                     className="try-input try-input-with-prefix"
                     placeholder="0"
                     value={form.income === '' ? '' : formatCurrencyDisplay(form.income, currency.locale)}
-                    onFocus={(e) => {
-                      e.target.value = form.income;
-                    }}
+                    onFocus={(e) => { e.target.value = form.income }}
                     onChange={(e) => {
                       const raw = e.target.value.replace(/[^\d]/g, '');
-                      if (raw === '' || Number(raw) >= 0) {
-                        update('income')({ target: { value: raw } });
-                      }
+                      update('income')({ target: { value: raw } });
                     }}
-                    onBlur={(e) => {
-                      e.target.value = formatCurrencyDisplay(form.income, currency.locale);
-                    }}
+                    onBlur={(e) => { e.target.value = formatCurrencyDisplay(form.income, currency.locale) }}
                     autoFocus
                   />
                 </div>
               </div>
 
-              <label className="try-label">SEUS GASTOS MENSAIS ({currency.code})</label>
-              <div className="try-expenses-grid">
-                {['food', 'transport', 'health', 'leisure', 'others'].map(field => (
-                  <div key={field} className="try-expense-item">
-                    <label className="try-expense-label">
-                      {field === 'food' ? 'Alimentação' : 
-                       field === 'transport' ? 'Transporte' : 
-                       field === 'health' ? 'Saúde' : 
-                       field === 'leisure' ? 'Lazer' : 'Outros'}
-                    </label>
-                    <div className="try-input-currency-wrapper">
-                      <span className="try-input-prefix">{currency.symbol}</span>
-                      <input 
-                        type="text"
-                        inputMode="numeric"
-                        className="try-input try-input-with-prefix"
-                        placeholder="0"
-                        value={form[field] === '' ? '' : formatCurrencyDisplay(form[field], currency.locale)}
-                        onFocus={(e) => {
-                          e.target.value = form[field];
-                        }}
-                        onChange={(e) => {
-                          const raw = e.target.value.replace(/[^\d]/g, '');
-                          if (raw === '' || Number(raw) >= 0) {
-                            update(field)({ target: { value: raw } });
-                          }
-                        }}
-                        onBlur={(e) => {
-                          e.target.value = formatCurrencyDisplay(form[field], currency.locale);
-                        }}
-                      />
+              <label className="try-label">SUA DISTRIBUIÇÃO DE GASTOS</label>
+              <div className="try-expenses-interactive">
+                {EXPENSE_CATEGORIES.map(cat => {
+                  const val = Number(form[cat.field] || 0);
+                  const pct = form.income ? Math.round((val / Number(form.income)) * 100) : 0;
+                  return (
+                    <div key={cat.field} className="try-expense-row">
+                      <div className="try-expense-header">
+                        <span>{cat.icon} {cat.label}</span>
+                        <span className={`try-expense-pct ${pct > 30 ? 'danger' : pct > 20 ? 'warning' : ''}`}>
+                          {pct}%
+                        </span>
+                      </div>
+                      <div className="try-expense-controls">
+                        <input
+                          type="range"
+                          className="try-slider"
+                          min="0"
+                          max={Number(form.income) || 10000}
+                          step="50"
+                          value={val}
+                          onChange={(e) => update(cat.field)({ target: { value: e.target.value } })}
+                        />
+                        <div className="try-input-currency-wrapper">
+                          <span className="try-input-prefix">{currency.symbol}</span>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            className="try-input try-input-with-prefix try-input-small"
+                            placeholder="0"
+                            value={form[cat.field] === '' ? '' : formatCurrencyDisplay(form[cat.field], currency.locale)}
+                            onFocus={(e) => { e.target.value = form[cat.field] }}
+                            onChange={(e) => {
+                              const raw = e.target.value.replace(/[^\d]/g, '')
+                              update(cat.field)({ target: { value: raw } })
+                            }}
+                            onBlur={(e) => { e.target.value = formatCurrencyDisplay(form[cat.field], currency.locale) }}
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
+              </div>
+
+              <div className="try-budget-bar">
+                <div className="try-budget-bar-track">
+                  <div
+                    className={`try-budget-bar-fill ${totalPct > 100 ? 'over' : totalPct > 80 ? 'warning' : ''}`}
+                    style={{ width: `${Math.min(totalPct, 100)}%` }}
+                  />
+                </div>
+                <p className="try-budget-summary">
+                  {currency.symbol}{formatCurrencyDisplay(totalExpenses, currency.locale)} alocados
+                  · {currency.symbol}{formatCurrencyDisplay(Math.max(0, Number(form.income) - totalExpenses), currency.locale)} livres
+                  · <strong style={{color: totalPct > 100 ? '#ef4444' : '#22c55e'}}>{totalPct}% da renda</strong>
+                </p>
               </div>
 
               <div className="try-nav-row">
@@ -217,7 +319,7 @@ export default function TryDemo() {
                 </button>
                 <button 
                   className="try-btn" 
-                  disabled={!form.income.trim()} 
+                  disabled={!form.income.trim() || totalExpenses <= 0} 
                   onClick={() => setStep(3)}
                 >
                   Próximo <ArrowRight size={18} />
@@ -229,7 +331,7 @@ export default function TryDemo() {
           {step === 3 && (
             <div className="try-step-content animate-fade-in">
               <div className="try-motivation">
-                🎯 <em>Quase lá. Um último detalhe que faz toda a diferença na análise.</em>
+                🎯 <em>Quase pronto, {form.name}. Um último detalhe que Kernel usará para sua segurança.</em>
               </div>
               <div className="try-field">
                 <label className="try-label">TEVE ALGUM GASTO INESPERADO ESSE MÊS? (OPCIONAL)</label>
@@ -242,7 +344,7 @@ export default function TryDemo() {
                   autoFocus
                 />
                 <p className="try-field-hint">
-                  "Gastos inesperados revelam vulnerabilidades financeiras. A IA usará isso para sugerir uma reserva de emergência personalizada."
+                  "Gastos inesperados revelam vulnerabilidades financeiras. Kernel usará isso para desenhar sua reserva ideal."
                 </p>
               </div>
 
@@ -251,10 +353,10 @@ export default function TryDemo() {
                   <ArrowLeft size={18} /> Voltar
                 </button>
                 <button className="try-btn" onClick={handleAnalyze}>
-                  Analisar com IA <ArrowRight size={18} />
+                  Gerar Relatório Completo <Sparkles size={18} />
                 </button>
               </div>
-              <p className="try-disclaimer">Nenhum dado é armazenado. Análise gerada em tempo real pela IA do Fortress.</p>
+              <p className="try-disclaimer">Nenhum dado é armazenado. Análise gerada em tempo real pela IA Kernel.</p>
             </div>
           )}
         </div>
@@ -276,47 +378,136 @@ export default function TryDemo() {
         </div>
       )}
 
+      {step === 'blocked' && (
+        <div className="try-demo-card try-blocked-card animate-fade-in">
+          <div className="try-locked-header">
+            <div className="try-locked-icon-large">🔒</div>
+            <h1 className="try-locked-title">🎉 Parabéns, {form.name}!</h1>
+            <p className="try-locked-main-msg">Sua análise está pronta.</p>
+          </div>
+          
+          <div className="try-report-preview-blurred">
+             <div className="try-blurred-line" style={{ width: '80%' }}></div>
+             <div className="try-blurred-line" style={{ width: '60%' }}></div>
+             <div className="try-blurred-line" style={{ width: '90%' }}></div>
+          </div>
+
+          <div className="try-unlock-footer">
+            <p className="try-unlock-text">
+              Para desbloquear o relatório completo, basta criar sua conta gratuitamente.
+            </p>
+            <p className="try-welcome-text">Bem-vindo à Fortress, {form.name}!</p>
+            <button className="try-btn try-btn-unlock" onClick={() => navigate('/register')}>
+              Criar minha conta grátis
+            </button>
+          </div>
+        </div>
+      )}
+
       {step === 'report' && report && (
         <div className="try-demo-card try-report-card animate-fade-in">
           <div className="try-report-section">
-            <label className="try-report-label">SEU PERFIL FINANCEIRO</label>
-            <h2 className="try-profile-name">{report.profileName}</h2>
-            <p className="try-profile-desc">{report.profileDescription}</p>
+            <label className="try-report-label">RESULTADO DA ANÁLISE — {form.name.toUpperCase()}</label>
+            <div className="try-score-card">
+              <div className="try-score-circle" data-health={report.savingsHealth}>
+                <span className="try-score-number">{report.scoreLabel}</span>
+                <span className="try-score-label">/ 100</span>
+              </div>
+              <div>
+                <p className="try-profile-name">{report.profileEmoji} {report.profileName}</p>
+                <p className="try-profile-desc">{report.profileDescription}</p>
+              </div>
+            </div>
           </div>
 
           <div className="try-report-section">
-            <label className="try-report-label">ANÁLISE</label>
+            <label className="try-report-label">DISTRIBUIÇÃO DE GASTOS</label>
+            <div className="try-spending-bars">
+              {EXPENSE_CATEGORIES.map(cat => {
+                const val = Number(form[cat.field] || 0)
+                const pct = form.income ? Math.round((val / Number(form.income)) * 100) : 0
+                return (
+                  <div key={cat.field} className="try-bar-row">
+                    <span className="try-bar-label">{cat.icon} {cat.label}</span>
+                    <div className="try-bar-track">
+                      <div
+                        className={`try-bar-fill ${pct > 30 ? 'danger' : pct > 20 ? 'warning' : 'ok'}`}
+                        style={{ width: `${Math.min(pct * 2, 100)}%` }}
+                      />
+                    </div>
+                    <span className="try-bar-pct">{pct}%</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          <div className="try-report-section">
+            <label className="try-report-label">INSIGHTS PRINCIPAIS</label>
             <div className="try-analysis-item">
-              <Check className="try-analysis-icon text-success" size={18} />
+              <span className="try-analysis-icon text-success">✓</span>
               <span>{report.spendingAnalysis.positive}</span>
             </div>
             <div className="try-analysis-item">
-              <AlertTriangle className="try-analysis-icon text-warning" size={18} />
+              <span className="try-analysis-icon text-warning">⚠</span>
               <span>{report.spendingAnalysis.warning}</span>
             </div>
           </div>
 
           <div className="try-report-section">
-            <label className="try-report-label">METAS RECOMENDADAS</label>
-            {report.goals.map((g, i) => (
+            <label className="try-report-label">META PRIORITÁRIA</label>
+            {report.goals.slice(0, 1).map((g, i) => (
               <div key={i} className="try-goal-item">
-                <h3 className="try-goal-title">{g.title}</h3>
-                <p className="try-goal-desc">{g.description}</p>
-                <span className="try-goal-meta">{currency.symbol} {g.monthlyAmount}/mês · {g.timelineMonths} meses</span>
+                <div className="try-goal-title">🎯 {g.title}</div>
+                <div className="try-goal-desc">{g.description}</div>
+                <div className="try-goal-meta">
+                  {currency.symbol}{formatCurrencyDisplay(g.monthlyAmount, currency.locale)}/mês · {g.timelineMonths} meses
+                </div>
               </div>
             ))}
           </div>
 
           <div className="try-report-section">
-            <div className="try-alert-card">
-              {report.mainAlert}
-            </div>
+            <div className="try-alert-card">🔔 {report.mainAlert}</div>
           </div>
 
-          <Link to="/register" className="try-cta-btn">
-            Criar minha conta grátis →
-          </Link>
-          <p className="try-cta-sub">Veja isso aplicado aos seus dados reais</p>
+          {/* Seção Bloqueada - Partial Reveal */}
+          <div className="try-locked-section">
+            <div className="try-locked-overlay">
+              <div className="try-locked-content">
+                <div className="try-locked-preview">
+                  {report.goals.slice(1).map((g, i) => (
+                    <div key={i} className="try-goal-item try-goal-blurred">
+                      <div className="try-goal-title">{g.title}</div>
+                      <div className="try-goal-desc">{g.description}</div>
+                    </div>
+                  ))}
+                  {report.lockedInsights.map((insight, i) => (
+                    <div key={i} className="try-locked-insight-item">
+                      <span className="try-locked-icon">🔒</span>
+                      <span className="try-locked-text">{insight}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="try-unlock-cta">
+                  <p className="try-unlock-title">
+                    Seu relatório completo está pronto, {form.name}.
+                  </p>
+                  <p className="try-unlock-sub">
+                    Mais 2 metas personalizadas e 3 insights exclusivos te esperam.
+                    Crie sua conta grátis para desbloquear tudo.
+                  </p>
+                  <button className="try-cta-btn" onClick={handleUnlock}>
+                    Desbloquear relatório completo →
+                  </button>
+                  <p className="try-cta-sub">
+                    Gratuito. Sem cartão de crédito.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

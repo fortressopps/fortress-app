@@ -36,6 +36,7 @@ model User {
   goals             Goal[]
   transactions      Transaction[]
   kernelProfile     KernelProfile?
+  aiUsageLogs       AIUsageLog[]
 }
 
 enum SupermarketCategory {
@@ -143,4 +144,31 @@ model Transaction {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, date])
+}
+
+enum AIReportStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model AIUsageLog {
+  id                String         @id @default(uuid())
+  requestId         String         @unique @default(uuid())
+  userId            String
+  action            String
+  plan              UserTier
+  emailVerified     Boolean
+  status            AIReportStatus @default(QUEUED)
+  tokensUsed        Int?           @default(0)
+  costUsd           Float?         @default(0)
+  costBrl           Float?         @default(0)
+  latencyMs         Int?
+  error             String?
+  reportUrl         String?
+  reportRequiresAuth Boolean       @default(true)
+  createdAt         DateTime       @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

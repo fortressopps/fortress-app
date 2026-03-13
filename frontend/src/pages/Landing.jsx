@@ -133,6 +133,7 @@ export default function Landing() {
                 <li>✓ {t.pricingF2}</li>
                 <li>✓ {t.pricingF3}</li>
                 <li>✓ {t.pricingF4}</li>
+                <li>✓ {t.pricingAILimit5}</li>
                 <li className="pricing-unavailable">— {t.pricingF5}</li>
                 <li className="pricing-unavailable">— {t.pricingF6}</li>
                 <li className="pricing-unavailable">— {t.pricingF7}</li>
@@ -144,9 +145,8 @@ export default function Landing() {
             <div className="pricing-card pricing-card-featured">
               <div className="pricing-popular-badge">{t.pricingMostPopular}</div>
               <div className="pricing-tier">VANGUARD</div>
-              <div className="pricing-price pricing-price-soon">
-                {t.pricingComingSoon}
-                <span className="pricing-coming-badge">{t.pricingEarlyAccess}</span>
+              <div className="pricing-price">
+                {t.pricingVanguardSymbol} {t.pricingVanguardValue}<span>{t.pricingPerMonth}</span>
               </div>
               <ul className="pricing-features">
                 <li>✓ {t.pricingF1} ({t.pricingFree})</li>
@@ -154,6 +154,7 @@ export default function Landing() {
                 <li>✓ {t.pricingF6}</li>
                 <li>✓ {t.pricingF7}</li>
                 <li>✓ {t.pricingF8}</li>
+                <li>✓ {t.pricingAILimit200}</li>
                 <li className="pricing-unavailable">— {t.pricingF9}</li>
               </ul>
               <Link to="/register" className="pricing-btn pricing-btn-primary">{t.pricingBtnPro}</Link>
