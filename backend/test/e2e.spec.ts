@@ -48,6 +48,18 @@ describe("E2E - Full Core Flow", () => {
     });
 
     it("should process receipt through full core flow", async () => {
+        // 0. Create a supermarket list (required by /receipts/process)
+        const listRes = await app.request("http://localhost/supermarket/lists", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken}`,
+            },
+            body: JSON.stringify({ name: "Lista de Teste E2E" }),
+        });
+        const listData = await listRes.json();
+        const listId = listData.id;
+
         // 1. Process Receipt (Supermarket → Insights → Kernel → Notifications)
         const receiptRes = await app.request("http://localhost/supermarket/receipts/process", {
             method: "POST",
@@ -60,6 +72,7 @@ describe("E2E - Full Core Flow", () => {
                 category: "Eletrônicos",
                 projectedTotal: 1000000, // 10000 BRL budget
                 average: 0,
+                listId: listId,
             }),
         });
 

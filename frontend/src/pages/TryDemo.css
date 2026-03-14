@@ -536,78 +536,131 @@
   line-height: 1.6;
 }
 
-/* Seção bloqueada (Partial Reveal) */
+/* ── Seção bloqueada ─────────────────────────────── */
+
 .try-locked-section {
-  margin-top: 1.5rem;
-  position: relative;
+  margin-top: 2rem;
 }
-.try-locked-overlay {
-  border: 1px solid rgba(34, 197, 94, 0.15);
-  border-radius: 16px;
+
+/* Divisor com label central */
+.try-locked-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.try-locked-header-line {
+  flex: 1;
+  height: 1px;
+  background: var(--card-border);
+}
+.try-locked-header-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+/* Zona borrada com gradiente por cima */
+.try-locked-blur-zone {
+  position: relative;
+  border-radius: 12px;
   overflow: hidden;
-  background: rgba(34, 197, 94, 0.02);
-  position: relative;
+  margin-bottom: 0;
 }
-.try-locked-content {
-  padding: 1.5rem;
-}
-.try-locked-preview {
+
+/* Conteúdo borrado */
+.try-goal-item-blurred {
   filter: blur(5px);
   user-select: none;
   pointer-events: none;
-  opacity: 0.4;
-  margin-bottom: 1.5rem;
-}
-.try-goal-blurred {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  padding: 1rem;
-  margin-bottom: 0.75rem;
+  opacity: 0.7;
 }
 .try-locked-insight-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.6rem;
-  padding: 0.75rem;
-  background: rgba(0,0,0,0.2);
+  padding: 0.75rem 1rem;
+  background: var(--card);
   border: 1px solid var(--card-border);
   border-radius: 8px;
   margin-bottom: 0.5rem;
+  filter: blur(5px);
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.7;
+}
+.try-locked-icon { font-size: 0.9rem; flex-shrink: 0; margin-top: 1px; }
+.try-locked-text {
   font-size: 0.85rem;
   color: var(--text-secondary);
+  line-height: 1.5;
 }
-.try-locked-icon { font-size: 0.9rem; flex-shrink: 0; }
-.try-locked-text { font-style: italic; }
 
-.try-unlock-cta {
+/* Gradiente que cobre o bottom do blur zone — cria efeito de fade */
+.try-locked-gradient {
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  height: 120px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--bg, #0a0a0a) 100%
+  );
+  pointer-events: none;
+}
+
+/* Box de CTA de desbloqueio */
+.try-unlock-box {
+  background: var(--card);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 16px;
+  padding: 2rem 1.75rem;
+  text-align: center;
+  margin-top: -2px; /* colar no gradiente */
+  position: relative;
+  z-index: 1;
+}
+
+.try-unlock-icon-row {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.try-unlock-icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  padding: 2rem;
-  background: linear-gradient(to bottom, transparent, rgba(10, 10, 10, 0.95) 60%);
-  z-index: 10;
 }
+
 .try-unlock-title {
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: 1.1rem;
+  font-weight: 700;
   color: #fff;
   margin-bottom: 0.6rem;
-  letter-spacing: -0.02em;
+  line-height: 1.4;
 }
 .try-unlock-sub {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 1.5rem;
-  max-width: 340px;
+  max-width: 380px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.try-unlock-sub strong {
+  color: #fff;
+  font-weight: 600;
 }
 
 .try-cta-btn {
@@ -624,6 +677,7 @@
   text-decoration: none;
   transition: all 0.2s;
   box-sizing: border-box;
+  margin: 0 auto;
 }
 
 .try-cta-btn:hover {
@@ -685,25 +739,6 @@
   padding: 3rem 2rem;
 }
 
-.try-locked-icon-large {
-  font-size: 3.5rem;
-  margin-bottom: 1.5rem;
-  filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.3));
-}
-
-.try-locked-title {
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: #fff;
-  margin-bottom: 0.5rem;
-}
-
-.try-locked-main-msg {
-  font-size: 1.1rem;
-  color: #22c55e;
-  font-weight: 600;
-  margin-bottom: 2rem;
-}
 
 .try-report-preview-blurred {
   background: rgba(255, 255, 255, 0.03);
@@ -725,25 +760,6 @@
   border-radius: 4px;
 }
 
-.try-unlock-text {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 0.5rem;
-}
-
-.try-welcome-text {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 1.8rem;
-}
-
-.try-btn-unlock {
-  background: #22c55e;
-  color: #000;
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
-}
 
 /* Mobile */
 @media (max-width: 600px) {
@@ -760,6 +776,6 @@
   .try-nav-row { flex-direction: column-reverse; }
   .try-btn-back { justify-content: center; }
   
-  .try-unlock-title { font-size: 1.1rem; }
-  .try-unlock-cta { padding: 1.5rem; }
+  .try-unlock-title { font-size: 1rem; }
+  .try-unlock-box { padding: 1.5rem 1.25rem; }
 }

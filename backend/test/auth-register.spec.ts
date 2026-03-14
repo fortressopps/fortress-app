@@ -3,12 +3,13 @@ import { app } from "../src/app";
 
 describe("Auth Register & Email Verification", () => {
   it("should register user and send verification email", async () => {
+    const uniqueEmail = `testuser-${Date.now()}@example.com`;
     const res = await app.request("http://localhost/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: "Test",
-        email: "testuser@example.com",
+        email: uniqueEmail,
         password: "testpass123",
       }),
     });

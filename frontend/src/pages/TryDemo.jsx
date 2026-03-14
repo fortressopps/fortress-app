@@ -471,42 +471,62 @@ export default function TryDemo() {
             <div className="try-alert-card">🔔 {report.mainAlert}</div>
           </div>
 
-          {/* Seção Bloqueada - Partial Reveal */}
           <div className="try-locked-section">
-            <div className="try-locked-overlay">
-              <div className="try-locked-content">
-                <div className="try-locked-preview">
-                  {report.goals.slice(1).map((g, i) => (
-                    <div key={i} className="try-goal-item try-goal-blurred">
-                      <div className="try-goal-title">{g.title}</div>
-                      <div className="try-goal-desc">{g.description}</div>
-                    </div>
-                  ))}
-                  {report.lockedInsights.map((insight, i) => (
-                    <div key={i} className="try-locked-insight-item">
-                      <span className="try-locked-icon">🔒</span>
-                      <span className="try-locked-text">{insight}</span>
-                    </div>
-                  ))}
-                </div>
 
-                <div className="try-unlock-cta">
-                  <p className="try-unlock-title">
-                    Seu relatório completo está pronto, {form.name}.
-                  </p>
-                  <p className="try-unlock-sub">
-                    Mais 2 metas personalizadas e 3 insights exclusivos te esperam.
-                    Crie sua conta grátis para desbloquear tudo.
-                  </p>
-                  <button className="try-cta-btn" onClick={handleUnlock}>
-                    Desbloquear relatório completo →
-                  </button>
-                  <p className="try-cta-sub">
-                    Gratuito. Sem cartão de crédito.
-                  </p>
+            {/* Título da seção bloqueada */}
+            <div className="try-locked-header">
+              <div className="try-locked-header-line" />
+              <span className="try-locked-header-label">🔒 Conteúdo exclusivo</span>
+              <div className="try-locked-header-line" />
+            </div>
+
+            {/* Preview borrado — metas 2 e 3 */}
+            <div className="try-locked-blur-zone">
+
+              {report.goals.slice(1).map((g, i) => (
+                <div key={i} className="try-goal-item try-goal-item-blurred">
+                  <div className="try-goal-title">{g.title}</div>
+                  <div className="try-goal-desc">{g.description}</div>
+                  <div className="try-goal-meta">
+                    {currency.symbol}{g.monthlyAmount?.toLocaleString()}/mês · {g.timelineMonths} meses
+                  </div>
+                </div>
+              ))}
+
+              {report.lockedInsights?.map((insight, i) => (
+                <div key={i} className="try-locked-insight-item">
+                  <span className="try-locked-icon">💡</span>
+                  <span className="try-locked-text">{insight}</span>
+                </div>
+              ))}
+
+              {/* Overlay gradiente sobre o blur */}
+              <div className="try-locked-gradient" />
+            </div>
+
+            {/* CTA de desbloqueio — fora do blur zone */}
+            <div className="try-unlock-box">
+              <div className="try-unlock-icon-row">
+                <div className="try-unlock-icon-circle">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
                 </div>
               </div>
+              <p className="try-unlock-title">
+                Seu relatório completo está pronto, {form.name}.
+              </p>
+              <p className="try-unlock-sub">
+                {report.goals.length - 1} metas adicionais e {report.lockedInsights?.length || 3} insights exclusivos
+                gerados especificamente para o seu perfil <strong>{report.profileEmoji} {report.profileName}</strong>.
+              </p>
+              <button className="try-cta-btn" onClick={handleUnlock}>
+                Desbloquear relatório completo →
+              </button>
+              <p className="try-cta-sub">Gratuito. Sem cartão de crédito.</p>
             </div>
+
           </div>
         </div>
       )}

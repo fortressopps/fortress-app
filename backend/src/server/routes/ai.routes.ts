@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import Anthropic from '@anthropic-ai/sdk'
-import { authMiddleware, AuthVariables } from '../middleware/auth'
-import { prisma } from '../libs/prisma'
+import { authMiddleware, AuthVariables } from '../../middleware/auth'
+import { prisma } from '../../libs/prisma'
 import { v4 as uuid } from 'uuid'
 
 const ai = new Hono<{ Variables: AuthVariables }>()
