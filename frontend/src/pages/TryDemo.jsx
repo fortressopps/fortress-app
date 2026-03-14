@@ -406,6 +406,7 @@ export default function TryDemo() {
 
       {step === 'report' && report && (
         <div className="try-demo-card try-report-card animate-fade-in">
+          {console.log('REPORT_DEBUG:', JSON.stringify(report))}
           <div className="try-report-section">
             <label className="try-report-label">RESULTADO DA ANÁLISE — {form.name.toUpperCase()}</label>
             <div className="try-score-card">
