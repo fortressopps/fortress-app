@@ -11,17 +11,29 @@ export function applySecurity(app: Hono) {
   app.use(
     "*",
     cors({
-      origin: [
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "https://fortress-app.vercel.app",
-        ENV.FRONTEND_URL,
-      ].filter(Boolean) as string[],
+      origin: (origin) => {
+        if (!origin) return null;
+        if (
+          origin.endsWith(".vercel.app") ||
+          origin.startsWith("http://localhost:") ||
+          origin === "http://localhost" ||
+          origin === ENV.FRONTEND_URL
+        ) {
+          return origin;
+        }
+        return null;
+      },
       allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       allowHeaders: ["Content-Type", "Authorization"],
       credentials: true,
     })
   );
+
+  // Debug header to verify deploy
+  app.use("*", async (c, next) => {
+    c.header("X-Fortress-Debug", "v7.24-cors-fix-v2");
+    await next();
+  });
 
   // Security headers básicos
   app.use("*", async (c, next) => {
