@@ -5,7 +5,7 @@ import { useLang } from '../hooks/useLang';
 import { LanguageSelector } from '../components/LanguageSelector';
 import './Auth.css';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
