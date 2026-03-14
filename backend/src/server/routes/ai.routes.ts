@@ -97,7 +97,14 @@ Responda EXCLUSIVAMENTE com um JSON estruturado:
   "highlights": ["bullet 1", "bullet 2", "bullet 3"],
   "details": ["frase 1", "frase 2", "frase 3", "frase 4", "frase 5", "frase 6"],
   "goals": [
-    { "title": "Meta Meta", "monthlyAmount": 0, "timelineMonths": 0, "description": "curta" }
+    { "title": "Meta 1", "monthlyAmount": 0, "timelineMonths": 0, "description": "Resumo" },
+    { "title": "Meta 2", "monthlyAmount": 0, "timelineMonths": 0, "description": "Resumo" },
+    { "title": "Meta 3", "monthlyAmount": 0, "timelineMonths": 0, "description": "Resumo" }
+  ],
+  "lockedInsights": [
+    "Insight incompleto sobre [tema relevante aos dados]...",
+    "Insight incompleto sobre [tema relevante aos dados]...",
+    "Insight incompleto sobre [tema relevante aos dados]..."
   ],
   "mainAlert": "Insight crítico com ${sym}",
   "scoreLabel": 0-100

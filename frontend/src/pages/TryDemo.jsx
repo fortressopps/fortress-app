@@ -483,7 +483,7 @@ export default function TryDemo() {
             {/* Preview borrado — metas 2 e 3 */}
             <div className="try-locked-blur-zone">
 
-              {report.goals.slice(1).map((g, i) => (
+              {(report.goals || []).slice(1).map((g, i) => (
                 <div key={i} className="try-goal-item try-goal-item-blurred">
                   <div className="try-goal-title">{g.title}</div>
                   <div className="try-goal-desc">{g.description}</div>
@@ -493,7 +493,7 @@ export default function TryDemo() {
                 </div>
               ))}
 
-              {report.lockedInsights?.map((insight, i) => (
+              {(report.lockedInsights || []).map((insight, i) => (
                 <div key={i} className="try-locked-insight-item">
                   <span className="try-locked-icon">💡</span>
                   <span className="try-locked-text">{insight}</span>
