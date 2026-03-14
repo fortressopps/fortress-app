@@ -2,32 +2,26 @@
 import type { Hono } from "hono";
 import { ENV } from "./env";
 
-const ALLOWED_ORIGINS = new Set([
-  ENV.FRONTEND_URL,
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "http://localhost:4173", // vite preview
-]);
+const ALLOWED_ORIGINS = new Set(); // Mantido vazio para evitar quebras se referenciado em outro lugar (embora improvável)
+
+import { cors } from "hono/cors";
 
 export function applySecurity(app: Hono) {
-  // CORS — allowlist only (no wildcard https://)
-  app.use("*", async (c, next) => {
-    const origin = c.req.header("Origin") ?? "";
-    // In development, also allow any localhost port
-    const isAllowed =
-      ALLOWED_ORIGINS.has(origin) ||
-      (ENV.APP_ENV === "development" && /^http:\/\/localhost(:\d+)?$/.test(origin));
-    const allowOrigin = isAllowed ? origin : (ENV.FRONTEND_URL ?? "http://localhost:5173");
-
-    c.header("Access-Control-Allow-Origin", allowOrigin);
-    c.header("Access-Control-Allow-Credentials", "true");
-    c.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-    c.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    if (c.req.method === "OPTIONS") {
-      return c.body(null, 204);
-    }
-    await next();
-  });
+  // CORS — allowlist only
+  app.use(
+    "*",
+    cors({
+      origin: [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://fortress-app.vercel.app",
+        ENV.FRONTEND_URL,
+      ].filter(Boolean) as string[],
+      allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      allowHeaders: ["Content-Type", "Authorization"],
+      credentials: true,
+    })
+  );
 
   // Security headers básicos
   app.use("*", async (c, next) => {
